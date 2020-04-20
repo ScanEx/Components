@@ -1,0 +1,10 @@
+.scanex-tabs .tabs > *,
+.scanex-tabs .panels > * {
+    float: left;
+}
+.scanex-tabs .panels {
+    clear: both;
+}
+.scanex-tabs > .panels > .hidden {
+    display: none;
+}

@@ -1,0 +1,21 @@
+.scanex-components-form > table,
+.scanex-components-form > table > tbody > tr > td:last-child,
+.scanex-components-form > table > tbody > tr > td > input[type=text],
+.scanex-components-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-components-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-components-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-components-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-components-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}

@@ -1,0 +1,94 @@
+* {
+    font-family: sans-serif;
+    font-size: medium;
+}
+html, body {
+    margin: 0px;
+    padding: 0px;
+}
+.scanex-tabs > .tabs > .tab {
+    padding: 10px;
+    text-align: center;    
+    color: lightslategrey;
+    cursor: pointer;
+}
+.scanex-tabs > .tabs > .tab.selected {
+    background-color: lightslategrey;
+    color: white;    
+}
+.scanex-components-form {
+    width: 350px;
+    margin: 10px;
+}
+.scanex-components-form > table > tbody > tr > td {
+    padding-bottom: 5px;
+}
+.scanex-components-form > table > tbody > tr > td > input[type=text],
+.scanex-components-form > table > tbody > tr > td > textarea {
+    border: 1px solid lightslategrey;
+}
+.dialog {
+    position: absolute;
+    top: 60px;
+    left: 330px;
+    z-index: 1000;
+    background-color: white;
+    height: 400px;
+}
+.dialog > .header {    
+    cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.dialog > .header > .close {
+    float: right;
+}
+.dialog > .header,
+.dialog > .content,
+.dialog > .footer {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.dialog > .header,
+.dialog > .content,
+.dialog > .footer,
+.dialog > .footer > button {
+    background-color: #FFFFFF;
+}
+.dialog > .footer {
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.scanex-tabs .tabs > *,
+.scanex-tabs .panels > * {
+    float: left;
+}
+.scanex-tabs .panels {
+    clear: both;
+}
+.scanex-tabs > .panels > .hidden {
+    display: none;
+}
+.scanex-components-form > table,
+.scanex-components-form > table > tbody > tr > td:last-child,
+.scanex-components-form > table > tbody > tr > td > input[type=text],
+.scanex-components-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-components-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-components-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-components-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-components-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}
