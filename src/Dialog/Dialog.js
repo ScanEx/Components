@@ -42,7 +42,7 @@ class Dialog extends Component {
         }
     }
     _render(element) {
-        element.classList.add('dialog');        
+        element.classList.add('scanex-components-dialog');
 
         this._header = document.createElement('div');
         this._header.classList.add('header');

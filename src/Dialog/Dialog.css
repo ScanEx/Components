@@ -1,4 +1,4 @@
-.dialog {
+.scanex-components-dialog {
     position: absolute;
     top: 60px;
     left: 330px;
@@ -6,29 +6,18 @@
     background-color: white;
     height: 400px;
 }
-.dialog > .header {    
-    cursor: pointer;
-    padding-top: 10px;
-    padding-bottom: 10px;
+.scanex-components-dialog > .header {    
+    cursor: pointer;    
 }
-.dialog > .header > .close {
+.scanex-components-dialog > .header > .close {
     float: right;
 }
-.dialog > .header,
-.dialog > .content,
-.dialog > .footer {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.dialog > .header,
-.dialog > .content,
-.dialog > .footer,
-.dialog > .footer > button {
+.scanex-components-dialog > .header,
+.scanex-components-dialog > .content,
+.scanex-components-dialog > .footer,
+.scanex-components-dialog > .footer > button {
     background-color: #FFFFFF;
 }
-.dialog > .footer {
+.scanex-components-dialog > .footer {
     text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }

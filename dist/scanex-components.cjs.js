@@ -9549,7 +9549,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
     value: function _render(element) {
       var _this2 = this;
 
-      element.classList.add('dialog');
+      element.classList.add('scanex-components-dialog');
       this._header = document.createElement('div');
 
       this._header.classList.add('header');
@@ -9762,7 +9762,7 @@ var Tabs = /*#__PURE__*/function (_Component) {
   _createClass(Tabs, [{
     key: "_render",
     value: function _render(container) {
-      container.classList.add('scanex-tabs');
+      container.classList.add('scanex-components-tabs');
       this._tabsContainer = document.createElement('div');
 
       this._tabsContainer.classList.add('tabs');

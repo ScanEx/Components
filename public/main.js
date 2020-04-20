@@ -9623,7 +9623,7 @@
       _createClass(Tabs, [{
         key: "_render",
         value: function _render(container) {
-          container.classList.add('scanex-tabs');
+          container.classList.add('scanex-components-tabs');
           this._tabsContainer = document.createElement('div');
 
           this._tabsContainer.classList.add('tabs');
