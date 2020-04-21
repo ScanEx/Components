@@ -47,7 +47,7 @@ class Form extends Component {
         }
     }
     _init(element, fields) {
-        element.classList.add('scanex-components-form');
+        element.classList.add('scanex-component-form');
         const create_value = (type, id, placeholder) => {
             switch(type) {
                 case 'label':                    

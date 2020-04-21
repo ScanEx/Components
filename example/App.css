@@ -6,38 +6,62 @@ html, body {
     margin: 0px;
     padding: 0px;
 }
-.scanex-components-tabs > .tabs > .tab {
+.scanex-component-tabs > .tabs > .tab {
     padding: 10px;
     text-align: center;    
     color: lightslategrey;
     cursor: pointer;
 }
-.scanex-components-tabs > .tabs > .tab.selected {
+.scanex-component-tabs > .tabs > .tab.selected {
     background-color: lightslategrey;
     color: white;    
 }
-.scanex-components-form {
-    width: 350px;
-    margin: 10px;
+.scanex-component-tabs > .panels > .panel {
+    padding: 10px;
 }
-.scanex-components-form > table > tbody > tr > td {
+.scanex-component-form {
+    width: 350px;    
+}
+.scanex-component-form > table > tbody > tr > td {
     padding-bottom: 5px;
 }
-.scanex-components-form > table > tbody > tr > td > input[type=text],
-.scanex-components-form > table > tbody > tr > td > textarea {
+.scanex-component-form > table > tbody > tr > td > input[type=text],
+.scanex-component-form > table > tbody > tr > td > textarea,
+.scanex-component-spinner input {
     border: 1px solid lightslategrey;
 }
-.scanex-components-dialog > .header { 
+.scanex-component-dialog {
+    box-shadow: 0px 1px 7.84px 0.16px rgba(0, 0, 0, 0.16);    
+}
+.scanex-component-dialog > .header { 
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.scanex-component-dialog > .footer {
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+#lorem {
+    width: 400px;
+}
+#lorem > .header {
+    background-color: whitesmoke;    
+}
+#lorem > .header > label {
+    font-size: large;
+}
+.scanex-component-dialog > .footer { 
     padding-top: 10px;
     padding-bottom: 10px;
 }
-.scanex-components-dialog > .footer { 
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-.scanex-components-dialog > .header,
-.scanex-components-dialog > .content,
-.scanex-components-dialog > .footer {
+.scanex-component-dialog > .header,
+.scanex-component-dialog > .content,
+.scanex-component-dialog > .footer {
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 10px;    
+}
+.scanex-component-spinner input {
+    width: 30px;
 }

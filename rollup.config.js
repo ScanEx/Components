@@ -4,6 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import css from 'rollup-plugin-css-porter';
+import {string} from 'rollup-plugin-string';
 
 export default [
     {
@@ -18,6 +19,9 @@ export default [
             json(),
             resolve(),            
             commonjs(),
+            string({
+                include: "**/*.txt",
+            }),
             css({dest: 'public/main.css', minified: false}),            
             babel({                
                 extensions: ['.js', '.mjs'],

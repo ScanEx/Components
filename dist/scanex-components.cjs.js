@@ -9348,6 +9348,8 @@ var Component = /*#__PURE__*/function (_EventTarget) {
     _this._container = container;
     _this._element = document.createElement('div');
 
+    _this._element.classList.add('scanex-component');
+
     _this._container.appendChild(_this._element);
 
     _this._render(_this._element);
@@ -9489,17 +9491,29 @@ var index$1 = window.Scanex.translations;
 
 var scanexTranslations_cjs = index$1;
 
+scanexTranslations_cjs.addText('rus', {
+  close: 'Закрыть'
+});
+scanexTranslations_cjs.addText('eng', {
+  close: 'Close'
+});
+
 var Dialog = /*#__PURE__*/function (_Component) {
   _inherits(Dialog, _Component);
 
   var _super = _createSuper(Dialog);
 
-  function Dialog(title) {
+  function Dialog(title, id) {
     var _this;
 
     _classCallCheck(this, Dialog);
 
     _this = _super.call(this, document.body);
+
+    if (id) {
+      _this._element.setAttribute('id', id);
+    }
+
     _this._titleElement.innerText = title;
     _this._moving = false;
     _this._offsetX;
@@ -9549,7 +9563,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
     value: function _render(element) {
       var _this2 = this;
 
-      element.classList.add('scanex-components-dialog');
+      element.classList.add('scanex-component-dialog');
       this._header = document.createElement('div');
 
       this._header.classList.add('header');
@@ -9559,7 +9573,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       this._header.appendChild(this._titleElement);
 
       var button = document.createElement('i');
-      button.setAttribute('title', scanexTranslations_cjs.getText('cancel'));
+      button.setAttribute('title', scanexTranslations_cjs.getText('close'));
       button.classList.add('icon');
       button.classList.add('close');
       button.addEventListener('click', function (e) {
@@ -9674,7 +9688,7 @@ var Form = /*#__PURE__*/function (_Component) {
     value: function _init(element, fields) {
       var _this2 = this;
 
-      element.classList.add('scanex-components-form');
+      element.classList.add('scanex-component-form');
 
       var create_value = function create_value(type, id, placeholder) {
         switch (type) {
@@ -9722,25 +9736,97 @@ var Form = /*#__PURE__*/function (_Component) {
   return Form;
 }(Component);
 
-var InputNumber = /*#__PURE__*/function (_Component) {
-  _inherits(InputNumber, _Component);
+var Spinner = /*#__PURE__*/function (_Component) {
+  _inherits(Spinner, _Component);
 
-  var _super = _createSuper(InputNumber);
+  var _super = _createSuper(Spinner);
 
-  function InputNumber(container) {
-    _classCallCheck(this, InputNumber);
+  function Spinner(container) {
+    var _this;
 
-    return _super.call(this, container);
+    _classCallCheck(this, Spinner);
+
+    _this = _super.call(this, container);
+    _this._value = 0;
+    _this._min = 0;
+    _this._max = 0;
+
+    _this._up.addEventListener('click', _this.increment.bind(_assertThisInitialized(_this)));
+
+    _this._down.addEventListener('click', _this.decrement.bind(_assertThisInitialized(_this)));
+
+    _this._input.addEventListener('change', _this._onChange.bind(_assertThisInitialized(_this)));
+
+    return _this;
   }
 
-  _createClass(InputNumber, [{
+  _createClass(Spinner, [{
+    key: "_onChange",
+    value: function _onChange(e) {
+      e.stopPropagation();
+      this.value = parseInt(this._input.value, 10);
+    }
+  }, {
+    key: "_validate",
+    value: function _validate(value) {
+      return !isNaN(value) && this._min <= value && value <= this._max;
+    }
+  }, {
+    key: "increment",
+    value: function increment(e) {
+      e.stopPropagation();
+      this.value = this._value + 1;
+    }
+  }, {
+    key: "decrement",
+    value: function decrement(e) {
+      e.stopPropagation();
+      this.value = this._value - 1;
+    }
+  }, {
     key: "_render",
     value: function _render(element) {
-      element.classList.add('input-number');
+      element.classList.add('scanex-component-spinner');
+      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"spinner-icon spinner-up\"></i>\n            <i class=\"spinner-icon spinner-down\"></i>\n        </div>";
+      this._input = element.querySelector('input');
+      this._up = element.querySelector('.spinner-up');
+      this._down = element.querySelector('.spinner-down');
+    }
+  }, {
+    key: "value",
+    get: function get() {
+      return this._value;
+    },
+    set: function set(value) {
+      if (this._validate(value)) {
+        this._value = value;
+      }
+
+      this._input.value = this._value.toString();
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._min;
+    },
+    set: function set(min) {
+      if (!isNaN(min) && min <= this._max) {
+        this._min = min;
+      }
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._max;
+    },
+    set: function set(max) {
+      if (!isNaN(max) && this._min <= max) {
+        this._max = max;
+      }
     }
   }]);
 
-  return InputNumber;
+  return Spinner;
 }(Component);
 
 var Tabs = /*#__PURE__*/function (_Component) {
@@ -9762,7 +9848,7 @@ var Tabs = /*#__PURE__*/function (_Component) {
   _createClass(Tabs, [{
     key: "_render",
     value: function _render(container) {
-      container.classList.add('scanex-components-tabs');
+      container.classList.add('scanex-component-tabs');
       this._tabsContainer = document.createElement('div');
 
       this._tabsContainer.classList.add('tabs');
@@ -9861,6 +9947,6 @@ var Tabs = /*#__PURE__*/function (_Component) {
 exports.Component = Component;
 exports.Dialog = Dialog;
 exports.Form = Form;
-exports.InputNumber = InputNumber;
+exports.Spinner = Spinner;
 exports.Tabs = Tabs;
 //# sourceMappingURL=scanex-components.cjs.js.map

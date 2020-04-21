@@ -1,0 +1,18 @@
+.scanex-component-spinner > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+.scanex-component-spinner input {
+    text-align: center;
+}
+.scanex-component-spinner .spinner-icon {
+    cursor: pointer;
+    display: block;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 10px;
+    height: 10px;
+}
+.scanex-component-spinner .spinner-icon.spinner-up {
+    border-bottom: 1px solid;
+}

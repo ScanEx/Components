@@ -1,6 +1,8 @@
 (function () {
     'use strict';
 
+    var lorem = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?";
+
     function _classCallCheck(instance, Constructor) {
       if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
@@ -218,6 +220,8 @@
     window.Scanex.translations = window.Scanex.translations || new Translations();
 
     var index = window.Scanex.translations;
+
+    var scanexTranslations_cjs = index;
 
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -9466,6 +9470,8 @@
         _this._container = container;
         _this._element = document.createElement('div');
 
+        _this._element.classList.add('scanex-component');
+
         _this._container.appendChild(_this._element);
 
         _this._render(_this._element);
@@ -9485,6 +9491,133 @@
 
       return Component;
     }(EventTarget);
+
+    scanexTranslations_cjs.addText('rus', {
+      close: 'Закрыть'
+    });
+    scanexTranslations_cjs.addText('eng', {
+      close: 'Close'
+    });
+
+    var Dialog = /*#__PURE__*/function (_Component) {
+      _inherits(Dialog, _Component);
+
+      var _super = _createSuper(Dialog);
+
+      function Dialog(title, id) {
+        var _this;
+
+        _classCallCheck(this, Dialog);
+
+        _this = _super.call(this, document.body);
+
+        if (id) {
+          _this._element.setAttribute('id', id);
+        }
+
+        _this._titleElement.innerText = title;
+        _this._moving = false;
+        _this._offsetX;
+        _this._offsetY;
+
+        _this._header.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this)));
+
+        _this._element.addEventListener('mousemove', _this._move.bind(_assertThisInitialized(_this)));
+
+        window.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
+        return _this;
+      }
+
+      _createClass(Dialog, [{
+        key: "_start",
+        value: function _start(e) {
+          e.stopPropagation();
+          var clientX = e.clientX,
+              clientY = e.clientY;
+
+          var _this$_element$getBou = this._element.getBoundingClientRect(),
+              top = _this$_element$getBou.top,
+              left = _this$_element$getBou.left;
+
+          this._offsetX = clientX - left;
+          this._offsetY = clientY - top;
+          this._moving = true;
+        }
+      }, {
+        key: "_stop",
+        value: function _stop() {
+          this._moving = false;
+        }
+      }, {
+        key: "_move",
+        value: function _move(e) {
+          if (this._moving) {
+            e.stopPropagation();
+            var clientX = e.clientX,
+                clientY = e.clientY;
+            this._element.style.left = "".concat(clientX - this._offsetX, "px");
+            this._element.style.top = "".concat(clientY - this._offsetY, "px");
+          }
+        }
+      }, {
+        key: "_render",
+        value: function _render(element) {
+          var _this2 = this;
+
+          element.classList.add('scanex-component-dialog');
+          this._header = document.createElement('div');
+
+          this._header.classList.add('header');
+
+          this._titleElement = document.createElement('label');
+
+          this._header.appendChild(this._titleElement);
+
+          var button = document.createElement('i');
+          button.setAttribute('title', scanexTranslations_cjs.getText('close'));
+          button.classList.add('icon');
+          button.classList.add('close');
+          button.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var event = document.createEvent('Event');
+            event.initEvent('close', false, false);
+
+            _this2.dispatchEvent(event);
+          });
+
+          this._header.appendChild(button);
+
+          element.appendChild(this._header);
+          this._content = document.createElement('div');
+
+          this._content.classList.add('content');
+
+          element.appendChild(this._content);
+          this._footer = document.createElement('div');
+
+          this._footer.classList.add('footer');
+
+          element.appendChild(this._footer);
+        }
+      }, {
+        key: "header",
+        get: function get() {
+          return this._header;
+        }
+      }, {
+        key: "content",
+        get: function get() {
+          return this._content;
+        }
+      }, {
+        key: "footer",
+        get: function get() {
+          return this._footer;
+        }
+      }]);
+
+      return Dialog;
+    }(Component);
 
     var Form = /*#__PURE__*/function (_Component) {
       _inherits(Form, _Component);
@@ -9556,7 +9689,7 @@
         value: function _init(element, fields) {
           var _this2 = this;
 
-          element.classList.add('scanex-components-form');
+          element.classList.add('scanex-component-form');
 
           var create_value = function create_value(type, id, placeholder) {
             switch (type) {
@@ -9604,6 +9737,99 @@
       return Form;
     }(Component);
 
+    var Spinner = /*#__PURE__*/function (_Component) {
+      _inherits(Spinner, _Component);
+
+      var _super = _createSuper(Spinner);
+
+      function Spinner(container) {
+        var _this;
+
+        _classCallCheck(this, Spinner);
+
+        _this = _super.call(this, container);
+        _this._value = 0;
+        _this._min = 0;
+        _this._max = 0;
+
+        _this._up.addEventListener('click', _this.increment.bind(_assertThisInitialized(_this)));
+
+        _this._down.addEventListener('click', _this.decrement.bind(_assertThisInitialized(_this)));
+
+        _this._input.addEventListener('change', _this._onChange.bind(_assertThisInitialized(_this)));
+
+        return _this;
+      }
+
+      _createClass(Spinner, [{
+        key: "_onChange",
+        value: function _onChange(e) {
+          e.stopPropagation();
+          this.value = parseInt(this._input.value, 10);
+        }
+      }, {
+        key: "_validate",
+        value: function _validate(value) {
+          return !isNaN(value) && this._min <= value && value <= this._max;
+        }
+      }, {
+        key: "increment",
+        value: function increment(e) {
+          e.stopPropagation();
+          this.value = this._value + 1;
+        }
+      }, {
+        key: "decrement",
+        value: function decrement(e) {
+          e.stopPropagation();
+          this.value = this._value - 1;
+        }
+      }, {
+        key: "_render",
+        value: function _render(element) {
+          element.classList.add('scanex-component-spinner');
+          element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"spinner-icon spinner-up\"></i>\n            <i class=\"spinner-icon spinner-down\"></i>\n        </div>";
+          this._input = element.querySelector('input');
+          this._up = element.querySelector('.spinner-up');
+          this._down = element.querySelector('.spinner-down');
+        }
+      }, {
+        key: "value",
+        get: function get() {
+          return this._value;
+        },
+        set: function set(value) {
+          if (this._validate(value)) {
+            this._value = value;
+          }
+
+          this._input.value = this._value.toString();
+        }
+      }, {
+        key: "min",
+        get: function get() {
+          return this._min;
+        },
+        set: function set(min) {
+          if (!isNaN(min) && min <= this._max) {
+            this._min = min;
+          }
+        }
+      }, {
+        key: "max",
+        get: function get() {
+          return this._max;
+        },
+        set: function set(max) {
+          if (!isNaN(max) && this._min <= max) {
+            this._max = max;
+          }
+        }
+      }]);
+
+      return Spinner;
+    }(Component);
+
     var Tabs = /*#__PURE__*/function (_Component) {
       _inherits(Tabs, _Component);
 
@@ -9623,7 +9849,7 @@
       _createClass(Tabs, [{
         key: "_render",
         value: function _render(container) {
-          container.classList.add('scanex-components-tabs');
+          container.classList.add('scanex-component-tabs');
           this._tabsContainer = document.createElement('div');
 
           this._tabsContainer.classList.add('tabs');
@@ -9721,8 +9947,8 @@
 
     window.addEventListener('load', function () {
       var tabs = new Tabs(document.body);
-      var controlsTab = tabs.addTab('controls', 'Controls');
-      var controlsForm = new Form(controlsTab, {
+      var formTab = tabs.addTab('form', 'Form');
+      var form = new Form(formTab, {
         label: {
           type: 'label',
           label: 'Label'
@@ -9737,10 +9963,32 @@
           placeholder: 'Enter text'
         }
       });
-      controlsForm.setValue('label', 'Label 1');
-      controlsForm.setValue('input', 'Text 1');
-      controlsForm.setValue('text', 'Text 2');
-      var aTab = tabs.addTab('atab', 'Another Tab');
+      form.setValue('label', 'Label 1');
+      form.setValue('input', 'Text 1');
+      form.setValue('text', 'Text 2');
+      var ctrl = tabs.addTab('controls', 'Controls');
+      ctrl.innerHTML = "<table>\n        <tr>\n            <td>Spinner:</td>\n            <td class=\"spinner\"></td>\n        </tr>\n        <tr>\n            <td>Button:</td>\n            <td class=\"button\">\n                <button>Dialog</button>\n            </td>\n        </tr>\n    </table>";
+      var spinner = new Spinner(ctrl.querySelector('.spinner'));
+      spinner.min = 0;
+      spinner.max = 10;
+      var dlg;
+      var btn = ctrl.querySelector('.button');
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+
+        if (dlg) {
+          dlg.destroy();
+          dlg = null;
+        }
+
+        dlg = new Dialog('Lorem ipsum', 'lorem');
+        dlg.content.innerText = lorem;
+        dlg.footer.innerText = 'Footer';
+        dlg.addEventListener('close', function () {
+          dlg.destroy();
+          dlg = null;
+        });
+      });
     });
 
 }());

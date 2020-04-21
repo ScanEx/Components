@@ -8,7 +8,7 @@ class Tabs extends Component {
         this._panels = {};
     }
     _render(container) {
-        container.classList.add('scanex-components-tabs');
+        container.classList.add('scanex-component-tabs');
         this._tabsContainer = document.createElement('div');
         this._tabsContainer.classList.add('tabs');
         container.appendChild(this._tabsContainer);

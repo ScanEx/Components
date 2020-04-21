@@ -1,23 +1,21 @@
-.scanex-components-dialog {
+.scanex-component-dialog {
     position: absolute;
     top: 60px;
     left: 330px;
     z-index: 1000;
-    background-color: white;
-    height: 400px;
 }
-.scanex-components-dialog > .header {    
+.scanex-component-dialog > .header {    
     cursor: pointer;    
 }
-.scanex-components-dialog > .header > .close {
+.scanex-component-dialog > .header > .close {
     float: right;
 }
-.scanex-components-dialog > .header,
-.scanex-components-dialog > .content,
-.scanex-components-dialog > .footer,
-.scanex-components-dialog > .footer > button {
+.scanex-component-dialog > .header,
+.scanex-component-dialog > .content,
+.scanex-component-dialog > .footer,
+.scanex-component-dialog > .footer > button {
     background-color: #FFFFFF;
 }
-.scanex-components-dialog > .footer {
+.scanex-component-dialog > .footer {
     text-align: center;
 }

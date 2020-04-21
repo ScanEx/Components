@@ -1,3 +1,4 @@
+import './Component.css';
 import EventTarget from 'scanex-event-target/index.js';
 
 class Component extends EventTarget {
@@ -5,6 +6,7 @@ class Component extends EventTarget {
         super();
         this._container = container;
         this._element = document.createElement('div');
+        this._element.classList.add('scanex-component');
         this._container.appendChild(this._element);
         this._render(this._element);
     }

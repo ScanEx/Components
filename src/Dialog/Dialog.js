@@ -2,9 +2,20 @@ import './Dialog.css';
 import T from 'scanex-translations';
 import Component from '../Component.js';
 
+T.addText ('rus', {    
+    close: 'Закрыть',   
+});
+
+T.addText ('eng', {
+    close: 'Close',
+});
+
 class Dialog extends Component {
-    constructor(title) {
+    constructor(title, id) {
         super(document.body);
+        if (id) {
+            this._element.setAttribute('id', id);
+        }
         this._titleElement.innerText = title;
         this._moving = false;
         this._offsetX;
@@ -42,7 +53,7 @@ class Dialog extends Component {
         }
     }
     _render(element) {
-        element.classList.add('scanex-components-dialog');
+        element.classList.add('scanex-component-dialog');
 
         this._header = document.createElement('div');
         this._header.classList.add('header');
@@ -51,7 +62,7 @@ class Dialog extends Component {
         this._header.appendChild(this._titleElement);
 
         let button = document.createElement('i');
-        button.setAttribute('title', T.getText('cancel'));
+        button.setAttribute('title', T.getText('close'));
         button.classList.add('icon');
         button.classList.add('close');
         button.addEventListener('click', e => {
