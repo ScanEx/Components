@@ -14,18 +14,13 @@
     top: 60px;
     left: 330px;
     z-index: 1000;
+    background-color: #FFFFFF;
 }
 .scanex-component-dialog > .header {    
     cursor: pointer;    
 }
 .scanex-component-dialog > .header > .close {
     float: right;
-}
-.scanex-component-dialog > .header,
-.scanex-component-dialog > .content,
-.scanex-component-dialog > .footer,
-.scanex-component-dialog > .footer > button {
-    background-color: #FFFFFF;
 }
 .scanex-component-dialog > .footer {
     text-align: center;
