@@ -5,9 +5,43 @@ import Dialog from '../src/Dialog/Dialog.js';
 import Form from '../src/Form/Form.js';
 import Spinner from '../src/Spinner/Spinner.js';
 import Tabs from '../src/Tabs/Tabs.js';
+import Menu from '../src/Menu/Menu.js';
 
 window.addEventListener('load', () => {
-    let tabs = new Tabs(document.body);
+    let header = document.createElement('div');
+    header.classList.add('app-header');
+    document.body.appendChild(header);
+
+    let menu = new Menu(header, {id: 'users', title: 'Users'});
+    menu.items = [
+        {
+            id: 'user1',
+            title: 'User1',
+            children: [
+                {id: 'account', title: 'Account'},
+                {id: 'map', title: 'Map'},
+                {id: 'logout', title: 'Logout'}
+            ]
+        },
+        {
+            id: 'user2',
+            title: 'User2',
+            children: [
+                {id: 'account', title: 'Account'},
+                {id: 'map', title: 'Map'},
+                {id: 'logout', title: 'Logout'}
+            ]
+        },
+    ];
+    menu.addEventListener('item:click', e => {
+        alert(`Selected: ${e.detail}`);
+    });
+
+    let content = document.createElement('div');
+    content.classList.add('app-content');
+    document.body.appendChild(content);
+
+    let tabs = new Tabs(content);
     let formTab = tabs.addTab('form', 'Form');
     let form = new Form(formTab, {
         label: {

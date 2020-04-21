@@ -9736,6 +9736,287 @@ var Form = /*#__PURE__*/function (_Component) {
   return Form;
 }(Component);
 
+var Item = /*#__PURE__*/function (_Component) {
+  _inherits(Item, _Component);
+
+  var _super = _createSuper(Item);
+
+  function Item(container, _ref) {
+    var _this;
+
+    var id = _ref.id,
+        title = _ref.title;
+
+    _classCallCheck(this, Item);
+
+    _this = _super.call(this, container);
+    _this._id = id;
+    _this._title.innerText = title;
+
+    _this._element.addEventListener('click', _this._onClick.bind(_assertThisInitialized(_this)));
+
+    return _this;
+  }
+
+  _createClass(Item, [{
+    key: "_onClick",
+    value: function _onClick(e) {
+      e.stopPropagation();
+      var event = document.createEvent('Event');
+      event.initEvent('item:click', false, false);
+      event.detail = this.path;
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._element.removeEventListener('click', this._onClick);
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-menu-item');
+      this._title = document.createElement('label');
+
+      this._title.classList.add('scanex-menu-item-title');
+
+      element.appendChild(this._title);
+    }
+  }, {
+    key: "id",
+    get: function get() {
+      return this._id;
+    }
+  }, {
+    key: "path",
+    get: function get() {
+      return this.parent ? "".concat(this.parent.path, ".").concat(this.id) : this.id;
+    }
+  }, {
+    key: "parent",
+    get: function get() {
+      return this._parent;
+    },
+    set: function set(parent) {
+      this._parent = parent;
+    }
+  }]);
+
+  return Item;
+}(Component);
+
+var Group = /*#__PURE__*/function (_Component) {
+  _inherits(Group, _Component);
+
+  var _super = _createSuper(Group);
+
+  function Group(container, _ref) {
+    var _this;
+
+    var id = _ref.id,
+        title = _ref.title;
+
+    _classCallCheck(this, Group);
+
+    _this = _super.call(this, container);
+    _this._items = [];
+    _this._id = id;
+    _this._title.innerText = title;
+    _this.expanded = false;
+
+    _this._element.addEventListener('click', _this._onClick.bind(_assertThisInitialized(_this)));
+
+    return _this;
+  }
+
+  _createClass(Group, [{
+    key: "_onClick",
+    value: function _onClick(e) {
+      e.stopPropagation();
+      this.expanded = !this.expanded;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._element.removeEventListener('click', this._onClick);
+
+      this._items.forEach(function (item) {
+        return item.clear();
+      });
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-menu-group');
+      this._header = document.createElement('div');
+
+      this._header.classList.add('scanex-menu-group-header');
+
+      element.appendChild(this._header);
+      this._title = document.createElement('label');
+
+      this._title.classList.add('scanex-menu-group-title');
+
+      this._header.appendChild(this._title);
+
+      this._expander = document.createElement('i');
+
+      this._expander.classList.add('icon');
+
+      this._expander.classList.add('scanex-menu-group-expander');
+
+      this._header.appendChild(this._expander);
+
+      this._children = document.createElement('div');
+
+      this._children.classList.add('scanex-menu-group-children');
+
+      this._children.classList.add('hidden');
+
+      element.appendChild(this._children);
+    }
+  }, {
+    key: "id",
+    get: function get() {
+      return this._id;
+    }
+  }, {
+    key: "path",
+    get: function get() {
+      return this.parent ? "".concat(this.parent.path, ".").concat(this.id) : this.id;
+    }
+  }, {
+    key: "parent",
+    get: function get() {
+      return this._parent;
+    },
+    set: function set(parent) {
+      this._parent = parent;
+    }
+  }, {
+    key: "expanded",
+    get: function get() {
+      return this._expanded;
+    },
+    set: function set(expanded) {
+      this._expanded = expanded;
+
+      if (expanded) {
+        this._expander.classList.remove('down');
+
+        this._expander.classList.add('up');
+
+        this._children.classList.remove('hidden');
+      } else {
+        this._expander.classList.remove('up');
+
+        this._expander.classList.add('down');
+
+        this._children.classList.add('hidden');
+      }
+    }
+  }, {
+    key: "items",
+    get: function get() {
+      return this._items;
+    },
+    set: function set(items) {
+      var _this2 = this;
+
+      this.clear();
+      this._items = items.map(function (_ref2) {
+        var id = _ref2.id,
+            title = _ref2.title,
+            children = _ref2.children;
+        var item;
+
+        if (Array.isArray(children)) {
+          item = new Group(_this2._children, {
+            id: id,
+            title: title
+          });
+          item.items = children;
+        } else {
+          item = new Item(_this2._children, {
+            id: id,
+            title: title
+          });
+        }
+
+        item.parent = _this2;
+        item.addEventListener('item:click', function (e) {
+          var event = document.createEvent('Event');
+          event.initEvent('item:click', false, false);
+          event.detail = e.detail;
+
+          _this2.dispatchEvent(event);
+        });
+        return item;
+      });
+    }
+  }]);
+
+  return Group;
+}(Component);
+
+var Menu = /*#__PURE__*/function (_Component) {
+  _inherits(Menu, _Component);
+
+  var _super = _createSuper(Menu);
+
+  function Menu(container, _ref) {
+    var _this;
+
+    var id = _ref.id,
+        title = _ref.title;
+
+    _classCallCheck(this, Menu);
+
+    _this = _super.call(this, container);
+    _this._group = new Group(_this._root, {
+      id: id,
+      title: title
+    });
+
+    _this._group.on('item:click', function (e) {
+      _this._group.expanded = false;
+      var event = document.createEvent('Event');
+      event.initEvent('item:click', false, false);
+      event.detail = e.detail;
+
+      _this.dispatchEvent(event);
+    });
+
+    window.addEventListener('click', function () {
+      return _this._group.expanded = false;
+    });
+    return _this;
+  }
+
+  _createClass(Menu, [{
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-menu');
+      element.classList.add('noselect');
+      this._root = document.createElement('div');
+
+      this._root.classList.add('scanex-menu-root');
+
+      element.appendChild(this._root);
+    }
+  }, {
+    key: "items",
+    get: function get() {
+      return this._group.items;
+    },
+    set: function set(items) {
+      this._group.items = items;
+    }
+  }]);
+
+  return Menu;
+}(Component);
+
 var Spinner = /*#__PURE__*/function (_Component) {
   _inherits(Spinner, _Component);
 
@@ -9947,6 +10228,7 @@ var Tabs = /*#__PURE__*/function (_Component) {
 exports.Component = Component;
 exports.Dialog = Dialog;
 exports.Form = Form;
+exports.Menu = Menu;
 exports.Spinner = Spinner;
 exports.Tabs = Tabs;
 //# sourceMappingURL=scanex-components.cjs.js.map
