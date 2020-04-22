@@ -9363,6 +9363,15 @@ var Component = /*#__PURE__*/function (_EventTarget) {
       this._container.removeChild(this._element);
     }
   }, {
+    key: "forwardEvent",
+    value: function forwardEvent(e) {
+      e.stopPropagation();
+      var event = document.createEvent('Event');
+      event.initEvent(e.type, false, false);
+      event.detail = e.detail;
+      this.dispatchEvent(event);
+    }
+  }, {
     key: "_render",
     value: function _render(element) {}
   }]);
@@ -9944,13 +9953,7 @@ var Group = /*#__PURE__*/function (_Component) {
         }
 
         item.parent = _this2;
-        item.addEventListener('item:click', function (e) {
-          var event = document.createEvent('Event');
-          event.initEvent('item:click', false, false);
-          event.detail = e.detail;
-
-          _this2.dispatchEvent(event);
-        });
+        item.addEventListener('item:click', _this2.forwardEvent.bind(_this2));
         return item;
       });
     }
@@ -10017,6 +10020,404 @@ var Menu = /*#__PURE__*/function (_Component) {
   return Menu;
 }(Component);
 
+var Slider = /*#__PURE__*/function (_Component) {
+  _inherits(Slider, _Component);
+
+  var _super = _createSuper(Slider);
+
+  function Slider(container) {
+    var _this;
+
+    _classCallCheck(this, Slider);
+
+    _this = _super.call(this, container);
+    _this._current = null;
+    _this._min = 0;
+    _this._max = 0;
+    _this._lo = 0;
+    _this._hi = 0;
+
+    _this._leftTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), 'left'));
+
+    _this._rightTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), 'right'));
+
+    document.body.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
+    document.body.addEventListener('mousemove', _this._slide.bind(_assertThisInitialized(_this)));
+
+    _this._bar.addEventListener('click', _this._handleBarClick.bind(_assertThisInitialized(_this)));
+
+    return _this;
+  }
+
+  _createClass(Slider, [{
+    key: "_validate",
+    value: function _validate(value) {
+      return !isNaN(value) && this._min <= value && value <= this._max;
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-slider');
+      element.classList.add('no-select');
+      element.innerHTML = "<div class=\"slider-bar\">\n                <div class=\"slider-range\">\n                    <i class=\"slider-tick-left\"></i>\n                    <i class=\"slider-tick-right\"></i>\n                </div>\n            </div>";
+      this._bar = element.querySelector('.slider-bar');
+      this._leftTick = element.querySelector('.slider-tick-left');
+      this._rightTick = element.querySelector('.slider-tick-right');
+      this._range = element.querySelector('.slider-range');
+    }
+  }, {
+    key: "_handleBarClick",
+    value: function _handleBarClick(e) {
+      e.stopPropagation();
+      var x = e.clientX;
+
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      if (x < leftRect.left || leftRect.right < x && x < rightRect.left || rightRect.right < x) {
+        var _this$_bar$getBoundin = this._bar.getBoundingClientRect(),
+            left = _this$_bar$getBoundin.left,
+            right = _this$_bar$getBoundin.right;
+
+        var rangeRect = this._range.getBoundingClientRect();
+
+        var min = rangeRect.left + leftRect.width;
+        var max = rangeRect.right - rightRect.width;
+
+        if (Math.abs(x - min) < Math.abs(max - x)) {
+          // left tick
+          if (x > left + leftRect.width) {
+            this._range.style.left = "".concat(x - left - leftRect.width, "px");
+            this._range.style.width = "".concat(rangeRect.right - x + leftRect.width, "px");
+          } else {
+            // leftmost
+            this._range.style.left = "".concat(0, "px");
+            this._range.style.width = "".concat(rangeRect.right - left, "px");
+          }
+        } else {
+          // right tick
+          if (x < right - rightRect.width) {
+            this._range.style.width = "".concat(x - rangeRect.left + rightRect.width, "px");
+          } else {
+            // rightmost
+            this._range.style.width = "".concat(right - rangeRect.left, "px");
+          }
+        }
+
+        this._updateBounds();
+
+        var event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
+    key: "_start",
+    value: function _start(tick, e) {
+      e.stopPropagation();
+
+      if (this._current === null) {
+        this._current = tick;
+
+        switch (this._current) {
+          case 'left':
+            var leftRect = this._leftTick.getBoundingClientRect();
+
+            this._offset = e.clientX - leftRect.left;
+            break;
+
+          case 'right':
+            var rightRect = this._rightTick.getBoundingClientRect();
+
+            this._offset = rightRect.right - e.clientX;
+            break;
+        }
+
+        var event = document.createEvent('Event');
+        event.initEvent('start', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
+    key: "_stop",
+    value: function _stop(e) {
+      e.stopPropagation();
+
+      if (this._current !== null) {
+        this._current = null;
+        this._offset = 0;
+        var event = document.createEvent('Event');
+        event.initEvent('stop', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
+    key: "_slide",
+    value: function _slide(e) {
+      e.stopPropagation();
+
+      if (this._current) {
+        switch (this._current) {
+          case 'left':
+            this._handleLeftSlide(e.clientX - this._offset);
+
+            break;
+
+          case 'right':
+            this._handleRightSlide(e.clientX + this._offset);
+
+            break;
+        }
+      }
+    }
+  }, {
+    key: "_handleLeftSlide",
+    value: function _handleLeftSlide(x) {
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      var max = this._range.getBoundingClientRect().right;
+
+      var _this$_bar$getBoundin2 = this._bar.getBoundingClientRect(),
+          left = _this$_bar$getBoundin2.left;
+
+      var totalWidth = leftRect.width + rightRect.width;
+
+      if (x < max - totalWidth) {
+        if (x < left) {
+          // min
+          this._range.style.left = "".concat(0, "px");
+          this._range.style.width = "".concat(max - left, "px");
+        } else {
+          this._range.style.left = "".concat(x - left, "px");
+          this._range.style.width = "".concat(max - x, "px");
+        }
+      } else {
+        // rightmost
+        this._range.style.left = "".concat(max - totalWidth - left, "px");
+        this._range.style.width = "".concat(totalWidth, "px");
+      }
+
+      this._updateBounds();
+
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_handleRightSlide",
+    value: function _handleRightSlide(x) {
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      var min = this._range.getBoundingClientRect().left;
+
+      var _this$_bar$getBoundin3 = this._bar.getBoundingClientRect(),
+          left = _this$_bar$getBoundin3.left,
+          right = _this$_bar$getBoundin3.right;
+
+      var totalWidth = leftRect.width + rightRect.width;
+
+      if (x > min + totalWidth) {
+        if (x > right) {
+          // max
+          this._range.style.width = "".concat(right - min, "px");
+        } else {
+          this._range.style.width = "".concat(x - min, "px");
+        }
+      } else {
+        // leftmost            
+        this._range.style.width = "".concat(totalWidth, "px");
+      }
+
+      this._updateBounds();
+
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_updateBounds",
+    value: function _updateBounds() {
+      var _this$_bar$getBoundin4 = this._bar.getBoundingClientRect(),
+          width = _this$_bar$getBoundin4.width,
+          left = _this$_bar$getBoundin4.left;
+
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      var k = (this.max - this.min) / (width - leftRect.width - rightRect.width);
+      var lo = leftRect.left - left;
+      this._lo = this.min + (this.mode === 'float' ? lo * k : Math.round(lo * k));
+      var hi = rightRect.left - rightRect.width - left;
+      this._hi = this.min + (this.mode === 'float' ? hi * k : Math.round(hi * k));
+    }
+  }, {
+    key: "mode",
+    get: function get() {
+      return this._mode;
+    },
+    set: function set(mode) {
+      this._mode = mode;
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._min;
+    },
+    set: function set(min) {
+      if (!isNaN(min) && min <= this.max) {
+        this._min = min;
+
+        if (!this._lo) {
+          this._lo = this._min;
+          var event = document.createEvent('Event');
+          event.initEvent('change', false, false);
+          this.dispatchEvent(event);
+        }
+      }
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._max;
+    },
+    set: function set(max) {
+      if (!isNaN(max) && this.min <= max) {
+        this._max = max;
+
+        if (!this._hi) {
+          this._hi = this._max;
+          var event = document.createEvent('Event');
+          event.initEvent('change', false, false);
+          this.dispatchEvent(event);
+        }
+      }
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._lo;
+    },
+    set: function set(lo) {
+      if (this._validate(lo) && lo <= this.hi) {
+        this._lo = lo;
+      }
+
+      var _this$_bar$getBoundin5 = this._bar.getBoundingClientRect(),
+          width = _this$_bar$getBoundin5.width;
+
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      var k = (width - leftRect.width - rightRect.width) / (this.max - this.min);
+      this._range.style.left = "".concat(Math.round((this._lo - this.min) * k), "px");
+      this._range.style.width = "".concat(Math.round((this._hi - this._lo) * k) + leftRect.width + rightRect.width, "px");
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._hi;
+    },
+    set: function set(hi) {
+      if (this._validate(hi) && this.lo <= hi) {
+        this._hi = hi;
+      }
+
+      var _this$_bar$getBoundin6 = this._bar.getBoundingClientRect(),
+          width = _this$_bar$getBoundin6.width;
+
+      var leftRect = this._leftTick.getBoundingClientRect();
+
+      var rightRect = this._rightTick.getBoundingClientRect();
+
+      var k = (width - leftRect.width - rightRect.width) / (this.max - this.min);
+      this._range.style.left = "".concat(Math.round((this._lo - this.min) * k), "px");
+      this._range.style.width = "".concat(Math.round((this._hi - this._lo) * k) + leftRect.width + rightRect.width, "px");
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }]);
+
+  return Slider;
+}(Component);
+
+var Range = /*#__PURE__*/function (_Component) {
+  _inherits(Range, _Component);
+
+  var _super = _createSuper(Range);
+
+  function Range(container) {
+    var _this;
+
+    _classCallCheck(this, Range);
+
+    _this = _super.call(this, container);
+    _this._slider = new Slider(_this._sliderElement);
+
+    _this._slider.on('change', function (e) {
+      _this._lo.value = _this._slider.lo.toString();
+      _this._hi.value = _this._slider.hi.toString();
+    });
+
+    return _this;
+  }
+
+  _createClass(Range, [{
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-range');
+      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
+      this._lo = element.querySelector('.lo');
+      this._hi = element.querySelector('.hi');
+      this._sliderElement = element.querySelector('.slider');
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._slider.min;
+    },
+    set: function set(min) {
+      this._slider.min = min;
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._slider.max;
+    },
+    set: function set(max) {
+      this._slider.max = max;
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._slider.lo;
+    },
+    set: function set(lo) {
+      this._slider.lo = lo;
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._slider.hi;
+    },
+    set: function set(hi) {
+      this._slider.hi = hi;
+    }
+  }]);
+
+  return Range;
+}(Component);
+
 var Spinner = /*#__PURE__*/function (_Component) {
   _inherits(Spinner, _Component);
 
@@ -10081,6 +10482,10 @@ var Spinner = /*#__PURE__*/function (_Component) {
     set: function set(value) {
       if (this._validate(value)) {
         this._value = value;
+        var event = document.createEvent('Event');
+        event.initEvent("change", false, false);
+        event.detail = this._value;
+        this.dispatchEvent(event);
       }
 
       this._input.value = this._value.toString();
@@ -10229,6 +10634,8 @@ exports.Component = Component;
 exports.Dialog = Dialog;
 exports.Form = Form;
 exports.Menu = Menu;
+exports.Range = Range;
+exports.Slider = Slider;
 exports.Spinner = Spinner;
 exports.Tabs = Tabs;
 //# sourceMappingURL=scanex-components.cjs.js.map

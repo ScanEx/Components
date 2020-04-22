@@ -20,7 +20,11 @@ class Spinner extends Component {
     }
     set value(value) {
         if (this._validate(value)) {
-            this._value = value;        
+            this._value = value;
+            let event = document.createEvent('Event');
+            event.initEvent("change", false, false);
+            event.detail = this._value;
+            this.dispatchEvent(event);
         }        
         this._input.value = this._value.toString();  
     }

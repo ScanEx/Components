@@ -13,6 +13,13 @@ class Component extends EventTarget {
     destroy () {
         this._container.removeChild(this._element);
     }
+    forwardEvent(e) {
+        e.stopPropagation();
+        let event = document.createEvent('Event');
+        event.initEvent(e.type, false, false);
+        event.detail = e.detail;
+        this.dispatchEvent(event);
+    }
     _render(element) {
     }
 }

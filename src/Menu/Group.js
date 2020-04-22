@@ -62,12 +62,7 @@ class Group extends Component {
                 item = new Item(this._children, {id, title});
             }
             item.parent = this;
-            item.addEventListener('item:click', e => {
-                let event = document.createEvent('Event');
-                event.initEvent('item:click', false, false);
-                event.detail = e.detail;
-                this.dispatchEvent(event);
-            });
+            item.addEventListener('item:click', this.forwardEvent.bind(this));
             return item;
         });
     }

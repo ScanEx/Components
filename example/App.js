@@ -3,9 +3,11 @@ import '../src/icons.css';
 import lorem from './lorem.txt';
 import Dialog from '../src/Dialog/Dialog.js';
 import Form from '../src/Form/Form.js';
+import Menu from '../src/Menu/Menu.js';
+import Range from '../src/Range/Range.js';
+import Slider from '../src/Slider/Slider.js';
 import Spinner from '../src/Spinner/Spinner.js';
 import Tabs from '../src/Tabs/Tabs.js';
-import Menu from '../src/Menu/Menu.js';
 
 window.addEventListener('load', () => {
     let header = document.createElement('div');
@@ -70,6 +72,14 @@ window.addEventListener('load', () => {
             <td class="spinner"></td>
         </tr>
         <tr>
+            <td>Slider:</td>
+            <td class="slider"></td>
+        </tr>
+        <tr>
+            <td>Range:</td>
+            <td class="range"></td>
+        </tr>
+        <tr>
             <td>Button:</td>
             <td class="button">
                 <button>Dialog</button>
@@ -79,12 +89,24 @@ window.addEventListener('load', () => {
 
     let spinner = new Spinner(ctrl.querySelector('.spinner'));
     spinner.min = 0;
-    spinner.max = 10;    
+    spinner.max = 10;
+    spinner.value = 5;
+    spinner.on('change', e => alert(`spinner: ${e.detail}`));
+
+    let slider = new Slider(ctrl.querySelector('.slider'));
+    slider.min = 0;
+    slider.max = 100;
+    slider.on('stop', e => alert(`slider: ${slider.lo} - ${slider.hi}`));
+
+    let range = new Range(ctrl.querySelector('.range'));
+    range.min = 1;
+    range.max = 21;
 
     let dlg;
     let btn = ctrl.querySelector('.button');
     btn.addEventListener('click', e => {
         e.stopPropagation();
+        e.preventDefault();        
         if (dlg) {
             dlg.destroy();
             dlg = null;
