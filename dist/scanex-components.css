@@ -3,6 +3,22 @@
 .scanex-component .spinner-down {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' class='' data-icon='down' width='10px' height='10px' fill='currentColor' aria-hidden='true'%3e %3cpath d='M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z'%3e%3c/path%3e %3c/svg%3e");}
 .scanex-component .spinner-up {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' class='' data-icon='up' width='10px' height='10px' fill='currentColor' aria-hidden='true'%3e %3cpath d='M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z'%3e%3c/path%3e %3c/svg%3e");}
 .scanex-component .up {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' class='' data-icon='up' width='10px' height='10px' fill='currentColor' aria-hidden='true'%3e %3cpath d='M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z'%3e%3c/path%3e %3c/svg%3e");}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.scanex-component .icon {
+    cursor: pointer;
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+}
 .scanex-component-form > table,
 .scanex-component-form > table > tbody > tr > td:last-child,
 .scanex-component-form > table > tbody > tr > td > input[type=text],
@@ -40,24 +56,6 @@
 .scanex-component-dialog > .footer {
     text-align: center;
 }
-.scanex-component-spinner > * {
-    display: inline-block;
-    vertical-align: middle;
-}
-.scanex-component-spinner input {
-    text-align: center;
-}
-.scanex-component-spinner .spinner-icon {
-    cursor: pointer;
-    display: block;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 10px;
-    height: 10px;
-}
-.scanex-component-spinner .spinner-icon.spinner-up {
-    border-bottom: 1px solid;
-}
 .scanex-component-menu {
     position: relative;
 }
@@ -76,6 +74,24 @@
     width: 15px;
     height: 15px;
 }
+.scanex-component-spinner > * {
+    display: inline-block;
+    vertical-align: middle;
+}
+.scanex-component-spinner input {
+    text-align: center;
+}
+.scanex-component-spinner .spinner-icon {
+    cursor: pointer;
+    display: block;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 10px;
+    height: 10px;
+}
+.scanex-component-spinner .spinner-icon.spinner-up {
+    border-bottom: 1px solid;
+}
 .scanex-component-tabs > .tabs > *,
 .scanex-component-tabs > .panels > * {
     float: left;
@@ -89,58 +105,6 @@
 }
 .scanex-component-tabs > .panels > .hidden {
     visibility: hidden;
-}
-.noselect {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.scanex-component .icon {
-    cursor: pointer;
-    display: inline-block;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 18px;
-    height: 18px;
-}
-.scanex-component-range table,
-.scanex-component-range table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 35px;
-    text-align: center;
-    border: none;
-}
-.scanex-component-slider * {
-    position: relative;
-}
-.scanex-component-slider {
-    height: 21px;    
-    cursor: pointer;
-}
-.scanex-component-slider .slider-bar {   
-    background-color: gainsboro;
-    position: relative;
-    top: 8px;
-}
-.scanex-component-slider .slider-range {
-    height: 5px;    
-    background-color: skyblue;    
-}
-.scanex-component-slider .slider-tick-right {
-    float: right;    
-}
-.scanex-component-slider .slider-tick-right {
-    width: 12px;
-    height: 12px;
-    top: -4px;
-    background-color: white;
-    border-radius: 30px;
-    box-shadow: 0px 1px 3px 1px rgba(88, 88, 88, 0.52);
 }
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
     vertical-align: middle;    
@@ -160,4 +124,59 @@
 }
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
     margin-left: 15px;
+}
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
+}
+.scanex-component-slider {
+    height: 21px;    
+    cursor: pointer;
+}
+.scanex-component-slider > .slider-bar {   
+    background-color: gainsboro;
+    position: relative;
+    top: 8px;
+}
+.scanex-component-slider > .slider-bar >.slider-range {
+    position: relative;
+    height: 5px;
+    background-color: skyblue;    
+}
+.scanex-component-slider > .slider-bar .slider-tick {
+    position: relative;
+    top: -4px;
+}
+.scanex-component-slider > .slider-bar .slider-tick > * {
+    display: block;
+}
+.scanex-component-slider > .slider-bar .slider-tick > label.hidden {
+    display: none;
+}
+.scanex-component-slider > .slider-bar .slider-tick i {    
+    width: 12px;
+    height: 12px;    
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0px 1px 3px 1px rgba(88, 88, 88, 0.52);
+}
+.scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
+    float: right;
+}
+.scanex-component-range > table,
+.scanex-component-range > table > tbody > tr > td:nth-child(2) {
+    width: 100%;
+}
+.scanex-component-range input {
+    width: 35px;
+    text-align: center;
+    border: none;
 }

@@ -101,6 +101,36 @@ function _createSuper(Derived) {
   };
 }
 
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = _getPrototypeOf(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    _get = Reflect.get;
+  } else {
+    _get = function _get(target, property, receiver) {
+      var base = _superPropBase(target, property);
+
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
+}
+
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 function createCommonjsModule(fn, module) {
@@ -439,23 +469,23 @@ var toInteger = function (argument) {
   return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
 };
 
-var min$1 = Math.min;
+var min = Math.min;
 
 // `ToLength` abstract operation
 // https://tc39.github.io/ecma262/#sec-tolength
 var toLength = function (argument) {
-  return argument > 0 ? min$1(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
 };
 
-var max$1 = Math.max;
-var min$2 = Math.min;
+var max = Math.max;
+var min$1 = Math.min;
 
 // Helper for a popular repeating case of the spec:
 // Let integer be ? ToInteger(index).
 // If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
 var toAbsoluteIndex = function (index, length) {
   var integer = toInteger(index);
-  return integer < 0 ? max$1(integer + length, 0) : min$2(integer, length);
+  return integer < 0 ? max(integer + length, 0) : min$1(integer, length);
 };
 
 // `Array.prototype.{ indexOf, includes }` methods implementation
@@ -2123,7 +2153,7 @@ _export({ target: 'Array', proto: true, forced: FORCED$1 }, {
   }
 });
 
-var min$3 = Math.min;
+var min$2 = Math.min;
 
 // `Array.prototype.copyWithin` method implementation
 // https://tc39.github.io/ecma262/#sec-array.prototype.copywithin
@@ -2133,7 +2163,7 @@ var arrayCopyWithin = [].copyWithin || function copyWithin(target /* = 0 */, sta
   var to = toAbsoluteIndex(target, len);
   var from = toAbsoluteIndex(start, len);
   var end = arguments.length > 2 ? arguments[2] : undefined;
-  var count = min$3((end === undefined ? len : toAbsoluteIndex(end, len)) - from, len - to);
+  var count = min$2((end === undefined ? len : toAbsoluteIndex(end, len)) - from, len - to);
   var inc = 1;
   if (from < to && to < from + count) {
     inc = -1;
@@ -2431,7 +2461,7 @@ _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$3 
   }
 });
 
-var min$4 = Math.min;
+var min$3 = Math.min;
 var nativeLastIndexOf = [].lastIndexOf;
 var NEGATIVE_ZERO$1 = !!nativeLastIndexOf && 1 / [1].lastIndexOf(1, -0) < 0;
 var STRICT_METHOD$4 = arrayMethodIsStrict('lastIndexOf');
@@ -2447,7 +2477,7 @@ var arrayLastIndexOf = FORCED$2 ? function lastIndexOf(searchElement /* , fromIn
   var O = toIndexedObject(this);
   var length = toLength(O.length);
   var index = length - 1;
-  if (arguments.length > 1) index = min$4(index, toInteger(arguments[1]));
+  if (arguments.length > 1) index = min$3(index, toInteger(arguments[1]));
   if (index < 0) index = length + index;
   for (;index >= 0; index--) if (index in O && O[index] === searchElement) return index || 0;
   return -1;
@@ -2563,7 +2593,7 @@ var USES_TO_LENGTH$b = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0,
 
 var SPECIES$2 = wellKnownSymbol('species');
 var nativeSlice = [].slice;
-var max$2 = Math.max;
+var max$1 = Math.max;
 
 // `Array.prototype.slice` method
 // https://tc39.github.io/ecma262/#sec-array.prototype.slice
@@ -2589,7 +2619,7 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 || !USES_
         return nativeSlice.call(O, k, fin);
       }
     }
-    result = new (Constructor === undefined ? Array : Constructor)(max$2(fin - k, 0));
+    result = new (Constructor === undefined ? Array : Constructor)(max$1(fin - k, 0));
     for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
     result.length = n;
     return result;
@@ -2640,8 +2670,8 @@ _export({ target: 'Array', proto: true, forced: FORCED$3 }, {
 var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
 var USES_TO_LENGTH$d = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
 
-var max$3 = Math.max;
-var min$5 = Math.min;
+var max$2 = Math.max;
+var min$4 = Math.min;
 var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
 var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
 
@@ -2662,7 +2692,7 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_
       actualDeleteCount = len - actualStart;
     } else {
       insertCount = argumentsLength - 2;
-      actualDeleteCount = min$5(max$3(toInteger(deleteCount), 0), len - actualStart);
+      actualDeleteCount = min$4(max$2(toInteger(deleteCount), 0), len - actualStart);
     }
     if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$1) {
       throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
@@ -3011,7 +3041,7 @@ var getOwnPropertyDescriptor$4 = objectGetOwnPropertyDescriptor.f;
 
 
 var nativeEndsWith = ''.endsWith;
-var min$6 = Math.min;
+var min$5 = Math.min;
 
 var CORRECT_IS_REGEXP_LOGIC = correctIsRegexpLogic('endsWith');
 // https://github.com/zloirock/core-js/pull/702
@@ -3028,7 +3058,7 @@ _export({ target: 'String', proto: true, forced: !MDN_POLYFILL_BUG && !CORRECT_I
     notARegexp(searchString);
     var endPosition = arguments.length > 1 ? arguments[1] : undefined;
     var len = toLength(that.length);
-    var end = endPosition === undefined ? len : min$6(toLength(endPosition), len);
+    var end = endPosition === undefined ? len : min$5(toLength(endPosition), len);
     var search = String(searchString);
     return nativeEndsWith
       ? nativeEndsWith.call(that, search, end)
@@ -3540,8 +3570,8 @@ _export({ target: 'String', proto: true }, {
   repeat: stringRepeat
 });
 
-var max$4 = Math.max;
-var min$7 = Math.min;
+var max$3 = Math.max;
+var min$6 = Math.min;
 var floor$1 = Math.floor;
 var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
 var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
@@ -3606,7 +3636,7 @@ fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, ma
         result = results[i];
 
         var matched = String(result[0]);
-        var position = max$4(min$7(toInteger(result.index), S.length), 0);
+        var position = max$3(min$6(toInteger(result.index), S.length), 0);
         var captures = [];
         // NOTE: This is equivalent to
         //   captures = result.slice(1).map(maybeToString)
@@ -3695,7 +3725,7 @@ fixRegexpWellKnownSymbolLogic('search', 1, function (SEARCH, nativeSearch, maybe
 });
 
 var arrayPush = [].push;
-var min$8 = Math.min;
+var min$7 = Math.min;
 var MAX_UINT32 = 0xFFFFFFFF;
 
 // babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
@@ -3798,7 +3828,7 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
         var e;
         if (
           z === null ||
-          (e = min$8(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+          (e = min$7(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
         ) {
           q = advanceStringIndex(S, q, unicodeMatching);
         } else {
@@ -3825,7 +3855,7 @@ var getOwnPropertyDescriptor$5 = objectGetOwnPropertyDescriptor.f;
 
 
 var nativeStartsWith = ''.startsWith;
-var min$9 = Math.min;
+var min$8 = Math.min;
 
 var CORRECT_IS_REGEXP_LOGIC$1 = correctIsRegexpLogic('startsWith');
 // https://github.com/zloirock/core-js/pull/702
@@ -3840,7 +3870,7 @@ _export({ target: 'String', proto: true, forced: !MDN_POLYFILL_BUG$1 && !CORRECT
   startsWith: function startsWith(searchString /* , position = 0 */) {
     var that = String(requireObjectCoercible(this));
     notARegexp(searchString);
-    var index = toLength(min$9(arguments.length > 1 ? arguments[1] : undefined, that.length));
+    var index = toLength(min$8(arguments.length > 1 ? arguments[1] : undefined, that.length));
     var search = String(searchString);
     return nativeStartsWith
       ? nativeStartsWith.call(that, search, index)
@@ -10020,76 +10050,6 @@ var Menu = /*#__PURE__*/function (_Component) {
   return Menu;
 }(Component);
 
-var RangeSlider = /*#__PURE__*/function (_Component) {
-  _inherits(RangeSlider, _Component);
-
-  var _super = _createSuper(RangeSlider);
-
-  function RangeSlider(container, Slider) {
-    var _this;
-
-    _classCallCheck(this, RangeSlider);
-
-    _this = _super.call(this, container);
-    _this._slider = new Slider(_this._sliderElement, {
-      min: min,
-      max: max
-    });
-
-    _this._slider.on('change', function (e) {
-      _this._lo.value = _this._slider.lo.toString();
-      _this._hi.value = _this._slider.hi.toString();
-    });
-
-    return _this;
-  }
-
-  _createClass(RangeSlider, [{
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-range');
-      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
-      this._lo = element.querySelector('.lo');
-      this._hi = element.querySelector('.hi');
-      this._sliderElement = element.querySelector('.slider');
-    }
-  }, {
-    key: "min",
-    get: function get() {
-      return this._slider.min;
-    },
-    set: function set(min) {
-      this._slider.min = min;
-    }
-  }, {
-    key: "max",
-    get: function get() {
-      return this._slider.max;
-    },
-    set: function set(max) {
-      this._slider.max = max;
-    }
-  }, {
-    key: "lo",
-    get: function get() {
-      return this._slider.lo;
-    },
-    set: function set(lo) {
-      this._slider.lo = lo;
-    }
-  }, {
-    key: "hi",
-    get: function get() {
-      return this._slider.hi;
-    },
-    set: function set(hi) {
-      this._slider.hi = hi;
-    }
-  }]);
-
-  return RangeSlider;
-}(Component);
-
 var Spinner = /*#__PURE__*/function (_Component) {
   _inherits(Spinner, _Component);
 
@@ -10187,130 +10147,51 @@ var Spinner = /*#__PURE__*/function (_Component) {
   return Spinner;
 }(Component);
 
-var Slider = /*#__PURE__*/function (_Component) {
-  _inherits(Slider, _Component);
+var Slider1 = /*#__PURE__*/function (_Component) {
+  _inherits(Slider1, _Component);
 
-  var _super = _createSuper(Slider);
+  var _super = _createSuper(Slider1);
 
-  function Slider(container) {
+  function Slider1(container, _ref) {
     var _this;
 
-    _classCallCheck(this, Slider);
+    var min = _ref.min,
+        max = _ref.max;
+
+    _classCallCheck(this, Slider1);
 
     _this = _super.call(this, container);
-    _this._current = null;
+    _this._delay = 50;
+    _this._tick = null;
+    _this._offset = 0;
 
-    _this._leftTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), 'left'));
+    if (!isNaN(min) && !isNaN(max)) {
+      _this._min = min;
+      _this._max = max;
+    } else {
+      throw "min or max not set";
+    }
 
-    _this._rightTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), 'right'));
+    _this._rightTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), _this._rightTick));
 
-    document.body.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
     document.body.addEventListener('mousemove', _this._slide.bind(_assertThisInitialized(_this)));
+    document.body.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
 
-    _this._bar.addEventListener('click', _this._handleBarClick.bind(_assertThisInitialized(_this)));
+    _this._bar.addEventListener('click', _this._click.bind(_assertThisInitialized(_this)));
 
     return _this;
   }
 
-  _createClass(Slider, [{
-    key: "_validate",
-    value: function _validate(value) {
-      return !isNaN(value) && this._min <= value && value <= this._max;
-    }
-  }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-slider');
-      element.classList.add('no-select');
-      element.innerHTML = "<div class=\"slider-bar\">\n                <div class=\"slider-range\">\n                    <i class=\"slider-tick-left\"></i>\n                    <i class=\"slider-tick-right\"></i>\n                </div>\n            </div>";
-      this._bar = element.querySelector('.slider-bar');
-      this._leftTick = element.querySelector('.slider-tick-left');
-      this._rightTick = element.querySelector('.slider-tick-right');
-      this._range = element.querySelector('.slider-range');
-    }
-  }, {
-    key: "_handleBarClick",
-    value: function _handleBarClick(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      var x = e.clientX;
-
-      var leftRect = this._leftTick.getBoundingClientRect();
-
-      var rightRect = this._rightTick.getBoundingClientRect();
-
-      if (x < leftRect.left || leftRect.right < x && x < rightRect.left || rightRect.right < x) {
-        var _this$_bar$getBoundin = this._bar.getBoundingClientRect(),
-            left = _this$_bar$getBoundin.left,
-            right = _this$_bar$getBoundin.right;
-
-        var rangeRect = this._range.getBoundingClientRect();
-
-        var min = rangeRect.left + leftRect.width;
-        var max = rangeRect.right - rightRect.width;
-
-        if (Math.abs(x - min) < Math.abs(max - x)) {
-          // left tick
-          if (x > left + leftRect.width) {
-            this._range.style.left = "".concat(x - left - leftRect.width, "px");
-            this._range.style.width = "".concat(rangeRect.right - x + leftRect.width, "px");
-          } else {
-            // leftmost
-            this._range.style.left = "".concat(0, "px");
-            this._range.style.width = "".concat(rangeRect.right - left, "px");
-          }
-        } else {
-          // right tick
-          if (x < right - rightRect.width) {
-            this._range.style.width = "".concat(x - rangeRect.left + rightRect.width, "px");
-          } else {
-            // rightmost
-            this._range.style.width = "".concat(right - rangeRect.left, "px");
-          }
-        }
-
-        this._updateBounds();
-
-        var event = document.createEvent('Event');
-        event.initEvent('change', false, false);
-        this.dispatchEvent(event);
-      }
-    }
-  }, {
-    key: "_start",
-    value: function _start(tick, e) {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (this._current === null) {
-        this._current = tick;
-
-        switch (this._current) {
-          case 'left':
-            var leftRect = this._leftTick.getBoundingClientRect();
-
-            this._offset = e.clientX - leftRect.left;
-            break;
-
-          case 'right':
-            var rightRect = this._rightTick.getBoundingClientRect();
-
-            this._offset = rightRect.right - e.clientX;
-            break;
-        }
-
-        var event = document.createEvent('Event');
-        event.initEvent('start', false, false);
-        this.dispatchEvent(event);
-      }
+  _createClass(Slider1, [{
+    key: "validate",
+    value: function validate(value) {
+      return !isNaN(value) && this.min <= value && value <= this.max;
     }
   }, {
     key: "_stop",
-    value: function _stop(e) {
-      // e.preventDefault();
-      // e.stopPropagation();
-      if (this._current !== null) {
-        this._current = null;
+    value: function _stop() {
+      if (this._tick !== null) {
+        this._tick = null;
         this._offset = 0;
         var event = document.createEvent('Event');
         event.initEvent('stop', false, false);
@@ -10318,109 +10199,98 @@ var Slider = /*#__PURE__*/function (_Component) {
       }
     }
   }, {
+    key: "_start",
+    value: function _start(tick, e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (this._tick === null) {
+        this._tick = tick;
+
+        var t = this._tick.getBoundingClientRect();
+
+        this._offset = e.clientX - t.left;
+        var event = document.createEvent('Event');
+        event.initEvent('start', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
     key: "_slide",
     value: function _slide(e) {
-      e.preventDefault();
+      var _this2 = this;
+
       e.stopPropagation();
+      e.preventDefault();
+      var tid = window.setTimeout(function () {
+        window.clearTimeout(tid);
 
-      if (this._current) {
-        switch (this._current) {
-          case 'left':
-            this._handleLeftSlide(e.clientX - this._offset);
+        if (_this2._tick) {
+          var t = _this2._tick.getBoundingClientRect();
 
-            break;
+          var b = _this2._bar.getBoundingClientRect();
 
-          case 'right':
-            this._handleRightSlide(e.clientX + this._offset);
+          var x = e.clientX - _this2._offset;
 
-            break;
+          if (b.left <= x && x + t.width <= b.right) {
+            _this2._range.style.width = "".concat(e.clientX - _this2._offset + t.width - b.left, "px");
+
+            _this2._updateBounds();
+          }
         }
-      }
+      }, this._delay);
     }
   }, {
-    key: "_handleLeftSlide",
-    value: function _handleLeftSlide(x) {
-      var leftRect = this._leftTick.getBoundingClientRect();
+    key: "_click",
+    value: function _click(e) {
+      if (!this._tick) {
+        e.stopPropagation();
 
-      var rightRect = this._rightTick.getBoundingClientRect();
+        var b = this._bar.getBoundingClientRect();
 
-      var max = this._range.getBoundingClientRect().right;
+        var t = this._rightTick.getBoundingClientRect();
 
-      var _this$_bar$getBoundin2 = this._bar.getBoundingClientRect(),
-          left = _this$_bar$getBoundin2.left;
+        var halfWidth = Math.round(t.width / 2);
 
-      var totalWidth = leftRect.width + rightRect.width;
-
-      if (x < max - totalWidth) {
-        if (x < left) {
-          // min
-          this._range.style.left = "".concat(0, "px");
-          this._range.style.width = "".concat(max - left, "px");
+        if (e.clientX < b.left + halfWidth) {
+          this._range.style.width = "".concat(t.width, "px");
+        } else if (e.clientX > b.right - halfWidth) {
+          this._range.style.width = "".concat(b.width, "px");
         } else {
-          this._range.style.left = "".concat(x - left, "px");
-          this._range.style.width = "".concat(max - x, "px");
+          this._range.style.width = "".concat(e.clientX - b.left + halfWidth, "px");
         }
-      } else {
-        // rightmost
-        this._range.style.left = "".concat(max - totalWidth - left, "px");
-        this._range.style.width = "".concat(totalWidth, "px");
+
+        this._updateBounds();
       }
-
-      this._updateBounds();
-
-      var event = document.createEvent('Event');
-      event.initEvent('change', false, false);
-      this.dispatchEvent(event);
-    }
-  }, {
-    key: "_handleRightSlide",
-    value: function _handleRightSlide(x) {
-      var leftRect = this._leftTick.getBoundingClientRect();
-
-      var rightRect = this._rightTick.getBoundingClientRect();
-
-      var min = this._range.getBoundingClientRect().left;
-
-      var _this$_bar$getBoundin3 = this._bar.getBoundingClientRect(),
-          left = _this$_bar$getBoundin3.left,
-          right = _this$_bar$getBoundin3.right;
-
-      var totalWidth = leftRect.width + rightRect.width;
-
-      if (x > min + totalWidth) {
-        if (x > right) {
-          // max
-          this._range.style.width = "".concat(right - min, "px");
-        } else {
-          this._range.style.width = "".concat(x - min, "px");
-        }
-      } else {
-        // leftmost            
-        this._range.style.width = "".concat(totalWidth, "px");
-      }
-
-      this._updateBounds();
-
-      var event = document.createEvent('Event');
-      event.initEvent('change', false, false);
-      this.dispatchEvent(event);
     }
   }, {
     key: "_updateBounds",
     value: function _updateBounds() {
-      var _this$_bar$getBoundin4 = this._bar.getBoundingClientRect(),
-          width = _this$_bar$getBoundin4.width,
-          left = _this$_bar$getBoundin4.left;
+      var b = this._bar.getBoundingClientRect();
 
-      var leftRect = this._leftTick.getBoundingClientRect();
+      var t = this._rightTick.getBoundingClientRect();
 
-      var rightRect = this._rightTick.getBoundingClientRect();
-
-      var k = (this.max - this.min) / (width - leftRect.width - rightRect.width);
-      var lo = leftRect.left - left;
-      this._lo = this.min + (this.mode === 'float' ? lo * k : Math.round(lo * k));
-      var hi = rightRect.left - rightRect.width - left;
+      var k = (this.max - this.min) / (b.width - t.width);
+      this._lo = this.min;
+      var hi = t.left - b.left;
       this._hi = this.min + (this.mode === 'float' ? hi * k : Math.round(hi * k));
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-slider');
+      element.classList.add('no-select');
+      element.innerHTML = "<div class=\"slider-bar\">\n                <div class=\"slider-range\">\n                    <div class=\"slider-tick slider-tick-right\">\n                        <label></label>\n                        <i></i>\n                    </div>\n                </div>\n            </div>";
+      this._rightLabel = element.querySelector('.slider-tick label');
+
+      this._rightLabel.classList.add('hidden');
+
+      this._bar = element.querySelector('.slider-bar');
+      this._rightTick = element.querySelector('.slider-tick-right');
+      this._range = element.querySelector('.slider-range');
     }
   }, {
     key: "mode",
@@ -10434,69 +10304,16 @@ var Slider = /*#__PURE__*/function (_Component) {
     key: "min",
     get: function get() {
       return this._min;
-    },
-    set: function set(min) {
-      if (!isNaN(min) && isNaN(this._max) || min <= this._max) {
-        this._min = min;
-
-        if (!this._lo) {
-          this._lo = this._min;
-
-          if (!isNaN(this._min) && !isNaN(this._max)) {
-            var event = document.createEvent('Event');
-            event.initEvent('change', false, false);
-            this.dispatchEvent(event);
-          }
-        } else if (this._min > this.lo) {
-          this.lo = this._min;
-        }
-      }
     }
   }, {
     key: "max",
     get: function get() {
       return this._max;
-    },
-    set: function set(max) {
-      if (!isNaN(max) && isNaN(this._min) || this._min <= max) {
-        this._max = max;
-
-        if (!this._hi) {
-          this._hi = this._max;
-
-          if (!isNaN(this._min) && !isNaN(this._max)) {
-            var event = document.createEvent('Event');
-            event.initEvent('change', false, false);
-            this.dispatchEvent(event);
-          }
-        } else if (this._max < this.hi) {
-          this.hi = this._max;
-        }
-      }
     }
   }, {
     key: "lo",
     get: function get() {
-      return this._lo;
-    },
-    set: function set(lo) {
-      if (this._validate(lo) && lo <= this.hi) {
-        this._lo = lo;
-      }
-
-      var _this$_bar$getBoundin5 = this._bar.getBoundingClientRect(),
-          width = _this$_bar$getBoundin5.width;
-
-      var leftRect = this._leftTick.getBoundingClientRect();
-
-      var rightRect = this._rightTick.getBoundingClientRect();
-
-      var k = (width - leftRect.width - rightRect.width) / (this.max - this.min);
-      this._range.style.left = "".concat(Math.round((this._lo - this.min) * k), "px");
-      this._range.style.width = "".concat(Math.round((this._hi - this._lo) * k) + leftRect.width + rightRect.width, "px");
-      var event = document.createEvent('Event');
-      event.initEvent('change', false, false);
-      this.dispatchEvent(event);
+      return this._min;
     }
   }, {
     key: "hi",
@@ -10504,28 +10321,521 @@ var Slider = /*#__PURE__*/function (_Component) {
       return this._hi;
     },
     set: function set(hi) {
-      if (this._validate(hi) && this.lo <= hi) {
+      if (this.validate(hi) && isNaN(this.lo) || this.lo <= hi) {
         this._hi = hi;
       }
 
-      var _this$_bar$getBoundin6 = this._bar.getBoundingClientRect(),
-          width = _this$_bar$getBoundin6.width;
+      if (!isNaN(this.lo) && !isNaN(this.hi)) {
+        var b = this._bar.getBoundingClientRect();
 
-      var leftRect = this._leftTick.getBoundingClientRect();
+        var t = this._rightTick.getBoundingClientRect();
 
-      var rightRect = this._rightTick.getBoundingClientRect();
+        var k = (b.width - t.width) / (this.max - this.min);
+        this._range.style.width = "".concat(Math.round((this.hi - this.lo) * k) + t.width, "px");
+        var event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }]);
 
-      var k = (width - leftRect.width - rightRect.width) / (this.max - this.min);
-      this._range.style.left = "".concat(Math.round((this._lo - this.min) * k), "px");
-      this._range.style.width = "".concat(Math.round((this._hi - this._lo) * k) + leftRect.width + rightRect.width, "px");
+  return Slider1;
+}(Component);
+
+var Slider2 = /*#__PURE__*/function (_Slider) {
+  _inherits(Slider2, _Slider);
+
+  var _super = _createSuper(Slider2);
+
+  function Slider2(container, _ref) {
+    var _this;
+
+    var min = _ref.min,
+        max = _ref.max;
+
+    _classCallCheck(this, Slider2);
+
+    _this = _super.call(this, container, {
+      min: min,
+      max: max
+    });
+
+    _this._leftTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), _this._leftTick));
+
+    return _this;
+  }
+
+  _createClass(Slider2, [{
+    key: "_slide",
+    value: function _slide(e) {
+      var _this2 = this;
+
+      e.stopPropagation();
+      e.preventDefault();
+      var tid = window.setTimeout(function () {
+        window.clearTimeout(tid);
+
+        if (_this2._tick) {
+          var lt = _this2._leftTick.getBoundingClientRect();
+
+          var rt = _this2._rightTick.getBoundingClientRect();
+
+          var w = lt.width + rt.width;
+
+          var b = _this2._bar.getBoundingClientRect();
+
+          var x = e.clientX - _this2._offset;
+
+          if (_this2._tick === _this2._leftTick) {
+            if (x > b.left) {
+              if (x + lt.width < rt.left) {
+                _this2._range.style.left = "".concat(x - b.left, "px");
+                _this2._range.style.width = "".concat(rt.right - x, "px");
+              } else {
+                _this2._range.style.left = "".concat(rt.left - lt.width - b.left, "px");
+                _this2._range.style.width = "".concat(w, "px");
+              }
+            }
+
+            _this2._updateBounds();
+          } else if (_this2._tick === _this2._rightTick) {
+            if (x < b.right - rt.width) {
+              if (lt.right < x) {
+                _this2._range.style.width = "".concat(x - lt.right + w, "px");
+              } else {
+                _this2._range.style.width = "".concat(w, "px");
+              }
+            }
+
+            _this2._updateBounds();
+          }
+        }
+      }, this._delay);
+    }
+  }, {
+    key: "_click",
+    value: function _click(e) {
+      if (!this._tick) {
+        e.stopPropagation(); // const b = this._bar.getBoundingClientRect();
+        // const t = this._rightTick.getBoundingClientRect();
+        // const halfWidth = Math.round (t.width / 2);
+        // if (e.clientX < b.left + halfWidth) {                
+        //     this._range.style.width = `${t.width}px`;
+        // }
+        // else if (e.clientX > b.right - halfWidth) {
+        //     this._range.style.width = `${b.width}px`;
+        // }
+        // else {
+        //     this._range.style.width = `${e.clientX - b.left + halfWidth}px`;                
+        // }        
+        // this._updateBounds();
+      }
+    }
+  }, {
+    key: "_updateUI",
+    value: function _updateUI() {
+      if (!isNaN(this.lo) && !isNaN(this.hi)) {
+        var lt = this._leftTick.getBoundingClientRect();
+
+        var rt = this._rightTick.getBoundingClientRect();
+
+        var w = lt.width + rt.width;
+
+        var b = this._bar.getBoundingClientRect();
+
+        var k = (b.width - w) / (this.max - this.min);
+        this._range.style.left = "".concat(Math.round((this.lo - this.min) * k), "px");
+        this._range.style.width = "".concat(Math.round((this.hi - this.lo) * k) + w, "px");
+        var event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
+    key: "_updateBounds",
+    value: function _updateBounds() {
+      var b = this._bar.getBoundingClientRect();
+
+      var lt = this._leftTick.getBoundingClientRect();
+
+      var rt = this._rightTick.getBoundingClientRect();
+
+      var w = lt.width + rt.width;
+      var k = (this.max - this.min) / (b.width - w);
+      var lo = lt.left - b.left;
+      this._lo = this.min + (this.mode === 'float' ? lo * k : Math.round(lo * k));
+      var hi = rt.left - b.left - lt.width;
+      this._hi = this.min + (this.mode === 'float' ? hi * k : Math.round(hi * k));
       var event = document.createEvent('Event');
       event.initEvent('change', false, false);
       this.dispatchEvent(event);
     }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      _get(_getPrototypeOf(Slider2.prototype), "_render", this).call(this, element);
+
+      element.classList.add('scanex-component-two-tick-slider');
+      this._leftTick = document.createElement('div');
+
+      this._leftTick.classList.add('slider-tick');
+
+      this._leftTick.classList.add('slider-tick-left');
+
+      this._leftLabel = document.createElement('label');
+
+      this._leftTick.appendChild(this._leftLabel);
+
+      this._leftLabel.classList.add('hidden');
+
+      var icn = document.createElement('i');
+
+      this._leftTick.appendChild(icn);
+
+      this._range.insertBefore(this._leftTick, this._rightTick);
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._lo;
+    },
+    set: function set(lo) {
+      if (this.validate(lo) && (isNaN(this.hi) || lo <= this.hi)) {
+        this._lo = lo;
+      }
+
+      this._updateUI();
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._hi;
+    },
+    set: function set(hi) {
+      if (this.validate(hi) && (isNaN(this.lo) || this.lo <= hi)) {
+        this._hi = hi;
+      }
+
+      this._updateUI();
+    }
   }]);
 
-  return Slider;
+  return Slider2;
+}(Slider1);
+
+var Slider3 = /*#__PURE__*/function (_Slider) {
+  _inherits(Slider3, _Slider);
+
+  var _super = _createSuper(Slider3);
+
+  function Slider3(container, _ref) {
+    var _this;
+
+    var min = _ref.min,
+        max = _ref.max;
+
+    _classCallCheck(this, Slider3);
+
+    _this = _super.call(this, container, {
+      min: min,
+      max: max
+    });
+
+    _this._middleTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), _this._middleTick));
+
+    return _this;
+  } // get lo() {
+  //     return this._lo;
+  // }
+  // set lo(lo) {
+  //     if(this.validate(lo) && (isNaN (this.hi) || lo <= this.hi)) {
+  //         this._lo = lo;
+  //     }
+  //     this._updateUI();        
+  // }
+
+
+  _createClass(Slider3, [{
+    key: "_updateUI",
+    // get hi() {
+    //     return this._hi;
+    // }
+    // set hi(hi) {
+    //     if(this.validate(hi) && (isNaN(this.lo) || this.lo <= hi)) {
+    //         this._hi = hi;
+    //     }        
+    //     this._updateUI();
+    // }
+    value: function _updateUI() {
+      if (!isNaN(this.lo) && !isNaN(this.mi) && !isNaN(this.hi)) {
+        var lt = this._leftTick.getBoundingClientRect();
+
+        var mt = this._middleTick.getBoundingClientRect();
+
+        var rt = this._rightTick.getBoundingClientRect();
+
+        var w = lt.width + mt.width + rt.width;
+
+        var b = this._bar.getBoundingClientRect();
+
+        var k = (b.width - w) / (this.max - this.min);
+        this._range.style.left = "".concat(Math.round((this.lo - this.min) * k), "px");
+        this._range.style.width = "".concat(Math.round((this.hi - this.lo) * k) + w, "px");
+        this._middleTick.style.left = "".concat(Math.round((this.mi - this.min) * k) + lt.width, "px");
+        var event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
+    key: "_updateBounds",
+    value: function _updateBounds() {
+      var lt = this._leftTick.getBoundingClientRect();
+
+      var mt = this._middleTick.getBoundingClientRect();
+
+      var rt = this._rightTick.getBoundingClientRect();
+
+      var w = lt.width + mt.width + rt.width;
+
+      var b = this._bar.getBoundingClientRect();
+
+      var k = (this.max - this.min) / (b.width - w);
+      var lo = lt.left - b.left;
+      this._lo = this.min + (this.mode === 'float' ? lo * k : Math.round(lo * k));
+      var mi = mt.left - b.left - lt.width;
+      this._mi = this.min + (this.mode === 'float' ? mi * k : Math.round(mi * k));
+      this._middleLabel.innerText = this.mode === 'float' ? this._mi.toFixed(2) : this._mi.toString();
+      var hi = rt.left - b.left - lt.width - mt.width;
+      this._hi = this.min + (this.mode === 'float' ? hi * k : Math.round(hi * k));
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_start",
+    value: function _start(tick, e) {
+      _get(_getPrototypeOf(Slider3.prototype), "_start", this).call(this, tick, e);
+
+      this._mtLeft = this._middleTick.offsetLeft;
+
+      if (tick === this._middleTick) {
+        this._middleLabel.classList.remove('hidden');
+      }
+    }
+  }, {
+    key: "_stop",
+    value: function _stop() {
+      _get(_getPrototypeOf(Slider3.prototype), "_stop", this).call(this);
+
+      this._mtLeft = 0;
+
+      this._middleLabel.classList.add('hidden');
+    }
+  }, {
+    key: "_slide",
+    value: function _slide(e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (this._tick) {
+        var lt = this._leftTick.getBoundingClientRect();
+
+        var mt = this._middleTick.getBoundingClientRect();
+
+        var rt = this._rightTick.getBoundingClientRect();
+
+        var w = lt.width + mt.width + rt.width;
+
+        var b = this._bar.getBoundingClientRect();
+
+        var x = e.clientX - this._offset;
+
+        if (this._tick === this._leftTick) {
+          if (b.left <= x && x + lt.width <= mt.left) {
+            this._range.style.left = "".concat(x - b.left, "px");
+            this._range.style.width = "".concat(rt.right - x, "px");
+            this._middleTick.style.left = "".concat(this._mtLeft, "px");
+
+            this._updateBounds();
+          }
+        } else if (this._tick === this._middleTick) {
+          if (lt.right <= x && x + mt.width <= rt.left) {
+            this._middleTick.style.left = "".concat(x - b.left, "px");
+
+            this._updateBounds();
+          }
+        } else if (this._tick === this._rightTick) {
+          if (mt.left + mt.width <= x && x + rt.width <= b.left + b.width) {
+            this._range.style.width = "".concat(x + rt.width - lt.left, "px");
+
+            this._updateBounds();
+          }
+        }
+      }
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      _get(_getPrototypeOf(Slider3.prototype), "_render", this).call(this, element);
+
+      element.classList.add('scanex-component-three-tick-slider');
+      this._middleTick = document.createElement('div');
+
+      this._middleTick.classList.add('slider-tick');
+
+      this._middleTick.classList.add('slider-tick-middle');
+
+      this._middleLabel = document.createElement('label');
+
+      this._middleLabel.classList.add('hidden');
+
+      this._middleTick.appendChild(this._middleLabel);
+
+      var icn = document.createElement('i');
+
+      this._middleTick.appendChild(icn);
+
+      this._bar.appendChild(this._middleTick);
+    }
+  }, {
+    key: "mi",
+    get: function get() {
+      return this._mi;
+    },
+    set: function set(mi) {
+      if (this.validate(mi) && (isNaN(this.lo) || this.lo <= mi) && (isNaN(this.hi) || mi <= this.hi)) {
+        this._mi = mi;
+      }
+
+      this._updateUI();
+    }
+  }]);
+
+  return Slider3;
+}(Slider2);
+
+var Interval = /*#__PURE__*/function (_Component) {
+  _inherits(Interval, _Component);
+
+  var _super = _createSuper(Interval);
+
+  function Interval(container, _ref) {
+    var _this;
+
+    var min = _ref.min,
+        max = _ref.max,
+        slider = _ref.slider;
+
+    _classCallCheck(this, Interval);
+
+    _this = _super.call(this, container);
+    _this._slider = new slider(_this._sliderElement, {
+      min: min,
+      max: max
+    });
+
+    _this._slider.on('change', _this._onChange.bind(_assertThisInitialized(_this)));
+
+    return _this;
+  }
+
+  _createClass(Interval, [{
+    key: "_onChange",
+    value: function _onChange(e) {
+      this._lo.value = this._slider.lo.toString();
+      this._hi.value = this._slider.hi.toString();
+      var event = document.createEvent('Event');
+      event.initEvent('change', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-range');
+      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
+      this._lo = element.querySelector('.lo');
+      this._hi = element.querySelector('.hi');
+      this._sliderElement = element.querySelector('.slider');
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._slider.min;
+    },
+    set: function set(min) {
+      this._slider.min = min;
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._slider.max;
+    },
+    set: function set(max) {
+      this._slider.max = max;
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._slider.lo;
+    },
+    set: function set(lo) {
+      this._slider.lo = lo;
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._slider.hi;
+    },
+    set: function set(hi) {
+      this._slider.hi = hi;
+    }
+  }]);
+
+  return Interval;
 }(Component);
+
+var Interval3 = /*#__PURE__*/function (_Interval) {
+  _inherits(Interval3, _Interval);
+
+  var _super = _createSuper(Interval3);
+
+  function Interval3(container, _ref) {
+    var min = _ref.min,
+        max = _ref.max;
+
+    _classCallCheck(this, Interval3);
+
+    return _super.call(this, container, {
+      min: min,
+      max: max,
+      slider: Slider3
+    });
+  }
+
+  _createClass(Interval3, [{
+    key: "mi",
+    get: function get() {
+      return this._slider.mi;
+    },
+    set: function set(mi) {
+      this._slider.mi = mi;
+    }
+  }]);
+
+  return Interval3;
+}(Interval);
+
+
+
+var index$2 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  Slider1: Slider1,
+  Slider2: Slider2,
+  Slider3: Slider3,
+  Interval: Interval,
+  Interval3: Interval3
+});
 
 var Tabs = /*#__PURE__*/function (_Component) {
   _inherits(Tabs, _Component);
@@ -10646,8 +10956,7 @@ exports.Component = Component;
 exports.Dialog = Dialog;
 exports.Form = Form;
 exports.Menu = Menu;
-exports.RangeSlider = RangeSlider;
-exports.Slider = Slider;
+exports.Sliders = index$2;
 exports.Spinner = Spinner;
 exports.Tabs = Tabs;
 //# sourceMappingURL=scanex-components.cjs.js.map
