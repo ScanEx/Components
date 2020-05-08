@@ -1,10 +1,14 @@
-.scanex-component-tabs .tabs > *,
-.scanex-component-tabs .panels > * {
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
     float: left;
 }
-.scanex-component-tabs .panels {
+.scanex-component-tabs > .panels {
     clear: both;
+    position: relative;
+}
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
 }
 .scanex-component-tabs > .panels > .hidden {
-    display: none;
+    visibility: hidden;
 }

@@ -32,7 +32,7 @@ class Spinner extends Component {
         return this._min;
     }
     set min(min) {
-        if (!isNaN(min) && min <= this._max) {
+        if (!isNaN(min)) {
             this._min = min;
         }
     }

@@ -4,8 +4,7 @@ import lorem from './lorem.txt';
 import Dialog from '../src/Dialog/Dialog.js';
 import Form from '../src/Form/Form.js';
 import Menu from '../src/Menu/Menu.js';
-import Range from '../src/Range/Range.js';
-import Slider from '../src/Slider/Slider.js';
+import * as Sliders from '../src/Sliders/index.js';
 import Spinner from '../src/Spinner/Spinner.js';
 import Tabs from '../src/Tabs/Tabs.js';
 
@@ -72,12 +71,28 @@ window.addEventListener('load', () => {
             <td class="spinner"></td>
         </tr>
         <tr>
-            <td>Slider:</td>
-            <td class="slider"></td>
+            <td>Single Slider:</td>
+            <td class="slider-single"></td>
         </tr>
         <tr>
-            <td>Range:</td>
-            <td class="range"></td>
+            <td>Single Range:</td>
+            <td class="range-single"></td>
+        </tr>
+        <tr>
+            <td>Double Slider:</td>
+            <td class="slider-double"></td>
+        </tr>
+        <tr>
+            <td>Double Range:</td>
+            <td class="range-double"></td>
+        </tr>
+        <tr>
+            <td>Triple Slider:</td>
+            <td class="slider-triple"></td>
+        </tr>
+        <tr>
+            <td>Triple Range:</td>
+            <td class="range-triple"></td>
         </tr>
         <tr>
             <td>Button:</td>
@@ -91,16 +106,37 @@ window.addEventListener('load', () => {
     spinner.min = 0;
     spinner.max = 10;
     spinner.value = 5;
-    spinner.on('change', e => alert(`spinner: ${e.detail}`));
+    // spinner.on('change', e => alert(`spinner: ${e.detail}`));
 
-    let slider = new Slider(ctrl.querySelector('.slider'));
-    slider.min = 0;
-    slider.max = 100;
-    slider.on('stop', e => alert(`slider: ${slider.lo} - ${slider.hi}`));
+    let sld = new Sliders.Slider1(ctrl.querySelector('.slider-single'), {min: 0, max: 100});
+    sld.hi = 14;    
+    
+    // sld.on('stop', e => alert(`slider: ${sld.lo} - ${sld.hi}`));
 
-    let range = new Range(ctrl.querySelector('.range'));
-    range.min = 1;
-    range.max = 21;
+    let rng = new Sliders.Interval(ctrl.querySelector('.range-single'), {min: 1, max:21, slider: Sliders.Slider1});
+    rng.hi = 14;
+
+    let dbl = new Sliders.Slider2(ctrl.querySelector('.slider-double'), {min: 1, max: 21});
+    dbl.lo = 4;
+    dbl.hi = 12;
+    
+    let dr = new Sliders.Interval(ctrl.querySelector('.range-double'), {min: 1, max: 21, slider: Sliders.Slider2});
+    dr.lo = 4;
+    dr.hi = 18;
+
+    let tpl = new Sliders.Slider3(ctrl.querySelector('.slider-triple'), {min: 1, max: 21});
+    tpl.lo = 4;
+    tpl.hi = 18;
+    tpl.mi = 12;
+    // tpl.on('change', console.log);
+
+    let tr = new Sliders.Interval3(ctrl.querySelector('.range-triple'), {min: 1, max: 21});
+    tr.lo = 4;
+    tr.hi = 18;
+    tr.mi = 12;
+    // tr.on('change', () => {
+    //     console.log(tr.lo, ', ', tr.mi, ', ', tr.hi);
+    // });
 
     let dlg;
     let btn = ctrl.querySelector('.button');

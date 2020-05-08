@@ -1,15 +1,18 @@
-import './Range.css';
-import Slider from "../Slider/Slider";
+import './Interval.css';
 import Component from '../Component';
 
-class Range extends Component {
-    constructor(container) {
+class Interval extends Component {
+    constructor(container, {min, max, slider}) {
         super(container);        
-        this._slider = new Slider(this._sliderElement);
-        this._slider.on('change', e => {            
-            this._lo.value = this._slider.lo.toString();
-            this._hi.value = this._slider.hi.toString();
-        });
+        this._slider = new slider(this._sliderElement, {min, max});
+        this._slider.on('change', this._onChange.bind(this));
+    }
+    _onChange(e) {
+        this._lo.value = this._slider.lo.toString();
+        this._hi.value = this._slider.hi.toString();
+        let event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
     }
     get min() {
         return this._slider.min;
@@ -56,4 +59,4 @@ class Range extends Component {
     }
 }
 
-export default Range;
+export default Interval;

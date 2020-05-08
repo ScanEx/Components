@@ -22,14 +22,19 @@ html, body {
 }
 .scanex-component-tabs > .panels > .panel {
     padding: 10px;
-    width: 350px;
+    width: 300px;
 }
-.scanex-component-tabs > .panels > .panel.controls > table,
+.scanex-component-tabs > .panels > .panel.controls > table {
+    width: 100%;
+}
 .scanex-component-tabs > .panels > .panel.controls > table > tbody > tr > td:last-child {
     width: 100%;
 }
+.scanex-component-tabs > .panels > .panel.controls > table > tbody > tr > td {
+    white-space: nowrap;
+}
 .scanex-component-form {
-    width: 350px;    
+    width: 300px;    
 }
 .scanex-component-form > table > tbody > tr > td {
     padding-bottom: 5px;

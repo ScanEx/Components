@@ -1,9 +1,0 @@
-.scanex-component-range table,
-.scanex-component-range table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 50px;
-    text-align: center;
-    border: none;
-}

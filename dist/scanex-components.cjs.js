@@ -439,23 +439,23 @@ var toInteger = function (argument) {
   return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
 };
 
-var min = Math.min;
+var min$1 = Math.min;
 
 // `ToLength` abstract operation
 // https://tc39.github.io/ecma262/#sec-tolength
 var toLength = function (argument) {
-  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+  return argument > 0 ? min$1(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
 };
 
-var max = Math.max;
-var min$1 = Math.min;
+var max$1 = Math.max;
+var min$2 = Math.min;
 
 // Helper for a popular repeating case of the spec:
 // Let integer be ? ToInteger(index).
 // If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
 var toAbsoluteIndex = function (index, length) {
   var integer = toInteger(index);
-  return integer < 0 ? max(integer + length, 0) : min$1(integer, length);
+  return integer < 0 ? max$1(integer + length, 0) : min$2(integer, length);
 };
 
 // `Array.prototype.{ indexOf, includes }` methods implementation
@@ -2123,7 +2123,7 @@ _export({ target: 'Array', proto: true, forced: FORCED$1 }, {
   }
 });
 
-var min$2 = Math.min;
+var min$3 = Math.min;
 
 // `Array.prototype.copyWithin` method implementation
 // https://tc39.github.io/ecma262/#sec-array.prototype.copywithin
@@ -2133,7 +2133,7 @@ var arrayCopyWithin = [].copyWithin || function copyWithin(target /* = 0 */, sta
   var to = toAbsoluteIndex(target, len);
   var from = toAbsoluteIndex(start, len);
   var end = arguments.length > 2 ? arguments[2] : undefined;
-  var count = min$2((end === undefined ? len : toAbsoluteIndex(end, len)) - from, len - to);
+  var count = min$3((end === undefined ? len : toAbsoluteIndex(end, len)) - from, len - to);
   var inc = 1;
   if (from < to && to < from + count) {
     inc = -1;
@@ -2431,7 +2431,7 @@ _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$3 
   }
 });
 
-var min$3 = Math.min;
+var min$4 = Math.min;
 var nativeLastIndexOf = [].lastIndexOf;
 var NEGATIVE_ZERO$1 = !!nativeLastIndexOf && 1 / [1].lastIndexOf(1, -0) < 0;
 var STRICT_METHOD$4 = arrayMethodIsStrict('lastIndexOf');
@@ -2447,7 +2447,7 @@ var arrayLastIndexOf = FORCED$2 ? function lastIndexOf(searchElement /* , fromIn
   var O = toIndexedObject(this);
   var length = toLength(O.length);
   var index = length - 1;
-  if (arguments.length > 1) index = min$3(index, toInteger(arguments[1]));
+  if (arguments.length > 1) index = min$4(index, toInteger(arguments[1]));
   if (index < 0) index = length + index;
   for (;index >= 0; index--) if (index in O && O[index] === searchElement) return index || 0;
   return -1;
@@ -2563,7 +2563,7 @@ var USES_TO_LENGTH$b = arrayMethodUsesToLength('slice', { ACCESSORS: true, 0: 0,
 
 var SPECIES$2 = wellKnownSymbol('species');
 var nativeSlice = [].slice;
-var max$1 = Math.max;
+var max$2 = Math.max;
 
 // `Array.prototype.slice` method
 // https://tc39.github.io/ecma262/#sec-array.prototype.slice
@@ -2589,7 +2589,7 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$2 || !USES_
         return nativeSlice.call(O, k, fin);
       }
     }
-    result = new (Constructor === undefined ? Array : Constructor)(max$1(fin - k, 0));
+    result = new (Constructor === undefined ? Array : Constructor)(max$2(fin - k, 0));
     for (n = 0; k < fin; k++, n++) if (k in O) createProperty(result, n, O[k]);
     result.length = n;
     return result;
@@ -2640,8 +2640,8 @@ _export({ target: 'Array', proto: true, forced: FORCED$3 }, {
 var HAS_SPECIES_SUPPORT$3 = arrayMethodHasSpeciesSupport('splice');
 var USES_TO_LENGTH$d = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
 
-var max$2 = Math.max;
-var min$4 = Math.min;
+var max$3 = Math.max;
+var min$5 = Math.min;
 var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
 var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
 
@@ -2662,7 +2662,7 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$3 || !USES_
       actualDeleteCount = len - actualStart;
     } else {
       insertCount = argumentsLength - 2;
-      actualDeleteCount = min$4(max$2(toInteger(deleteCount), 0), len - actualStart);
+      actualDeleteCount = min$5(max$3(toInteger(deleteCount), 0), len - actualStart);
     }
     if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$1) {
       throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
@@ -3011,7 +3011,7 @@ var getOwnPropertyDescriptor$4 = objectGetOwnPropertyDescriptor.f;
 
 
 var nativeEndsWith = ''.endsWith;
-var min$5 = Math.min;
+var min$6 = Math.min;
 
 var CORRECT_IS_REGEXP_LOGIC = correctIsRegexpLogic('endsWith');
 // https://github.com/zloirock/core-js/pull/702
@@ -3028,7 +3028,7 @@ _export({ target: 'String', proto: true, forced: !MDN_POLYFILL_BUG && !CORRECT_I
     notARegexp(searchString);
     var endPosition = arguments.length > 1 ? arguments[1] : undefined;
     var len = toLength(that.length);
-    var end = endPosition === undefined ? len : min$5(toLength(endPosition), len);
+    var end = endPosition === undefined ? len : min$6(toLength(endPosition), len);
     var search = String(searchString);
     return nativeEndsWith
       ? nativeEndsWith.call(that, search, end)
@@ -3540,8 +3540,8 @@ _export({ target: 'String', proto: true }, {
   repeat: stringRepeat
 });
 
-var max$3 = Math.max;
-var min$6 = Math.min;
+var max$4 = Math.max;
+var min$7 = Math.min;
 var floor$1 = Math.floor;
 var SUBSTITUTION_SYMBOLS = /\$([$&'`]|\d\d?|<[^>]*>)/g;
 var SUBSTITUTION_SYMBOLS_NO_NAMED = /\$([$&'`]|\d\d?)/g;
@@ -3606,7 +3606,7 @@ fixRegexpWellKnownSymbolLogic('replace', 2, function (REPLACE, nativeReplace, ma
         result = results[i];
 
         var matched = String(result[0]);
-        var position = max$3(min$6(toInteger(result.index), S.length), 0);
+        var position = max$4(min$7(toInteger(result.index), S.length), 0);
         var captures = [];
         // NOTE: This is equivalent to
         //   captures = result.slice(1).map(maybeToString)
@@ -3695,7 +3695,7 @@ fixRegexpWellKnownSymbolLogic('search', 1, function (SEARCH, nativeSearch, maybe
 });
 
 var arrayPush = [].push;
-var min$7 = Math.min;
+var min$8 = Math.min;
 var MAX_UINT32 = 0xFFFFFFFF;
 
 // babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
@@ -3798,7 +3798,7 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
         var e;
         if (
           z === null ||
-          (e = min$7(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+          (e = min$8(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
         ) {
           q = advanceStringIndex(S, q, unicodeMatching);
         } else {
@@ -3825,7 +3825,7 @@ var getOwnPropertyDescriptor$5 = objectGetOwnPropertyDescriptor.f;
 
 
 var nativeStartsWith = ''.startsWith;
-var min$8 = Math.min;
+var min$9 = Math.min;
 
 var CORRECT_IS_REGEXP_LOGIC$1 = correctIsRegexpLogic('startsWith');
 // https://github.com/zloirock/core-js/pull/702
@@ -3840,7 +3840,7 @@ _export({ target: 'String', proto: true, forced: !MDN_POLYFILL_BUG$1 && !CORRECT
   startsWith: function startsWith(searchString /* , position = 0 */) {
     var that = String(requireObjectCoercible(this));
     notARegexp(searchString);
-    var index = toLength(min$8(arguments.length > 1 ? arguments[1] : undefined, that.length));
+    var index = toLength(min$9(arguments.length > 1 ? arguments[1] : undefined, that.length));
     var search = String(searchString);
     return nativeStartsWith
       ? nativeStartsWith.call(that, search, index)
@@ -10020,6 +10020,173 @@ var Menu = /*#__PURE__*/function (_Component) {
   return Menu;
 }(Component);
 
+var RangeSlider = /*#__PURE__*/function (_Component) {
+  _inherits(RangeSlider, _Component);
+
+  var _super = _createSuper(RangeSlider);
+
+  function RangeSlider(container, Slider) {
+    var _this;
+
+    _classCallCheck(this, RangeSlider);
+
+    _this = _super.call(this, container);
+    _this._slider = new Slider(_this._sliderElement, {
+      min: min,
+      max: max
+    });
+
+    _this._slider.on('change', function (e) {
+      _this._lo.value = _this._slider.lo.toString();
+      _this._hi.value = _this._slider.hi.toString();
+    });
+
+    return _this;
+  }
+
+  _createClass(RangeSlider, [{
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-range');
+      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
+      this._lo = element.querySelector('.lo');
+      this._hi = element.querySelector('.hi');
+      this._sliderElement = element.querySelector('.slider');
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._slider.min;
+    },
+    set: function set(min) {
+      this._slider.min = min;
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._slider.max;
+    },
+    set: function set(max) {
+      this._slider.max = max;
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._slider.lo;
+    },
+    set: function set(lo) {
+      this._slider.lo = lo;
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._slider.hi;
+    },
+    set: function set(hi) {
+      this._slider.hi = hi;
+    }
+  }]);
+
+  return RangeSlider;
+}(Component);
+
+var Spinner = /*#__PURE__*/function (_Component) {
+  _inherits(Spinner, _Component);
+
+  var _super = _createSuper(Spinner);
+
+  function Spinner(container) {
+    var _this;
+
+    _classCallCheck(this, Spinner);
+
+    _this = _super.call(this, container);
+    _this._value = 0;
+    _this._min = 0;
+    _this._max = 0;
+
+    _this._up.addEventListener('click', _this.increment.bind(_assertThisInitialized(_this)));
+
+    _this._down.addEventListener('click', _this.decrement.bind(_assertThisInitialized(_this)));
+
+    _this._input.addEventListener('change', _this._onChange.bind(_assertThisInitialized(_this)));
+
+    return _this;
+  }
+
+  _createClass(Spinner, [{
+    key: "_onChange",
+    value: function _onChange(e) {
+      e.stopPropagation();
+      this.value = parseInt(this._input.value, 10);
+    }
+  }, {
+    key: "_validate",
+    value: function _validate(value) {
+      return !isNaN(value) && this._min <= value && value <= this._max;
+    }
+  }, {
+    key: "increment",
+    value: function increment(e) {
+      e.stopPropagation();
+      this.value = this._value + 1;
+    }
+  }, {
+    key: "decrement",
+    value: function decrement(e) {
+      e.stopPropagation();
+      this.value = this._value - 1;
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-spinner');
+      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"spinner-icon spinner-up\"></i>\n            <i class=\"spinner-icon spinner-down\"></i>\n        </div>";
+      this._input = element.querySelector('input');
+      this._up = element.querySelector('.spinner-up');
+      this._down = element.querySelector('.spinner-down');
+    }
+  }, {
+    key: "value",
+    get: function get() {
+      return this._value;
+    },
+    set: function set(value) {
+      if (this._validate(value)) {
+        this._value = value;
+        var event = document.createEvent('Event');
+        event.initEvent("change", false, false);
+        event.detail = this._value;
+        this.dispatchEvent(event);
+      }
+
+      this._input.value = this._value.toString();
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._min;
+    },
+    set: function set(min) {
+      if (!isNaN(min)) {
+        this._min = min;
+      }
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._max;
+    },
+    set: function set(max) {
+      if (!isNaN(max) && this._min <= max) {
+        this._max = max;
+      }
+    }
+  }]);
+
+  return Spinner;
+}(Component);
+
 var Slider = /*#__PURE__*/function (_Component) {
   _inherits(Slider, _Component);
 
@@ -10032,10 +10199,6 @@ var Slider = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, container);
     _this._current = null;
-    _this._min = 0;
-    _this._max = 0;
-    _this._lo = 0;
-    _this._hi = 0;
 
     _this._leftTick.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this), 'left'));
 
@@ -10068,6 +10231,7 @@ var Slider = /*#__PURE__*/function (_Component) {
   }, {
     key: "_handleBarClick",
     value: function _handleBarClick(e) {
+      e.preventDefault();
       e.stopPropagation();
       var x = e.clientX;
 
@@ -10115,6 +10279,7 @@ var Slider = /*#__PURE__*/function (_Component) {
   }, {
     key: "_start",
     value: function _start(tick, e) {
+      e.preventDefault();
       e.stopPropagation();
 
       if (this._current === null) {
@@ -10142,8 +10307,8 @@ var Slider = /*#__PURE__*/function (_Component) {
   }, {
     key: "_stop",
     value: function _stop(e) {
-      e.stopPropagation();
-
+      // e.preventDefault();
+      // e.stopPropagation();
       if (this._current !== null) {
         this._current = null;
         this._offset = 0;
@@ -10155,6 +10320,7 @@ var Slider = /*#__PURE__*/function (_Component) {
   }, {
     key: "_slide",
     value: function _slide(e) {
+      e.preventDefault();
       e.stopPropagation();
 
       if (this._current) {
@@ -10270,14 +10436,19 @@ var Slider = /*#__PURE__*/function (_Component) {
       return this._min;
     },
     set: function set(min) {
-      if (!isNaN(min) && min <= this.max) {
+      if (!isNaN(min) && isNaN(this._max) || min <= this._max) {
         this._min = min;
 
         if (!this._lo) {
           this._lo = this._min;
-          var event = document.createEvent('Event');
-          event.initEvent('change', false, false);
-          this.dispatchEvent(event);
+
+          if (!isNaN(this._min) && !isNaN(this._max)) {
+            var event = document.createEvent('Event');
+            event.initEvent('change', false, false);
+            this.dispatchEvent(event);
+          }
+        } else if (this._min > this.lo) {
+          this.lo = this._min;
         }
       }
     }
@@ -10287,14 +10458,19 @@ var Slider = /*#__PURE__*/function (_Component) {
       return this._max;
     },
     set: function set(max) {
-      if (!isNaN(max) && this.min <= max) {
+      if (!isNaN(max) && isNaN(this._min) || this._min <= max) {
         this._max = max;
 
         if (!this._hi) {
           this._hi = this._max;
-          var event = document.createEvent('Event');
-          event.initEvent('change', false, false);
-          this.dispatchEvent(event);
+
+          if (!isNaN(this._min) && !isNaN(this._max)) {
+            var event = document.createEvent('Event');
+            event.initEvent('change', false, false);
+            this.dispatchEvent(event);
+          }
+        } else if (this._max < this.hi) {
+          this.hi = this._max;
         }
       }
     }
@@ -10349,170 +10525,6 @@ var Slider = /*#__PURE__*/function (_Component) {
   }]);
 
   return Slider;
-}(Component);
-
-var Range = /*#__PURE__*/function (_Component) {
-  _inherits(Range, _Component);
-
-  var _super = _createSuper(Range);
-
-  function Range(container) {
-    var _this;
-
-    _classCallCheck(this, Range);
-
-    _this = _super.call(this, container);
-    _this._slider = new Slider(_this._sliderElement);
-
-    _this._slider.on('change', function (e) {
-      _this._lo.value = _this._slider.lo.toString();
-      _this._hi.value = _this._slider.hi.toString();
-    });
-
-    return _this;
-  }
-
-  _createClass(Range, [{
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-range');
-      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
-      this._lo = element.querySelector('.lo');
-      this._hi = element.querySelector('.hi');
-      this._sliderElement = element.querySelector('.slider');
-    }
-  }, {
-    key: "min",
-    get: function get() {
-      return this._slider.min;
-    },
-    set: function set(min) {
-      this._slider.min = min;
-    }
-  }, {
-    key: "max",
-    get: function get() {
-      return this._slider.max;
-    },
-    set: function set(max) {
-      this._slider.max = max;
-    }
-  }, {
-    key: "lo",
-    get: function get() {
-      return this._slider.lo;
-    },
-    set: function set(lo) {
-      this._slider.lo = lo;
-    }
-  }, {
-    key: "hi",
-    get: function get() {
-      return this._slider.hi;
-    },
-    set: function set(hi) {
-      this._slider.hi = hi;
-    }
-  }]);
-
-  return Range;
-}(Component);
-
-var Spinner = /*#__PURE__*/function (_Component) {
-  _inherits(Spinner, _Component);
-
-  var _super = _createSuper(Spinner);
-
-  function Spinner(container) {
-    var _this;
-
-    _classCallCheck(this, Spinner);
-
-    _this = _super.call(this, container);
-    _this._value = 0;
-    _this._min = 0;
-    _this._max = 0;
-
-    _this._up.addEventListener('click', _this.increment.bind(_assertThisInitialized(_this)));
-
-    _this._down.addEventListener('click', _this.decrement.bind(_assertThisInitialized(_this)));
-
-    _this._input.addEventListener('change', _this._onChange.bind(_assertThisInitialized(_this)));
-
-    return _this;
-  }
-
-  _createClass(Spinner, [{
-    key: "_onChange",
-    value: function _onChange(e) {
-      e.stopPropagation();
-      this.value = parseInt(this._input.value, 10);
-    }
-  }, {
-    key: "_validate",
-    value: function _validate(value) {
-      return !isNaN(value) && this._min <= value && value <= this._max;
-    }
-  }, {
-    key: "increment",
-    value: function increment(e) {
-      e.stopPropagation();
-      this.value = this._value + 1;
-    }
-  }, {
-    key: "decrement",
-    value: function decrement(e) {
-      e.stopPropagation();
-      this.value = this._value - 1;
-    }
-  }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-spinner');
-      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"spinner-icon spinner-up\"></i>\n            <i class=\"spinner-icon spinner-down\"></i>\n        </div>";
-      this._input = element.querySelector('input');
-      this._up = element.querySelector('.spinner-up');
-      this._down = element.querySelector('.spinner-down');
-    }
-  }, {
-    key: "value",
-    get: function get() {
-      return this._value;
-    },
-    set: function set(value) {
-      if (this._validate(value)) {
-        this._value = value;
-        var event = document.createEvent('Event');
-        event.initEvent("change", false, false);
-        event.detail = this._value;
-        this.dispatchEvent(event);
-      }
-
-      this._input.value = this._value.toString();
-    }
-  }, {
-    key: "min",
-    get: function get() {
-      return this._min;
-    },
-    set: function set(min) {
-      if (!isNaN(min) && min <= this._max) {
-        this._min = min;
-      }
-    }
-  }, {
-    key: "max",
-    get: function get() {
-      return this._max;
-    },
-    set: function set(max) {
-      if (!isNaN(max) && this._min <= max) {
-        this._max = max;
-      }
-    }
-  }]);
-
-  return Spinner;
 }(Component);
 
 var Tabs = /*#__PURE__*/function (_Component) {
@@ -10634,7 +10646,7 @@ exports.Component = Component;
 exports.Dialog = Dialog;
 exports.Form = Form;
 exports.Menu = Menu;
-exports.Range = Range;
+exports.RangeSlider = RangeSlider;
 exports.Slider = Slider;
 exports.Spinner = Spinner;
 exports.Tabs = Tabs;
