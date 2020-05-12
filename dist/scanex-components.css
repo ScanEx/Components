@@ -19,6 +19,27 @@
     width: 18px;
     height: 18px;
 }
+.scanex-component-form > table,
+.scanex-component-form > table > tbody > tr > td:last-child,
+.scanex-component-form > table > tbody > tr > td > input[type=text],
+.scanex-component-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-component-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-component-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}
 .scanex-component-dialog {
     position: absolute;
     top: 60px;
@@ -52,27 +73,6 @@
     background-repeat: no-repeat;
     width: 15px;
     height: 15px;
-}
-.scanex-component-form > table,
-.scanex-component-form > table > tbody > tr > td:last-child,
-.scanex-component-form > table > tbody > tr > td > input[type=text],
-.scanex-component-form > table > tbody > tr > td > textarea {
-    width: 100%;
-}
-.scanex-component-form > table > tbody > tr > td > input[type=text] {
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td > textarea {
-    resize: none;
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td {
-    vertical-align: top;
-}
-.scanex-component-form > table > tbody > tr > td:first-child > label {
-    margin-right: 10px;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -159,15 +159,6 @@
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
 }
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
-}
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
 }
@@ -179,4 +170,13 @@
     width: 35px;
     text-align: center;
     border: none;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
 }
