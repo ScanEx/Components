@@ -10,7 +10,7 @@ export default [
     {
         input: 'example/App.js',
         output: { 
-            file: pkg.browser,
+            file: 'public/main.js',
             format: 'iife',
             sourcemap: true,
             name: 'Example'
@@ -48,5 +48,5 @@ export default [
                 include: ['src/**']
             }),
         ],
-    },   
+    },
 ];
