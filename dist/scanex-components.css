@@ -159,6 +159,15 @@
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
 }
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
+}
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
 }
@@ -170,13 +179,4 @@
     width: 35px;
     text-align: center;
     border: none;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
 }

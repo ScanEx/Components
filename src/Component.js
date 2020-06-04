@@ -1,5 +1,5 @@
 import './Component.css';
-import EventTarget from 'scanex-event-target/index.js';
+import EventTarget from '@scanex/event-target/index.js';
 
 class Component extends EventTarget {
     constructor(container) {
