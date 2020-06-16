@@ -107,6 +107,22 @@ html, body {
     width: 15px;
     height: 15px;
 }
+.scanex-component-dialog {
+    position: absolute;
+    top: 60px;
+    left: 330px;
+    z-index: 1000;
+    background-color: #FFFFFF;
+}
+.scanex-component-dialog > .header {    
+    cursor: pointer;    
+}
+.scanex-component-dialog > .header > .close {
+    float: right;
+}
+.scanex-component-dialog > .footer {
+    text-align: center;
+}
 .scanex-component-form > table,
 .scanex-component-form > table > tbody > tr > td:last-child,
 .scanex-component-form > table > tbody > tr > td > input[type=text],
@@ -160,21 +176,57 @@ html, body {
 .scanex-component-tabs > .panels > .hidden {
     visibility: hidden;
 }
-.scanex-component-dialog {
-    position: absolute;
-    top: 60px;
-    left: 330px;
-    z-index: 1000;
-    background-color: #FFFFFF;
+.scanex-component-slider {
+    height: 21px;    
+    cursor: pointer;
 }
-.scanex-component-dialog > .header {    
-    cursor: pointer;    
+.scanex-component-slider > .slider-bar {   
+    background-color: gainsboro;
+    position: relative;
+    top: 8px;
 }
-.scanex-component-dialog > .header > .close {
+.scanex-component-slider > .slider-bar >.slider-range {
+    position: relative;
+    height: 5px;
+    background-color: skyblue;    
+}
+.scanex-component-slider > .slider-bar .slider-tick {
+    position: relative;
+    top: -4px;
+}
+.scanex-component-slider > .slider-bar .slider-tick > * {
+    display: block;
+}
+.scanex-component-slider > .slider-bar .slider-tick > label.hidden {
+    display: none;
+}
+.scanex-component-slider > .slider-bar .slider-tick i {    
+    width: 12px;
+    height: 12px;    
+    background-color: white;
+    border-radius: 30px;
+    box-shadow: 0px 1px 3px 1px rgba(88, 88, 88, 0.52);
+}
+.scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
 }
-.scanex-component-dialog > .footer {
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
+}
+.scanex-component-range > table,
+.scanex-component-range > table > tbody > tr > td:nth-child(2) {
+    width: 100%;
+}
+.scanex-component-range input {
+    width: 35px;
     text-align: center;
+    border: none;
 }
 .noselect {
     -webkit-touch-callout: none;
@@ -213,56 +265,4 @@ html, body {
 }
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
-}
-.scanex-component-range > table,
-.scanex-component-range > table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 35px;
-    text-align: center;
-    border: none;
-}
-.scanex-component-slider {
-    height: 21px;    
-    cursor: pointer;
-}
-.scanex-component-slider > .slider-bar {   
-    background-color: gainsboro;
-    position: relative;
-    top: 8px;
-}
-.scanex-component-slider > .slider-bar >.slider-range {
-    position: relative;
-    height: 5px;
-    background-color: skyblue;    
-}
-.scanex-component-slider > .slider-bar .slider-tick {
-    position: relative;
-    top: -4px;
-}
-.scanex-component-slider > .slider-bar .slider-tick > * {
-    display: block;
-}
-.scanex-component-slider > .slider-bar .slider-tick > label.hidden {
-    display: none;
-}
-.scanex-component-slider > .slider-bar .slider-tick i {    
-    width: 12px;
-    height: 12px;    
-    background-color: white;
-    border-radius: 30px;
-    box-shadow: 0px 1px 3px 1px rgba(88, 88, 88, 0.52);
-}
-.scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
-    float: right;
 }
