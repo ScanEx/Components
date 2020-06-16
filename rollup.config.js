@@ -17,7 +17,13 @@ export default [
         },
         plugins: [                        
             json(),
-            resolve(),            
+            resolve({
+                dedupe: [
+                    '@scanex/event-target',
+                    '@scanex/translations',
+                    'core-js',
+                ]
+            }),
             commonjs(),
             string({
                 include: "**/*.txt",
@@ -31,15 +37,21 @@ export default [
         ],
     },
     {
-        input: 'index.js',
+        input: pkg.module,
         output: { 
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true
+            sourcemap: true,
         },
         plugins: [
             json(),
-            resolve(),
+            resolve({
+                dedupe: [
+                    '@scanex/event-target',
+                    '@scanex/translations',
+                    'core-js',
+                ]
+            }),
             commonjs(),
             css({dest: 'dist/scanex-components.css', minified: false}),
             babel({                

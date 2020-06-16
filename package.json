@@ -2,6 +2,7 @@
   "name": "@scanex/components",
   "version": "1.0.0",
   "main": "dist/scanex-components.js",
+  "module": "index.js",
   "scripts": {
     "build": "npm run svg & rollup -c",
     "svg": "node build-svg.js",
@@ -14,16 +15,16 @@
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
     "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^7.1.1",
-    "core-js": "^3.6.4",
+    "core-js": "^3.6.5",
     "mini-svg-data-uri": "^1.2.3",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-css-porter": "^1.0.2",
     "rollup-plugin-string": "^3.0.0",
-    "serve": "^11.3.1"
+    "serve": "^11.3.2"
   },
   "dependencies": {
     "@scanex/event-target": "git+https://github.com/Scanex/EventTarget.git",

@@ -40,22 +40,6 @@
 .scanex-component-form > table > tbody > tr > td:first-child > label {
     margin-right: 10px;
 }
-.scanex-component-dialog {
-    position: absolute;
-    top: 60px;
-    left: 330px;
-    z-index: 1000;
-    background-color: #FFFFFF;
-}
-.scanex-component-dialog > .header {    
-    cursor: pointer;    
-}
-.scanex-component-dialog > .header > .close {
-    float: right;
-}
-.scanex-component-dialog > .footer {
-    text-align: center;
-}
 .scanex-component-menu {
     position: relative;
 }
@@ -73,6 +57,22 @@
     background-repeat: no-repeat;
     width: 15px;
     height: 15px;
+}
+.scanex-component-dialog {
+    position: absolute;
+    top: 60px;
+    left: 330px;
+    z-index: 1000;
+    background-color: #FFFFFF;
+}
+.scanex-component-dialog > .header {    
+    cursor: pointer;    
+}
+.scanex-component-dialog > .header > .close {
+    float: right;
+}
+.scanex-component-dialog > .footer {
+    text-align: center;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -168,9 +168,6 @@
     top: -20px;
     background-color: #ffffff;
 }
-.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
-    float: left;
-}
 .scanex-component-range > table,
 .scanex-component-range > table > tbody > tr > td:nth-child(2) {
     width: 100%;
@@ -179,4 +176,7 @@
     width: 35px;
     text-align: center;
     border: none;
+}
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
 }
