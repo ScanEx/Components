@@ -21,6 +21,27 @@
     width: 18px;
     height: 18px;
 }
+.scanex-component-form > table,
+.scanex-component-form > table > tbody > tr > td:last-child,
+.scanex-component-form > table > tbody > tr > td > input[type=text],
+.scanex-component-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-component-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-component-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}
 .scanex-component-dialog {
     position: absolute;
     top: 60px;
@@ -58,26 +79,19 @@
     width: 15px;
     height: 15px;
 }
-.scanex-component-form > table,
-.scanex-component-form > table > tbody > tr > td:last-child,
-.scanex-component-form > table > tbody > tr > td > input[type=text],
-.scanex-component-form > table > tbody > tr > td > textarea {
-    width: 100%;
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
+    float: left;
 }
-.scanex-component-form > table > tbody > tr > td > input[type=text] {
-    padding: 0px;
-    margin: 0px;    
+.scanex-component-tabs > .panels {
+    clear: both;
+    position: relative;
 }
-.scanex-component-form > table > tbody > tr > td > textarea {
-    resize: none;
-    padding: 0px;
-    margin: 0px;    
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
 }
-.scanex-component-form > table > tbody > tr > td {
-    vertical-align: top;
-}
-.scanex-component-form > table > tbody > tr > td:first-child > label {
-    margin-right: 10px;
+.scanex-component-tabs > .panels > .hidden {
+    visibility: hidden;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -102,20 +116,6 @@
     margin-top: 1px;
     border-top: 1px solid;
 }
-.scanex-component-tabs > .tabs > *,
-.scanex-component-tabs > .panels > * {
-    float: left;
-}
-.scanex-component-tabs > .panels {
-    clear: both;
-    position: relative;
-}
-.scanex-component-tabs > .panels > .panel {
-    position: absolute;    
-}
-.scanex-component-tabs > .panels > .hidden {
-    visibility: hidden;
-}
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
     vertical-align: middle;    
     display: inline-block;
@@ -137,24 +137,6 @@
 }
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
-}
-.scanex-component-range > table,
-.scanex-component-range > table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 35px;
-    text-align: center;
-    border: none;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -189,4 +171,22 @@
 }
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
+}
+.scanex-component-range > table,
+.scanex-component-range > table > tbody > tr > td:nth-child(2) {
+    width: 100%;
+}
+.scanex-component-range input {
+    width: 35px;
+    text-align: center;
+    border: none;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
 }
