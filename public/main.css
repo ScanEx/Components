@@ -222,6 +222,9 @@ html, body {
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
     margin-left: 15px;
 }
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
+}
 .scanex-component-slider {
     height: 21px;    
     cursor: pointer;
@@ -255,9 +258,6 @@ html, body {
 }
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
-}
-.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
-    float: left;
 }
 .scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
     float: left;
