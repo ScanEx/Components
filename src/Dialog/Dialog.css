@@ -8,9 +8,12 @@
 .scanex-component-dialog > .header {    
     cursor: pointer;    
 }
-.scanex-component-dialog > .header > .close {
+.scanex-component-dialog > .header > .header-buttons {
     float: right;
 }
 .scanex-component-dialog > .footer {
     text-align: center;
+}
+.scanex-component-dialog .hidden {
+    display: none;
 }

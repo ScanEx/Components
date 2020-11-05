@@ -5,14 +5,19 @@
 .scanex-component-spinner input {
     text-align: center;
 }
-.scanex-component-spinner .spinner-icon {
-    cursor: pointer;
+.scanex-component-spinner .buttons .scanex-component-icon {
     display: block;
+    cursor: pointer;    
     background-position: center;
     background-repeat: no-repeat;
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 8px;
 }
-.scanex-component-spinner .spinner-icon.spinner-up {
+.scanex-component-spinner .buttons .scanex-component-icon.spinner-up {
+    margin-bottom: 1px;
     border-bottom: 1px solid;
+}
+.scanex-component-spinner .buttons .scanex-component-icon.spinner-down {
+    margin-top: 1px;
+    border-top: 1px solid;
 }

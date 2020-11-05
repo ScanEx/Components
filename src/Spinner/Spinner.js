@@ -59,8 +59,8 @@ class Spinner extends Component {
         element.classList.add('scanex-component-spinner');
         element.innerHTML = `<input type="text" value="0"/>
         <div class="buttons">
-            <i class="spinner-icon spinner-up"></i>
-            <i class="spinner-icon spinner-down"></i>
+            <i class="scanex-component-icon spinner-up"></i>            
+            <i class="scanex-component-icon spinner-down"></i>
         </div>`;
         this._input = element.querySelector('input');
         this._up = element.querySelector('.spinner-up');

@@ -2,21 +2,40 @@ import './Dialog.css';
 import T from '@scanex/translations';
 import Component from '../Component.js';
 
-T.addText ('rus', {    
-    close: 'Закрыть',   
+T.addText ('rus', { 
+    scanex: {
+        components: {
+            dialog: {
+                close: 'Закрыть',
+                maximize: 'Развернуть',
+                minimize: 'Свернуть',
+            }
+        }
+    }   
+    
 });
 
 T.addText ('eng', {
-    close: 'Close',
+    scanex: {
+        components: {
+            dialog: {
+                close: 'Close',
+                maximize: 'Maximize',
+                minimize: 'Minimize',
+            }
+        }
+    }    
 });
 
-class Dialog extends Component {
-    constructor(title, id) {
-        super(document.body);
+const translate = T.getText.bind(T);
+
+export default class Dialog extends Component {
+    constructor(title, id, collapsible = false) {
+        super(document.body, collapsible);
         if (id) {
             this._element.setAttribute('id', id);
         }
-        this._titleElement.innerText = title;
+        this._titleElement.innerText = title;        
         this._moving = false;
         this._offsetX;
         this._offsetY;
@@ -52,26 +71,64 @@ class Dialog extends Component {
             this._element.style.top = `${clientY - this._offsetY}px`;
         }
     }
-    _render(element) {
-        element.classList.add('scanex-component-dialog');
-
+    _toggle(e) {
+        e.stopPropagation();
+        if (this._btnToggle.classList.contains('minimize')) {
+            this._btnToggle.setAttribute('title', translate('scanex.components.dialog.maximize'));
+            this._btnToggle.classList.remove('minimize');
+            this._btnToggle.classList.add('maximize');
+            this._content.classList.add('hidden');
+            this._footer.classList.add('hidden');
+            let event = document.createEvent('Event');
+            event.initEvent('minimize', false, false);
+            this.dispatchEvent(event);
+        }
+        else {
+            this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+            this._btnToggle.classList.remove('maximize');
+            this._btnToggle.classList.add('minimize');            
+            this._content.classList.remove('hidden');
+            this._footer.classList.remove('hidden');
+            let event = document.createEvent('Event');
+            event.initEvent('maximize', false, false);
+            this.dispatchEvent(event);
+        }
+        
+    }
+    _close(e) {
+        e.stopPropagation();
+        let event = document.createEvent('Event');
+        event.initEvent('close', false, false);
+        this.dispatchEvent(event);
+    }
+    _render(element, collapsible) {
+        element.classList.add('scanex-component-dialog');        
         this._header = document.createElement('div');
         this._header.classList.add('header');
 
         this._titleElement = document.createElement('label');        
         this._header.appendChild(this._titleElement);
 
-        let button = document.createElement('i');
-        button.setAttribute('title', T.getText('close'));
-        button.classList.add('icon');
-        button.classList.add('close');
-        button.addEventListener('click', e => {
-            e.stopPropagation();
-            let event = document.createEvent('Event');
-            event.initEvent('close', false, false);
-            this.dispatchEvent(event);
-        });
-        this._header.appendChild(button);
+        let buttons = document.createElement('div');
+        buttons.classList.add('header-buttons');
+
+        if (collapsible) {
+            this._btnToggle = document.createElement('i');
+            this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+            this._btnToggle.classList.add('scanex-component-icon');
+            this._btnToggle.classList.add('minimize');
+            this._btnToggle.addEventListener('click', this._toggle.bind(this));
+            buttons.appendChild(this._btnToggle);
+        }
+
+        let btnClose = document.createElement('i');
+        btnClose.setAttribute('title', translate('scanex.components.dialog.close'));
+        btnClose.classList.add('scanex-component-icon');
+        btnClose.classList.add('close');
+        btnClose.addEventListener('click', this._close.bind(this));
+        buttons.appendChild(btnClose);
+
+        this._header.appendChild(buttons);
 
         element.appendChild(this._header);
 
@@ -83,6 +140,4 @@ class Dialog extends Component {
         this._footer.classList.add('footer');
         element.appendChild(this._footer);
     }
-}
-
-export default Dialog;
+};

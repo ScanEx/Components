@@ -147,7 +147,7 @@ window.addEventListener('load', () => {
             dlg.destroy();
             dlg = null;
         }
-        dlg = new Dialog('Lorem ipsum', 'lorem');
+        dlg = new Dialog('Lorem ipsum', 'lorem', true);
         dlg.content.innerText = lorem;
         dlg.footer.innerText = 'Footer';
         dlg.addEventListener('close', () => {

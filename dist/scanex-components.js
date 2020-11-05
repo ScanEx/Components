@@ -920,7 +920,7 @@ var Component = /*#__PURE__*/function (_EventTarget) {
 
   var _super = _createSuper(Component);
 
-  function Component(container) {
+  function Component(container, options) {
     var _this;
 
     _classCallCheck(this, Component);
@@ -933,7 +933,7 @@ var Component = /*#__PURE__*/function (_EventTarget) {
 
     _this._container.appendChild(_this._element);
 
-    _this._render(_this._element);
+    _this._render(_this._element, options);
 
     return _this;
   }
@@ -954,7 +954,7 @@ var Component = /*#__PURE__*/function (_EventTarget) {
     }
   }, {
     key: "_render",
-    value: function _render(element) {}
+    value: function _render(element, options) {}
   }]);
 
   return Component;
@@ -1683,11 +1683,28 @@ window.Scanex.translations = window.Scanex.translations || new Translations();
 var T = window.Scanex.translations;
 
 T.addText('rus', {
-  close: 'Закрыть'
+  scanex: {
+    components: {
+      dialog: {
+        close: 'Закрыть',
+        maximize: 'Развернуть',
+        minimize: 'Свернуть'
+      }
+    }
+  }
 });
 T.addText('eng', {
-  close: 'Close'
+  scanex: {
+    components: {
+      dialog: {
+        close: 'Close',
+        maximize: 'Maximize',
+        minimize: 'Minimize'
+      }
+    }
+  }
 });
+var translate = T.getText.bind(T);
 
 var Dialog = /*#__PURE__*/function (_Component) {
   _inherits(Dialog, _Component);
@@ -1697,9 +1714,11 @@ var Dialog = /*#__PURE__*/function (_Component) {
   function Dialog(title, id) {
     var _this;
 
+    var collapsible = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
     _classCallCheck(this, Dialog);
 
-    _this = _super.call(this, document.body);
+    _this = _super.call(this, document.body, collapsible);
 
     if (id) {
       _this._element.setAttribute('id', id);
@@ -1750,10 +1769,53 @@ var Dialog = /*#__PURE__*/function (_Component) {
       }
     }
   }, {
-    key: "_render",
-    value: function _render(element) {
-      var _this2 = this;
+    key: "_toggle",
+    value: function _toggle(e) {
+      e.stopPropagation();
 
+      if (this._btnToggle.classList.contains('minimize')) {
+        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.maximize'));
+
+        this._btnToggle.classList.remove('minimize');
+
+        this._btnToggle.classList.add('maximize');
+
+        this._content.classList.add('hidden');
+
+        this._footer.classList.add('hidden');
+
+        var event = document.createEvent('Event');
+        event.initEvent('minimize', false, false);
+        this.dispatchEvent(event);
+      } else {
+        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+
+        this._btnToggle.classList.remove('maximize');
+
+        this._btnToggle.classList.add('minimize');
+
+        this._content.classList.remove('hidden');
+
+        this._footer.classList.remove('hidden');
+
+        var _event = document.createEvent('Event');
+
+        _event.initEvent('maximize', false, false);
+
+        this.dispatchEvent(_event);
+      }
+    }
+  }, {
+    key: "_close",
+    value: function _close(e) {
+      e.stopPropagation();
+      var event = document.createEvent('Event');
+      event.initEvent('close', false, false);
+      this.dispatchEvent(event);
+    }
+  }, {
+    key: "_render",
+    value: function _render(element, collapsible) {
       element.classList.add('scanex-component-dialog');
       this._header = document.createElement('div');
 
@@ -1763,19 +1825,31 @@ var Dialog = /*#__PURE__*/function (_Component) {
 
       this._header.appendChild(this._titleElement);
 
-      var button = document.createElement('i');
-      button.setAttribute('title', T.getText('close'));
-      button.classList.add('icon');
-      button.classList.add('close');
-      button.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var event = document.createEvent('Event');
-        event.initEvent('close', false, false);
+      var buttons = document.createElement('div');
+      buttons.classList.add('header-buttons');
 
-        _this2.dispatchEvent(event);
-      });
+      if (collapsible) {
+        this._btnToggle = document.createElement('i');
 
-      this._header.appendChild(button);
+        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+
+        this._btnToggle.classList.add('scanex-component-icon');
+
+        this._btnToggle.classList.add('minimize');
+
+        this._btnToggle.addEventListener('click', this._toggle.bind(this));
+
+        buttons.appendChild(this._btnToggle);
+      }
+
+      var btnClose = document.createElement('i');
+      btnClose.setAttribute('title', translate('scanex.components.dialog.close'));
+      btnClose.classList.add('scanex-component-icon');
+      btnClose.classList.add('close');
+      btnClose.addEventListener('click', this._close.bind(this));
+      buttons.appendChild(btnClose);
+
+      this._header.appendChild(buttons);
 
       element.appendChild(this._header);
       this._content = document.createElement('div');
@@ -2442,7 +2516,7 @@ var Spinner = /*#__PURE__*/function (_Component) {
     key: "_render",
     value: function _render(element) {
       element.classList.add('scanex-component-spinner');
-      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"spinner-icon spinner-up\"></i>\n            <i class=\"spinner-icon spinner-down\"></i>\n        </div>";
+      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"scanex-component-icon spinner-up\"></i>            \n            <i class=\"scanex-component-icon spinner-down\"></i>\n        </div>";
       this._input = element.querySelector('input');
       this._up = element.querySelector('.spinner-up');
       this._down = element.querySelector('.spinner-down');

@@ -6,7 +6,7 @@
     -ms-user-select: none;
     user-select: none;
 }
-.scanex-component .icon {
+.scanex-component .scanex-component-icon {
     cursor: pointer;
     display: inline-block;
     background-position: center;
