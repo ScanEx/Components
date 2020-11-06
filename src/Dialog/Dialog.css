@@ -1,6 +1,10 @@
 .scanex-component-dialog {
     position: absolute;    
-    z-index: 1000;
+    z-index: 1000;    
+}
+.scanex-component-dialog > .header,
+.scanex-component-dialog > .content,
+.scanex-component-dialog > .footer {
     background-color: #FFFFFF;
 }
 .scanex-component-dialog > .header {    
