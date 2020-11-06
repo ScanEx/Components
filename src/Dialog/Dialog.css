@@ -1,7 +1,5 @@
 .scanex-component-dialog {
-    position: absolute;
-    top: 60px;
-    left: 330px;
+    position: absolute;    
     z-index: 1000;
     background-color: #FFFFFF;
 }

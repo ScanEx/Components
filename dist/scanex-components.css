@@ -42,25 +42,6 @@
 .scanex-component-form > table > tbody > tr > td:first-child > label {
     margin-right: 10px;
 }
-.scanex-component-dialog {
-    position: absolute;
-    top: 60px;
-    left: 330px;
-    z-index: 1000;
-    background-color: #FFFFFF;
-}
-.scanex-component-dialog > .header {    
-    cursor: pointer;    
-}
-.scanex-component-dialog > .header > .header-buttons {
-    float: right;
-}
-.scanex-component-dialog > .footer {
-    text-align: center;
-}
-.scanex-component-dialog .hidden {
-    display: none;
-}
 .scanex-component-menu {
     position: relative;
 }
@@ -79,19 +60,22 @@
     width: 15px;
     height: 15px;
 }
-.scanex-component-tabs > .tabs > *,
-.scanex-component-tabs > .panels > * {
-    float: left;
-}
-.scanex-component-tabs > .panels {
-    clear: both;
-    position: relative;
-}
-.scanex-component-tabs > .panels > .panel {
+.scanex-component-dialog {
     position: absolute;    
+    z-index: 1000;
+    background-color: #FFFFFF;
 }
-.scanex-component-tabs > .panels > .hidden {
-    visibility: hidden;
+.scanex-component-dialog > .header {    
+    cursor: pointer;    
+}
+.scanex-component-dialog > .header > .header-buttons {
+    float: right;
+}
+.scanex-component-dialog > .footer {
+    text-align: center;
+}
+.scanex-component-dialog .hidden {
+    display: none;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -116,6 +100,20 @@
     margin-top: 1px;
     border-top: 1px solid;
 }
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
+    float: left;
+}
+.scanex-component-tabs > .panels {
+    clear: both;
+    position: relative;
+}
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
+}
+.scanex-component-tabs > .panels > .hidden {
+    visibility: hidden;
+}
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
     vertical-align: middle;    
     display: inline-block;
@@ -137,6 +135,15 @@
 }
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -180,13 +187,4 @@
     width: 35px;
     text-align: center;
     border: none;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
 }

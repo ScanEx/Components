@@ -30,12 +30,12 @@ T.addText ('eng', {
 const translate = T.getText.bind(T);
 
 export default class Dialog extends Component {
-    constructor(title, id, collapsible = false) {
-        super(document.body, collapsible);
-        if (id) {
-            this._element.setAttribute('id', id);
+    constructor({title, id, collapsible = false, top, left}) {
+        super(document.body, {id, collapsible, top, left});        
+        if (this._id) {
+            this._element.setAttribute('id', this._id);
         }
-        this._titleElement.innerText = title;        
+        this._titleElement.innerText = title;
         this._moving = false;
         this._offsetX;
         this._offsetY;
@@ -62,13 +62,14 @@ export default class Dialog extends Component {
     }
     _stop () {
         this._moving = false;
+        this._savePosition();
     }
     _move (e) {
         if (this._moving) {
             e.stopPropagation();
             const {clientX, clientY} = e;
             this._element.style.left = `${clientX - this._offsetX}px`;
-            this._element.style.top = `${clientY - this._offsetY}px`;
+            this._element.style.top = `${clientY - this._offsetY}px`;            
         }
     }
     _toggle(e) {
@@ -101,8 +102,12 @@ export default class Dialog extends Component {
         event.initEvent('close', false, false);
         this.dispatchEvent(event);
     }
-    _render(element, collapsible) {
+    _render(element, {id, collapsible, top, left}) {
         element.classList.add('scanex-component-dialog');        
+        this._id = id;
+                
+        this._restorePosition(top, left);
+
         this._header = document.createElement('div');
         this._header.classList.add('header');
 
@@ -139,5 +144,22 @@ export default class Dialog extends Component {
         this._footer = document.createElement('div');
         this._footer.classList.add('footer');
         element.appendChild(this._footer);
+    }
+    _restorePosition(top, left) {
+        if (typeof this._id === 'string' && this._id != '') {
+            const [x, y] = window.localStorage.getItem(this._id).split(',');
+            this._element.style.top = `${y || top || Math.round (window.innerHeight / 2)}px`;
+            this._element.style.left = `${x || left || Math.round (window.innerWidth / 2)}px`;
+        }
+        else {
+            this._element.style.top = `${top || Math.round (window.innerHeight / 2)}px`;
+            this._element.style.left = `${left || Math.round (window.innerWidth / 2)}px`;
+        }
+    }
+    _savePosition() {
+        if (typeof this._id === 'string' && this._id != '') {            
+            const {top, left} = this._element.getBoundingClientRect();
+            window.localStorage.setItem(this._id, [left, top].join(','));
+        }
     }
 };

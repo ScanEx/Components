@@ -3,153 +3,6 @@
 
     var lorem = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?";
 
-    function _typeof(obj) {
-      "@babel/helpers - typeof";
-
-      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-        _typeof = function (obj) {
-          return typeof obj;
-        };
-      } else {
-        _typeof = function (obj) {
-          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-        };
-      }
-
-      return _typeof(obj);
-    }
-
-    function _classCallCheck(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    }
-
-    function _defineProperties(target, props) {
-      for (var i = 0; i < props.length; i++) {
-        var descriptor = props[i];
-        descriptor.enumerable = descriptor.enumerable || false;
-        descriptor.configurable = true;
-        if ("value" in descriptor) descriptor.writable = true;
-        Object.defineProperty(target, descriptor.key, descriptor);
-      }
-    }
-
-    function _createClass(Constructor, protoProps, staticProps) {
-      if (protoProps) _defineProperties(Constructor.prototype, protoProps);
-      if (staticProps) _defineProperties(Constructor, staticProps);
-      return Constructor;
-    }
-
-    function _inherits(subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function");
-      }
-
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: {
-          value: subClass,
-          writable: true,
-          configurable: true
-        }
-      });
-      if (superClass) _setPrototypeOf(subClass, superClass);
-    }
-
-    function _getPrototypeOf(o) {
-      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
-        return o.__proto__ || Object.getPrototypeOf(o);
-      };
-      return _getPrototypeOf(o);
-    }
-
-    function _setPrototypeOf(o, p) {
-      _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-        o.__proto__ = p;
-        return o;
-      };
-
-      return _setPrototypeOf(o, p);
-    }
-
-    function _isNativeReflectConstruct() {
-      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
-      if (Reflect.construct.sham) return false;
-      if (typeof Proxy === "function") return true;
-
-      try {
-        Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function _assertThisInitialized(self) {
-      if (self === void 0) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
-
-      return self;
-    }
-
-    function _possibleConstructorReturn(self, call) {
-      if (call && (typeof call === "object" || typeof call === "function")) {
-        return call;
-      }
-
-      return _assertThisInitialized(self);
-    }
-
-    function _createSuper(Derived) {
-      var hasNativeReflectConstruct = _isNativeReflectConstruct();
-
-      return function _createSuperInternal() {
-        var Super = _getPrototypeOf(Derived),
-            result;
-
-        if (hasNativeReflectConstruct) {
-          var NewTarget = _getPrototypeOf(this).constructor;
-
-          result = Reflect.construct(Super, arguments, NewTarget);
-        } else {
-          result = Super.apply(this, arguments);
-        }
-
-        return _possibleConstructorReturn(this, result);
-      };
-    }
-
-    function _superPropBase(object, property) {
-      while (!Object.prototype.hasOwnProperty.call(object, property)) {
-        object = _getPrototypeOf(object);
-        if (object === null) break;
-      }
-
-      return object;
-    }
-
-    function _get(target, property, receiver) {
-      if (typeof Reflect !== "undefined" && Reflect.get) {
-        _get = Reflect.get;
-      } else {
-        _get = function _get(target, property, receiver) {
-          var base = _superPropBase(target, property);
-
-          if (!base) return;
-          var desc = Object.getOwnPropertyDescriptor(base, property);
-
-          if (desc.get) {
-            return desc.get.call(receiver);
-          }
-
-          return desc.value;
-        };
-      }
-
-      return _get(target, property, receiver || target);
-    }
-
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     function createCommonjsModule(fn, module) {
@@ -670,54 +523,6 @@
       }
     };
 
-    var aFunction$1 = function (it) {
-      if (typeof it != 'function') {
-        throw TypeError(String(it) + ' is not a function');
-      } return it;
-    };
-
-    // `ToObject` abstract operation
-    // https://tc39.github.io/ecma262/#sec-toobject
-    var toObject = function (argument) {
-      return Object(requireObjectCoercible(argument));
-    };
-
-    // `Array.prototype.{ reduce, reduceRight }` methods implementation
-    var createMethod$1 = function (IS_RIGHT) {
-      return function (that, callbackfn, argumentsLength, memo) {
-        aFunction$1(callbackfn);
-        var O = toObject(that);
-        var self = indexedObject(O);
-        var length = toLength(O.length);
-        var index = IS_RIGHT ? length - 1 : 0;
-        var i = IS_RIGHT ? -1 : 1;
-        if (argumentsLength < 2) while (true) {
-          if (index in self) {
-            memo = self[index];
-            index += i;
-            break;
-          }
-          index += i;
-          if (IS_RIGHT ? index < 0 : length <= index) {
-            throw TypeError('Reduce of empty array with no initial value');
-          }
-        }
-        for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
-          memo = callbackfn(memo, self[index], index, O);
-        }
-        return memo;
-      };
-    };
-
-    var arrayReduce = {
-      // `Array.prototype.reduce` method
-      // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-      left: createMethod$1(false),
-      // `Array.prototype.reduceRight` method
-      // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
-      right: createMethod$1(true)
-    };
-
     var arrayMethodIsStrict = function (METHOD_NAME, argument) {
       var method = [][METHOD_NAME];
       return !!method && fails(function () {
@@ -726,42 +531,16 @@
       });
     };
 
-    var defineProperty = Object.defineProperty;
-    var cache = {};
+    var nativeJoin = [].join;
 
-    var thrower = function (it) { throw it; };
+    var ES3_STRINGS = indexedObject != Object;
+    var STRICT_METHOD = arrayMethodIsStrict('join', ',');
 
-    var arrayMethodUsesToLength = function (METHOD_NAME, options) {
-      if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
-      if (!options) options = {};
-      var method = [][METHOD_NAME];
-      var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
-      var argument0 = has(options, 0) ? options[0] : thrower;
-      var argument1 = has(options, 1) ? options[1] : undefined;
-
-      return cache[METHOD_NAME] = !!method && !fails(function () {
-        if (ACCESSORS && !descriptors) return true;
-        var O = { length: -1 };
-
-        if (ACCESSORS) defineProperty(O, 1, { enumerable: true, get: thrower });
-        else O[1] = 1;
-
-        method.call(O, argument0, argument1);
-      });
-    };
-
-    var $reduce = arrayReduce.left;
-
-
-
-    var STRICT_METHOD = arrayMethodIsStrict('reduce');
-    var USES_TO_LENGTH = arrayMethodUsesToLength('reduce', { 1: 0 });
-
-    // `Array.prototype.reduce` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-    _export({ target: 'Array', proto: true, forced: !STRICT_METHOD || !USES_TO_LENGTH }, {
-      reduce: function reduce(callbackfn /* , initialValue */) {
-        return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+    // `Array.prototype.join` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.join
+    _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD }, {
+      join: function join(separator) {
+        return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
       }
     });
 
@@ -1049,6 +828,12 @@
       return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
     };
 
+    var aFunction$1 = function (it) {
+      if (typeof it != 'function') {
+        throw TypeError(String(it) + ' is not a function');
+      } return it;
+    };
+
     var SPECIES$1 = wellKnownSymbol('species');
 
     // `SpeciesConstructor` abstract operation
@@ -1060,7 +845,7 @@
     };
 
     // `String.prototype.{ codePointAt, at }` methods implementation
-    var createMethod$2 = function (CONVERT_TO_STRING) {
+    var createMethod$1 = function (CONVERT_TO_STRING) {
       return function ($this, pos) {
         var S = String(requireObjectCoercible($this));
         var position = toInteger(pos);
@@ -1078,10 +863,10 @@
     var stringMultibyte = {
       // `String.prototype.codePointAt` method
       // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-      codeAt: createMethod$2(false),
+      codeAt: createMethod$1(false),
       // `String.prototype.at` method
       // https://github.com/mathiasbynens/String.prototype.at
-      charAt: createMethod$2(true)
+      charAt: createMethod$1(true)
     };
 
     var charAt = stringMultibyte.charAt;
@@ -1233,6 +1018,290 @@
         }
       ];
     }, !SUPPORTS_Y);
+
+    function _typeof(obj) {
+      "@babel/helpers - typeof";
+
+      if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+        _typeof = function (obj) {
+          return typeof obj;
+        };
+      } else {
+        _typeof = function (obj) {
+          return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+        };
+      }
+
+      return _typeof(obj);
+    }
+
+    function _classCallCheck(instance, Constructor) {
+      if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+      }
+    }
+
+    function _defineProperties(target, props) {
+      for (var i = 0; i < props.length; i++) {
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+      }
+    }
+
+    function _createClass(Constructor, protoProps, staticProps) {
+      if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+      if (staticProps) _defineProperties(Constructor, staticProps);
+      return Constructor;
+    }
+
+    function _inherits(subClass, superClass) {
+      if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function");
+      }
+
+      subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+          value: subClass,
+          writable: true,
+          configurable: true
+        }
+      });
+      if (superClass) _setPrototypeOf(subClass, superClass);
+    }
+
+    function _getPrototypeOf(o) {
+      _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+        return o.__proto__ || Object.getPrototypeOf(o);
+      };
+      return _getPrototypeOf(o);
+    }
+
+    function _setPrototypeOf(o, p) {
+      _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+        o.__proto__ = p;
+        return o;
+      };
+
+      return _setPrototypeOf(o, p);
+    }
+
+    function _isNativeReflectConstruct() {
+      if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+      if (Reflect.construct.sham) return false;
+      if (typeof Proxy === "function") return true;
+
+      try {
+        Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function _assertThisInitialized(self) {
+      if (self === void 0) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      }
+
+      return self;
+    }
+
+    function _possibleConstructorReturn(self, call) {
+      if (call && (typeof call === "object" || typeof call === "function")) {
+        return call;
+      }
+
+      return _assertThisInitialized(self);
+    }
+
+    function _createSuper(Derived) {
+      var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+      return function _createSuperInternal() {
+        var Super = _getPrototypeOf(Derived),
+            result;
+
+        if (hasNativeReflectConstruct) {
+          var NewTarget = _getPrototypeOf(this).constructor;
+
+          result = Reflect.construct(Super, arguments, NewTarget);
+        } else {
+          result = Super.apply(this, arguments);
+        }
+
+        return _possibleConstructorReturn(this, result);
+      };
+    }
+
+    function _superPropBase(object, property) {
+      while (!Object.prototype.hasOwnProperty.call(object, property)) {
+        object = _getPrototypeOf(object);
+        if (object === null) break;
+      }
+
+      return object;
+    }
+
+    function _get(target, property, receiver) {
+      if (typeof Reflect !== "undefined" && Reflect.get) {
+        _get = Reflect.get;
+      } else {
+        _get = function _get(target, property, receiver) {
+          var base = _superPropBase(target, property);
+
+          if (!base) return;
+          var desc = Object.getOwnPropertyDescriptor(base, property);
+
+          if (desc.get) {
+            return desc.get.call(receiver);
+          }
+
+          return desc.value;
+        };
+      }
+
+      return _get(target, property, receiver || target);
+    }
+
+    function _slicedToArray(arr, i) {
+      return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+    }
+
+    function _arrayWithHoles(arr) {
+      if (Array.isArray(arr)) return arr;
+    }
+
+    function _iterableToArrayLimit(arr, i) {
+      if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+      var _arr = [];
+      var _n = true;
+      var _d = false;
+      var _e = undefined;
+
+      try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);
+
+          if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;
+        _e = err;
+      } finally {
+        try {
+          if (!_n && _i["return"] != null) _i["return"]();
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+
+      return _arr;
+    }
+
+    function _unsupportedIterableToArray(o, minLen) {
+      if (!o) return;
+      if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+      var n = Object.prototype.toString.call(o).slice(8, -1);
+      if (n === "Object" && o.constructor) n = o.constructor.name;
+      if (n === "Map" || n === "Set") return Array.from(o);
+      if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+    }
+
+    function _arrayLikeToArray(arr, len) {
+      if (len == null || len > arr.length) len = arr.length;
+
+      for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+      return arr2;
+    }
+
+    function _nonIterableRest() {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+    }
+
+    // `ToObject` abstract operation
+    // https://tc39.github.io/ecma262/#sec-toobject
+    var toObject = function (argument) {
+      return Object(requireObjectCoercible(argument));
+    };
+
+    // `Array.prototype.{ reduce, reduceRight }` methods implementation
+    var createMethod$2 = function (IS_RIGHT) {
+      return function (that, callbackfn, argumentsLength, memo) {
+        aFunction$1(callbackfn);
+        var O = toObject(that);
+        var self = indexedObject(O);
+        var length = toLength(O.length);
+        var index = IS_RIGHT ? length - 1 : 0;
+        var i = IS_RIGHT ? -1 : 1;
+        if (argumentsLength < 2) while (true) {
+          if (index in self) {
+            memo = self[index];
+            index += i;
+            break;
+          }
+          index += i;
+          if (IS_RIGHT ? index < 0 : length <= index) {
+            throw TypeError('Reduce of empty array with no initial value');
+          }
+        }
+        for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
+          memo = callbackfn(memo, self[index], index, O);
+        }
+        return memo;
+      };
+    };
+
+    var arrayReduce = {
+      // `Array.prototype.reduce` method
+      // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
+      left: createMethod$2(false),
+      // `Array.prototype.reduceRight` method
+      // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
+      right: createMethod$2(true)
+    };
+
+    var defineProperty = Object.defineProperty;
+    var cache = {};
+
+    var thrower = function (it) { throw it; };
+
+    var arrayMethodUsesToLength = function (METHOD_NAME, options) {
+      if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
+      if (!options) options = {};
+      var method = [][METHOD_NAME];
+      var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+      var argument0 = has(options, 0) ? options[0] : thrower;
+      var argument1 = has(options, 1) ? options[1] : undefined;
+
+      return cache[METHOD_NAME] = !!method && !fails(function () {
+        if (ACCESSORS && !descriptors) return true;
+        var O = { length: -1 };
+
+        if (ACCESSORS) defineProperty(O, 1, { enumerable: true, get: thrower });
+        else O[1] = 1;
+
+        method.call(O, argument0, argument1);
+      });
+    };
+
+    var $reduce = arrayReduce.left;
+
+
+
+    var STRICT_METHOD$1 = arrayMethodIsStrict('reduce');
+    var USES_TO_LENGTH = arrayMethodUsesToLength('reduce', { 1: 0 });
+
+    // `Array.prototype.reduce` method
+    // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
+    _export({ target: 'Array', proto: true, forced: !STRICT_METHOD$1 || !USES_TO_LENGTH }, {
+      reduce: function reduce(callbackfn /* , initialValue */) {
+        return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+      }
+    });
 
     // optional / simple context binding
     var functionBindContext = function (fn, that, length) {
@@ -1712,17 +1781,27 @@
 
       var _super = _createSuper(Dialog);
 
-      function Dialog(title, id) {
+      function Dialog(_ref) {
         var _this;
 
-        var collapsible = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+        var title = _ref.title,
+            id = _ref.id,
+            _ref$collapsible = _ref.collapsible,
+            collapsible = _ref$collapsible === void 0 ? false : _ref$collapsible,
+            top = _ref.top,
+            left = _ref.left;
 
         _classCallCheck(this, Dialog);
 
-        _this = _super.call(this, document.body, collapsible);
+        _this = _super.call(this, document.body, {
+          id: id,
+          collapsible: collapsible,
+          top: top,
+          left: left
+        });
 
-        if (id) {
-          _this._element.setAttribute('id', id);
+        if (_this._id) {
+          _this._element.setAttribute('id', _this._id);
         }
 
         _this._titleElement.innerText = title;
@@ -1757,6 +1836,8 @@
         key: "_stop",
         value: function _stop() {
           this._moving = false;
+
+          this._savePosition();
         }
       }, {
         key: "_move",
@@ -1816,8 +1897,16 @@
         }
       }, {
         key: "_render",
-        value: function _render(element, collapsible) {
+        value: function _render(element, _ref2) {
+          var id = _ref2.id,
+              collapsible = _ref2.collapsible,
+              top = _ref2.top,
+              left = _ref2.left;
           element.classList.add('scanex-component-dialog');
+          this._id = id;
+
+          this._restorePosition(top, left);
+
           this._header = document.createElement('div');
 
           this._header.classList.add('header');
@@ -1863,6 +1952,33 @@
           this._footer.classList.add('footer');
 
           element.appendChild(this._footer);
+        }
+      }, {
+        key: "_restorePosition",
+        value: function _restorePosition(top, left) {
+          if (typeof this._id === 'string' && this._id != '') {
+            var _window$localStorage$ = window.localStorage.getItem(this._id).split(','),
+                _window$localStorage$2 = _slicedToArray(_window$localStorage$, 2),
+                x = _window$localStorage$2[0],
+                y = _window$localStorage$2[1];
+
+            this._element.style.top = "".concat(y || top || Math.round(window.innerHeight / 2), "px");
+            this._element.style.left = "".concat(x || left || Math.round(window.innerWidth / 2), "px");
+          } else {
+            this._element.style.top = "".concat(top || Math.round(window.innerHeight / 2), "px");
+            this._element.style.left = "".concat(left || Math.round(window.innerWidth / 2), "px");
+          }
+        }
+      }, {
+        key: "_savePosition",
+        value: function _savePosition() {
+          if (typeof this._id === 'string' && this._id != '') {
+            var _this$_element$getBou2 = this._element.getBoundingClientRect(),
+                top = _this$_element$getBou2.top,
+                left = _this$_element$getBou2.left;
+
+            window.localStorage.setItem(this._id, [left, top].join(','));
+          }
         }
       }, {
         key: "header",
@@ -1929,19 +2045,6 @@
         }
         A.length = n;
         return A;
-      }
-    });
-
-    var nativeJoin = [].join;
-
-    var ES3_STRINGS = indexedObject != Object;
-    var STRICT_METHOD$1 = arrayMethodIsStrict('join', ',');
-
-    // `Array.prototype.join` method
-    // https://tc39.github.io/ecma262/#sec-array.prototype.join
-    _export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$1 }, {
-      join: function join(separator) {
-        return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
       }
     });
 
@@ -3619,7 +3722,11 @@
           dlg = null;
         }
 
-        dlg = new Dialog('Lorem ipsum', 'lorem', true);
+        dlg = new Dialog({
+          title: 'Lorem ipsum',
+          id: 'lorem',
+          collapsible: true
+        });
         dlg.content.innerText = lorem;
         dlg.footer.innerText = 'Footer';
         dlg.addEventListener('close', function () {
