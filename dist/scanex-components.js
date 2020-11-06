@@ -1834,9 +1834,11 @@ var Dialog = /*#__PURE__*/function (_Component) {
   }, {
     key: "_stop",
     value: function _stop() {
-      this._moving = false;
+      if (this._moving) {
+        this._moving = false;
 
-      this._savePosition();
+        this._savePosition();
+      }
     }
   }, {
     key: "_move",

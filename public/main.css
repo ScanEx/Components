@@ -201,15 +201,6 @@ html, body {
     width: 18px;
     height: 18px;
 }
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
-}
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
     vertical-align: middle;    
     display: inline-block;
@@ -228,6 +219,9 @@ html, body {
 }
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
     margin-left: 15px;
+}
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -263,8 +257,14 @@ html, body {
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
 }
-.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
     float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
 }
 .scanex-component-range > table,
 .scanex-component-range > table > tbody > tr > td:nth-child(2) {

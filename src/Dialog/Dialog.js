@@ -61,8 +61,10 @@ export default class Dialog extends Component {
         this._moving = true;
     }
     _stop () {
-        this._moving = false;
-        this._savePosition();
+        if (this._moving) {
+            this._moving = false;
+            this._savePosition();
+        }        
     }
     _move (e) {
         if (this._moving) {
@@ -105,7 +107,7 @@ export default class Dialog extends Component {
     _render(element, {id, collapsible, top, left}) {
         element.classList.add('scanex-component-dialog');        
         this._id = id;
-                
+
         this._restorePosition(top, left);
 
         this._header = document.createElement('div');
