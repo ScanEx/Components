@@ -1958,10 +1958,12 @@ var Dialog = /*#__PURE__*/function (_Component) {
     key: "_restorePosition",
     value: function _restorePosition(top, left) {
       if (typeof this._id === 'string' && this._id != '') {
-        var _window$localStorage$ = window.localStorage.getItem(this._id).split(','),
-            _window$localStorage$2 = _slicedToArray(_window$localStorage$, 2),
-            x = _window$localStorage$2[0],
-            y = _window$localStorage$2[1];
+        var pos = window.localStorage.getItem(this._id);
+
+        var _ref3 = pos && pos.split(',') || [0, 0],
+            _ref4 = _slicedToArray(_ref3, 2),
+            x = _ref4[0],
+            y = _ref4[1];
 
         this._element.style.top = "".concat(y || top || Math.round(window.innerHeight / 2), "px");
         this._element.style.left = "".concat(x || left || Math.round(window.innerWidth / 2), "px");
