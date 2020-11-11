@@ -149,7 +149,7 @@ export default class Dialog extends Component {
     }
     _restorePosition(top, left) {
         if (typeof this._id === 'string' && this._id != '') {
-            const pos = window.localStorage.getItem(this._id);            
+            const pos = window.localStorage.getItem(`${this._id}.position`);            
             const [x, y] = pos && pos.split(',') || [0, 0];
             this._element.style.top = `${y || top || Math.round (window.innerHeight / 2)}px`;
             this._element.style.left = `${x || left || Math.round (window.innerWidth / 2)}px`;
@@ -162,7 +162,7 @@ export default class Dialog extends Component {
     _savePosition() {
         if (typeof this._id === 'string' && this._id != '') {            
             const {top, left} = this._element.getBoundingClientRect();
-            window.localStorage.setItem(this._id, [left, top].join(','));
+            window.localStorage.setItem(`${this._id}.position`, [left, top].join(','));
         }
     }
 };

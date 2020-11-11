@@ -1959,7 +1959,7 @@
         key: "_restorePosition",
         value: function _restorePosition(top, left) {
           if (typeof this._id === 'string' && this._id != '') {
-            var pos = window.localStorage.getItem(this._id);
+            var pos = window.localStorage.getItem("".concat(this._id, ".position"));
 
             var _ref3 = pos && pos.split(',') || [0, 0],
                 _ref4 = _slicedToArray(_ref3, 2),
@@ -1981,7 +1981,7 @@
                 top = _this$_element$getBou2.top,
                 left = _this$_element$getBou2.left;
 
-            window.localStorage.setItem(this._id, [left, top].join(','));
+            window.localStorage.setItem("".concat(this._id, ".position"), [left, top].join(','));
           }
         }
       }, {
