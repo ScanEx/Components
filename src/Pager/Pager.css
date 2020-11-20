@@ -1,0 +1,33 @@
+.scanex-component-pager input[type=text],
+.scanex-component-pager button {    
+    font-family: sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 6px;    
+}
+.scanex-component-pager button {
+    cursor: pointer;
+    color: #FFFFFF;
+    border: none;
+}
+.scanex-component-pager input[type=text],
+.scanex-component-pager .first,
+.scanex-component-pager .last {
+    width: 40px;    
+}
+.scanex-component-pager .previous,
+.scanex-component-pager .next {
+    background: #6B707B;
+}
+.scanex-component-pager .previous,
+.scanex-component-pager .next {    
+    width: 150px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.scanex-component-pager input[type=text] {
+    border: 1px solid #6B707B;
+}

@@ -3,6 +3,7 @@ import Component from './src/Component.js';
 import Dialog from './src/Dialog/Dialog.js';
 import Form from './src/Form/Form.js';
 import Menu from './src/Menu/Menu.js';
+import Pager from './src/Pager/Pager.js';
 import Spinner from './src/Spinner/Spinner.js';
 import * as Sliders from './src/Sliders/index.js';
 import Tabs from './src/Tabs/Tabs.js';
@@ -12,6 +13,7 @@ export {
     Dialog,
     Form,
     Menu,    
+    Pager,
     Sliders,
     Spinner,
     Tabs,

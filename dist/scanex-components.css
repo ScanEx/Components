@@ -21,6 +21,39 @@
     width: 18px;
     height: 18px;
 }
+.scanex-component-pager input[type=text],
+.scanex-component-pager button {    
+    font-family: sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 6px;    
+}
+.scanex-component-pager button {
+    cursor: pointer;
+    color: #FFFFFF;
+    border: none;
+}
+.scanex-component-pager input[type=text],
+.scanex-component-pager .first,
+.scanex-component-pager .last {
+    width: 40px;    
+}
+.scanex-component-pager .previous,
+.scanex-component-pager .next {
+    background: #6B707B;
+}
+.scanex-component-pager .previous,
+.scanex-component-pager .next {    
+    width: 150px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.scanex-component-pager input[type=text] {
+    border: 1px solid #6B707B;
+}
 .scanex-component-form > table,
 .scanex-component-form > table > tbody > tr > td:last-child,
 .scanex-component-form > table > tbody > tr > td > input[type=text],
@@ -41,6 +74,27 @@
 }
 .scanex-component-form > table > tbody > tr > td:first-child > label {
     margin-right: 10px;
+}
+.scanex-component-dialog {
+    position: absolute;    
+    z-index: 1000;    
+}
+.scanex-component-dialog > .header,
+.scanex-component-dialog > .content,
+.scanex-component-dialog > .footer {
+    background-color: #FFFFFF;
+}
+.scanex-component-dialog > .header {    
+    cursor: pointer;    
+}
+.scanex-component-dialog > .header > .header-buttons {
+    float: right;
+}
+.scanex-component-dialog > .footer {
+    text-align: center;
+}
+.scanex-component-dialog .hidden {
+    display: none;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -64,27 +118,6 @@
 .scanex-component-spinner .buttons .scanex-component-icon.spinner-down {
     margin-top: 1px;
     border-top: 1px solid;
-}
-.scanex-component-dialog {
-    position: absolute;    
-    z-index: 1000;    
-}
-.scanex-component-dialog > .header,
-.scanex-component-dialog > .content,
-.scanex-component-dialog > .footer {
-    background-color: #FFFFFF;
-}
-.scanex-component-dialog > .header {    
-    cursor: pointer;    
-}
-.scanex-component-dialog > .header > .header-buttons {
-    float: right;
-}
-.scanex-component-dialog > .footer {
-    text-align: center;
-}
-.scanex-component-dialog .hidden {
-    display: none;
 }
 .scanex-component-menu {
     position: relative;
