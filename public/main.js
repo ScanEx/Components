@@ -1903,6 +1903,15 @@
           this.dispatchEvent(event);
         }
       }, {
+        key: "destroy",
+        value: function destroy() {
+          if (this._overlay) {
+            this._overlay.remove();
+          }
+
+          _get(_getPrototypeOf(Dialog.prototype), "destroy", this).call(this);
+        }
+      }, {
         key: "_render",
         value: function _render(element, _ref2) {
           var id = _ref2.id,
@@ -1910,24 +1919,22 @@
               modal = _ref2.modal,
               top = _ref2.top,
               left = _ref2.left;
-          var container = element;
 
           if (modal) {
             this._overlay = document.createElement('div');
 
             this._overlay.classList.add('scanex-dialog-overlay');
 
-            element.appendChild(this._overlay);
-            var el = document.createElement('div');
+            this._overlay.addEventListener('click', function (e) {
+              return e.stopPropagation();
+            });
 
-            this._overlay.appendChild(el);
-
-            container = el;
+            document.body.appendChild(this._overlay);
           } else {
             this._id = id;
           }
 
-          container.classList.add('scanex-component-dialog');
+          element.classList.add('scanex-component-dialog');
           this._header = document.createElement('div');
 
           this._header.classList.add('header');
@@ -1962,19 +1969,19 @@
 
           this._header.appendChild(buttons);
 
-          container.appendChild(this._header);
+          element.appendChild(this._header);
           this._content = document.createElement('div');
 
           this._content.classList.add('content');
 
-          container.appendChild(this._content);
+          element.appendChild(this._content);
           this._footer = document.createElement('div');
 
           this._footer.classList.add('footer');
 
-          container.appendChild(this._footer);
+          element.appendChild(this._footer);
 
-          this._restorePosition(container, top, left);
+          this._restorePosition(element, top, left);
         }
       }, {
         key: "_restorePosition",

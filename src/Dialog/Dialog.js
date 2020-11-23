@@ -105,23 +105,25 @@ export default class Dialog extends Component {
         let event = document.createEvent('Event');
         event.initEvent('close', false, false);
         this.dispatchEvent(event);
-    }    
-    _render(element, {id, collapsible, modal, top, left}) {                            
-        let container = element;
+    } 
+    destroy() {
+        if (this._overlay) {
+            this._overlay.remove();
+        }
+        super.destroy();
+    }   
+    _render(element, {id, collapsible, modal, top, left}) {                                    
         if (modal) {
             this._overlay = document.createElement('div');
             this._overlay.classList.add('scanex-dialog-overlay');
-            element.appendChild(this._overlay);
-            
-            let el = document.createElement('div');
-            this._overlay.appendChild(el);
-            container = el;
+            this._overlay.addEventListener('click', e => e.stopPropagation());
+            document.body.appendChild(this._overlay);
         }
         else {
             this._id = id;
         }
-                        
-        container.classList.add('scanex-component-dialog');                    
+
+        element.classList.add('scanex-component-dialog');                    
         
         this._header = document.createElement('div');
         this._header.classList.add('header');
@@ -150,17 +152,17 @@ export default class Dialog extends Component {
 
         this._header.appendChild(buttons);
 
-        container.appendChild(this._header);
+        element.appendChild(this._header);
 
         this._content = document.createElement('div');
         this._content.classList.add('content');
-        container.appendChild(this._content);
+        element.appendChild(this._content);
 
         this._footer = document.createElement('div');
         this._footer.classList.add('footer');
-        container.appendChild(this._footer);
+        element.appendChild(this._footer);
 
-        this._restorePosition(container, top, left);
+        this._restorePosition(element, top, left);
     }
     _restorePosition(el, top, left) {        
         if (typeof this._id === 'string' && this._id != '') {
