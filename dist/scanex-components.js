@@ -982,12 +982,11 @@ var Component = /*#__PURE__*/function (_EventTarget) {
     _classCallCheck(this, Component);
 
     _this = _super.call(this);
-    _this._container = container;
     _this._element = document.createElement('div');
 
     _this._element.classList.add('scanex-component');
 
-    _this._container.appendChild(_this._element);
+    container.appendChild(_this._element);
 
     _this._render(_this._element, options);
 
@@ -997,7 +996,7 @@ var Component = /*#__PURE__*/function (_EventTarget) {
   _createClass(Component, [{
     key: "destroy",
     value: function destroy() {
-      this._container.removeChild(this._element);
+      this._element.remove();
     }
   }, {
     key: "forwardEvent",
@@ -1787,6 +1786,8 @@ var Dialog = /*#__PURE__*/function (_Component) {
         id = _ref.id,
         _ref$collapsible = _ref.collapsible,
         collapsible = _ref$collapsible === void 0 ? false : _ref$collapsible,
+        _ref$modal = _ref.modal,
+        modal = _ref$modal === void 0 ? false : _ref$modal,
         top = _ref.top,
         left = _ref.left;
 
@@ -1795,24 +1796,28 @@ var Dialog = /*#__PURE__*/function (_Component) {
     _this = _super.call(this, document.body, {
       id: id,
       collapsible: collapsible,
+      modal: modal,
       top: top,
       left: left
     });
+    _this._titleElement.innerText = title;
 
-    if (_this._id) {
-      _this._element.setAttribute('id', _this._id);
+    if (!modal) {
+      if (_this._id) {
+        _this._element.setAttribute('id', _this._id);
+      }
+
+      _this._moving = false;
+      _this._offsetX;
+      _this._offsetY;
+
+      _this._header.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this)));
+
+      _this._element.addEventListener('mousemove', _this._move.bind(_assertThisInitialized(_this)));
+
+      window.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
     }
 
-    _this._titleElement.innerText = title;
-    _this._moving = false;
-    _this._offsetX;
-    _this._offsetY;
-
-    _this._header.addEventListener('mousedown', _this._start.bind(_assertThisInitialized(_this)));
-
-    _this._element.addEventListener('mousemove', _this._move.bind(_assertThisInitialized(_this)));
-
-    window.addEventListener('mouseup', _this._stop.bind(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -1837,7 +1842,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       if (this._moving) {
         this._moving = false;
 
-        this._savePosition();
+        this._savePosition(this._element);
       }
     }
   }, {
@@ -1901,13 +1906,27 @@ var Dialog = /*#__PURE__*/function (_Component) {
     value: function _render(element, _ref2) {
       var id = _ref2.id,
           collapsible = _ref2.collapsible,
+          modal = _ref2.modal,
           top = _ref2.top,
           left = _ref2.left;
-      element.classList.add('scanex-component-dialog');
-      this._id = id;
+      var container = element;
 
-      this._restorePosition(top, left);
+      if (modal) {
+        this._overlay = document.createElement('div');
 
+        this._overlay.classList.add('scanex-dialog-overlay');
+
+        element.appendChild(this._overlay);
+        var el = document.createElement('div');
+
+        this._overlay.appendChild(el);
+
+        container = el;
+      } else {
+        this._id = id;
+      }
+
+      container.classList.add('scanex-component-dialog');
       this._header = document.createElement('div');
 
       this._header.classList.add('header');
@@ -1919,7 +1938,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       var buttons = document.createElement('div');
       buttons.classList.add('header-buttons');
 
-      if (collapsible) {
+      if (collapsible && !modal) {
         this._btnToggle = document.createElement('i');
 
         this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
@@ -1942,21 +1961,23 @@ var Dialog = /*#__PURE__*/function (_Component) {
 
       this._header.appendChild(buttons);
 
-      element.appendChild(this._header);
+      container.appendChild(this._header);
       this._content = document.createElement('div');
 
       this._content.classList.add('content');
 
-      element.appendChild(this._content);
+      container.appendChild(this._content);
       this._footer = document.createElement('div');
 
       this._footer.classList.add('footer');
 
-      element.appendChild(this._footer);
+      container.appendChild(this._footer);
+
+      this._restorePosition(container, top, left);
     }
   }, {
     key: "_restorePosition",
-    value: function _restorePosition(top, left) {
+    value: function _restorePosition(el, top, left) {
       if (typeof this._id === 'string' && this._id != '') {
         var pos = window.localStorage.getItem("".concat(this._id, ".position"));
 
@@ -1965,20 +1986,21 @@ var Dialog = /*#__PURE__*/function (_Component) {
             x = _ref4[0],
             y = _ref4[1];
 
-        this._element.style.top = "".concat(y || top || Math.round(window.innerHeight / 2), "px");
-        this._element.style.left = "".concat(x || left || Math.round(window.innerWidth / 2), "px");
+        el.style.top = "".concat(y || top || Math.round(window.innerHeight / 2), "px");
+        el.style.left = "".concat(x || left || Math.round(window.innerWidth / 2), "px");
       } else {
-        this._element.style.top = "".concat(top || Math.round(window.innerHeight / 2), "px");
-        this._element.style.left = "".concat(left || Math.round(window.innerWidth / 2), "px");
+        var r = el.getBoundingClientRect();
+        el.style.top = "".concat(top || Math.round(window.innerHeight / 2 - r.height), "px");
+        el.style.left = "".concat(left || Math.round(window.innerWidth / 2 - r.width), "px");
       }
     }
   }, {
     key: "_savePosition",
-    value: function _savePosition() {
+    value: function _savePosition(el) {
       if (typeof this._id === 'string' && this._id != '') {
-        var _this$_element$getBou2 = this._element.getBoundingClientRect(),
-            top = _this$_element$getBou2.top,
-            left = _this$_element$getBou2.left;
+        var _el$getBoundingClient = el.getBoundingClientRect(),
+            top = _el$getBoundingClient.top,
+            left = _el$getBoundingClient.left;
 
         window.localStorage.setItem("".concat(this._id, ".position"), [left, top].join(','));
       }

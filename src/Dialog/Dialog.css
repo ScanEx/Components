@@ -1,6 +1,6 @@
 .scanex-component-dialog {
     position: absolute;    
-    z-index: 1000;    
+    z-index: 10000;    
 }
 .scanex-component-dialog > .header,
 .scanex-component-dialog > .content,
@@ -18,4 +18,14 @@
 }
 .scanex-component-dialog .hidden {
     display: none;
+}
+.scanex-dialog-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 9999;    
 }

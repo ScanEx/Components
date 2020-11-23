@@ -100,6 +100,12 @@ window.addEventListener('load', () => {
                 <button>Dialog</button>
             </td>
         </tr>
+        <tr>
+            <td>Button:</td>
+            <td class="modal-dialog-button">
+                <button>Modal Dialog</button>
+            </td>
+        </tr>
     </table>`;
 
     let spinner = new Spinner(ctrl.querySelector('.spinner'));
@@ -148,6 +154,23 @@ window.addEventListener('load', () => {
             dlg = null;
         }
         dlg = new Dialog({title: 'Lorem ipsum',id: 'lorem', collapsible: true});
+        dlg.content.innerText = lorem;
+        dlg.footer.innerText = 'Footer';
+        dlg.addEventListener('close', () => {
+            dlg.destroy();
+            dlg = null;
+        });
+    });
+
+    let btnModal = ctrl.querySelector('.modal-dialog-button');
+    btnModal.addEventListener('click', e => {
+        e.stopPropagation();
+        e.preventDefault();        
+        if (dlg) {
+            dlg.destroy();
+            dlg = null;
+        }
+        dlg = new Dialog({title: 'Lorem ipsum', modal: true, top: 100, left: 400});
         dlg.content.innerText = lorem;
         dlg.footer.innerText = 'Footer';
         dlg.addEventListener('close', () => {

@@ -3,15 +3,14 @@ import EventTarget from '@scanex/event-target/index.js';
 
 class Component extends EventTarget {
     constructor(container, options) {
-        super();
-        this._container = container;
+        super();        
         this._element = document.createElement('div');
         this._element.classList.add('scanex-component');
-        this._container.appendChild(this._element);
+        container.appendChild(this._element);
         this._render(this._element, options);
     }
     destroy () {
-        this._container.removeChild(this._element);
+        this._element.remove();
     }
     forwardEvent(e) {
         e.stopPropagation();
@@ -20,7 +19,7 @@ class Component extends EventTarget {
         event.detail = e.detail;
         this.dispatchEvent(event);
     }
-    _render(element, options) {        
+    _render(element, options) {
     }
 }
 
