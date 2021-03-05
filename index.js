@@ -15,6 +15,7 @@ export {
     Form,
     Menu,    
     Pager,
+    Sidebar,
     Sliders,
     Spinner,
     Tabs,

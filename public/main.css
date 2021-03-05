@@ -180,8 +180,19 @@ html, body {
     width: 15px;
     height: 15px;
 }
-.scanex-component.scanex-component-sidebar > * {
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
     float: left;
+}
+.scanex-component-tabs > .panels {
+    clear: both;
+    position: relative;
+}
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
+}
+.scanex-component-tabs > .panels > .hidden {
+    visibility: hidden;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -206,19 +217,8 @@ html, body {
     margin-top: 1px;
     border-top: 1px solid;
 }
-.scanex-component-tabs > .tabs > *,
-.scanex-component-tabs > .panels > * {
+.scanex-component.scanex-component-sidebar > * {
     float: left;
-}
-.scanex-component-tabs > .panels {
-    clear: both;
-    position: relative;
-}
-.scanex-component-tabs > .panels > .panel {
-    position: absolute;    
-}
-.scanex-component-tabs > .panels > .hidden {
-    visibility: hidden;
 }
 .noselect {
     -webkit-touch-callout: none;
@@ -235,6 +235,25 @@ html, body {
     background-repeat: no-repeat;
     width: 18px;
     height: 18px;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
+    vertical-align: middle;    
+    display: inline-block;
+    cursor: pointer;
+}
+.scanex-component-menu .scanex-menu-item > * {
+    cursor: pointer;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-title,
+.scanex-component-menu .scanex-menu-item .scanex-menu-item-title {    
+    margin: 5px 10px 5px 10px;
+    display: inline-block;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-expander {
+    margin: 0px 5px 0px 5px;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
+    margin-left: 15px;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -273,15 +292,6 @@ html, body {
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
 }
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
-}
 .scanex-component-range > table,
 .scanex-component-range > table > tbody > tr > td:nth-child(2) {
     width: 100%;
@@ -291,29 +301,19 @@ html, body {
     text-align: center;
     border: none;
 }
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
+}
 .scanex-component-sidebar-tab > div {
     writing-mode: vertical-lr;    
     cursor: pointer;
 }
 .scanex-component-sidebar-panel.hidden {
     display: none;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
-    vertical-align: middle;    
-    display: inline-block;
-    cursor: pointer;
-}
-.scanex-component-menu .scanex-menu-item > * {
-    cursor: pointer;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-title,
-.scanex-component-menu .scanex-menu-item .scanex-menu-item-title {    
-    margin: 5px 10px 5px 10px;
-    display: inline-block;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-expander {
-    margin: 0px 5px 0px 5px;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
-    margin-left: 15px;
 }

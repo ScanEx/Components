@@ -2817,6 +2817,184 @@ var Pager = /*#__PURE__*/function (_Component) {
   return Pager;
 }(Component);
 
+var Tab = /*#__PURE__*/function (_Component) {
+  _inherits(Tab, _Component);
+
+  var _super = _createSuper(Tab);
+
+  function Tab(container, options) {
+    _classCallCheck(this, Tab);
+
+    return _super.call(this, container, options);
+  }
+
+  _createClass(Tab, [{
+    key: "_render",
+    value: function _render(element, options) {
+      var _this = this;
+
+      var id = options.id,
+          title = options.title,
+          expanded = options.expanded;
+      element.classList.add('scanex-component-sidebar-tab');
+      element.innerHTML = "<i class=\"scanex-component-icon ".concat(id, "\"></i><div>").concat(title, "</div>");
+      element.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var event = document.createEvent('Event');
+        event.initEvent('tab:click', false, false);
+        event.detail = id;
+
+        _this.dispatchEvent(event);
+      });
+      this.expanded = expanded;
+    }
+  }, {
+    key: "id",
+    get: function get() {
+      return this._options.id;
+    }
+  }, {
+    key: "expanded",
+    get: function get() {
+      return this._expanded;
+    },
+    set: function set(expanded) {
+      this._expanded = expanded;
+
+      if (this._expanded) {
+        this._element.classList.add('expanded');
+      } else {
+        this._element.classList.remove('expanded');
+      }
+    }
+  }]);
+
+  return Tab;
+}(Component);
+
+var Panel = /*#__PURE__*/function (_Component) {
+  _inherits(Panel, _Component);
+
+  var _super = _createSuper(Panel);
+
+  function Panel(container, options) {
+    _classCallCheck(this, Panel);
+
+    return _super.call(this, container, options);
+  }
+
+  _createClass(Panel, [{
+    key: "_render",
+    value: function _render(element, options) {
+      var id = options.id,
+          title = options.title,
+          expanded = options.expanded;
+      element.classList.add('scanex-component-sidebar-panel');
+      this.expanded = expanded || false;
+    }
+  }, {
+    key: "id",
+    get: function get() {
+      return this._options.id;
+    }
+  }, {
+    key: "expanded",
+    get: function get() {
+      return this._expanded;
+    },
+    set: function set(expanded) {
+      this._expanded = expanded;
+
+      if (this._expanded) {
+        this._element.classList.remove('hidden');
+      } else {
+        this._element.classList.add('hidden');
+      }
+    }
+  }]);
+
+  return Panel;
+}(Component);
+
+var Sidebar = /*#__PURE__*/function (_Component) {
+  _inherits(Sidebar, _Component);
+
+  var _super = _createSuper(Sidebar);
+
+  function Sidebar(container) {
+    var _this;
+
+    _classCallCheck(this, Sidebar);
+
+    _this = _super.call(this, container);
+    _this._current = null;
+    return _this;
+  }
+
+  _createClass(Sidebar, [{
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-sidebar');
+      element.innerHTML = "<div class=\"tabs\"></div>\n        <div class=\"panels\"></div>";
+      this._tabs = {};
+      this._tabsContainer = element.querySelector('.tabs');
+      this._panels = {};
+      this._panelsContainer = element.querySelector('.panels');
+    }
+  }, {
+    key: "add",
+    value: function add(id) {
+      var _this2 = this;
+
+      var title = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+      var tab = new Tab(this._tabsContainer, {
+        id: id,
+        title: title
+      });
+      tab.on('tab:click', function (e) {
+        if (_this2._current) {
+          _this2._panels[_this2._current].expanded = false;
+          _this2._tabs[_this2._current].expanded = false;
+
+          if (_this2._current !== id) {
+            _this2._current = id;
+            _this2._panels[_this2._current].expanded = true;
+            _this2._tabs[_this2._current].expanded = true;
+          } else {
+            _this2._current = null;
+          }
+        } else {
+          _this2._current = id;
+          _this2._panels[_this2._current].expanded = true;
+          _this2._tabs[_this2._current].expanded = true;
+        }
+
+        var event = document.createEvent('Event');
+        event.initEvent('tab:click', false, false);
+        event.detail = id;
+
+        _this2.dispatchEvent(event);
+      });
+      this._tabs[id] = tab;
+      var panel = new Panel(this._panelsContainer, {
+        id: id
+      });
+      this._panels[id] = panel;
+      return panel.element;
+    }
+  }, {
+    key: "remove",
+    value: function remove(id) {
+      this._tabs[id] && this._tabs[id].destroy();
+      delete this._tabs[id];
+      this._panels[id] && this._panels[id].destroy();
+      delete this._panels[id];
+    }
+  }]);
+
+  return Sidebar;
+}(Component);
+
 var TO_STRING_TAG = wellKnownSymbol('toStringTag');
 var test = {};
 
@@ -3925,6 +4103,7 @@ exports.Dialog = Dialog;
 exports.Form = Form;
 exports.Menu = Menu;
 exports.Pager = Pager;
+exports.Sidebar = Sidebar;
 exports.Sliders = index;
 exports.Spinner = Spinner;
 exports.Tabs = Tabs;
