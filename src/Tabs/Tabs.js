@@ -1,5 +1,5 @@
 import './Tabs.css';
-import Component from '../Component';
+import Component from '../Component.js';
 
 class Tabs extends Component {
     constructor(container) {

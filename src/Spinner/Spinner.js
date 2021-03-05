@@ -1,5 +1,5 @@
 import './Spinner.css';
-import Component from "../Component.js";
+import Component from '../Component.js';
 
 class Spinner extends Component {
     constructor(container) {

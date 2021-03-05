@@ -1,0 +1,4 @@
+.scanex-component-sidebar-tab > div {
+    writing-mode: vertical-lr;    
+    cursor: pointer;
+}

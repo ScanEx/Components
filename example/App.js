@@ -5,6 +5,7 @@ import Dialog from '../src/Dialog/Dialog.js';
 import Form from '../src/Form/Form.js';
 import Menu from '../src/Menu/Menu.js';
 import * as Sliders from '../src/Sliders/index.js';
+import Sidebar from '../src/Sidebar/Sidebar.js';
 import Spinner from '../src/Spinner/Spinner.js';
 import Tabs from '../src/Tabs/Tabs.js';
 
@@ -37,12 +38,21 @@ window.addEventListener('load', () => {
     menu.addEventListener('item:click', e => {
         alert(`Selected: ${e.detail}`);
     });
+    
 
     let content = document.createElement('div');
     content.classList.add('app-content');
     document.body.appendChild(content);
 
-    let tabs = new Tabs(content);
+    let sidebarContainer = document.createElement('div');
+    sidebarContainer.classList.add('app-sidebar');
+    content.appendChild(sidebarContainer);
+
+    let sidebar = new Sidebar(sidebarContainer);
+    let tabsContainer = sidebar.add('tabs', 'Tabs');
+    sidebar.add('controls', 'Controls');
+
+    let tabs = new Tabs(tabsContainer);
     let formTab = tabs.addTab('form', 'Form');
     let form = new Form(formTab, {
         label: {

@@ -1,5 +1,5 @@
 import './Slider1.css';
-import Component from '../Component';
+import Component from '../Component.js';
 
 class Slider1 extends Component {
     constructor(container, {min, max}) {

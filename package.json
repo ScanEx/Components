@@ -28,7 +28,7 @@
     "rollup-plugin-string": "^3.0.0"
   },
   "dependencies": {
-    "@scanex/event-target": "git+https://github.com/Scanex/EventTarget.git",
+    "@scanex/evented": "git+https://github.com/Scanex/Evented.git",
     "@scanex/translations": "git+https://github.com/ScanEx/Translations.git"
   }
 }

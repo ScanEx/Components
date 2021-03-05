@@ -1,5 +1,5 @@
 import './Interval.css';
-import Component from '../Component';
+import Component from '../Component.js';
 
 class Interval extends Component {
     constructor(container, {min, max, slider}) {

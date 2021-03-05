@@ -77,7 +77,7 @@ function _isNativeReflectConstruct() {
   if (typeof Proxy === "function") return true;
 
   try {
-    Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));
+    Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
     return true;
   } catch (e) {
     return false;
@@ -217,13 +217,13 @@ var check = function (it) {
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global_1 =
-  // eslint-disable-next-line no-undef
+  /* global globalThis -- safe */
   check(typeof globalThis == 'object' && globalThis) ||
   check(typeof window == 'object' && window) ||
   check(typeof self == 'object' && self) ||
   check(typeof commonjsGlobal == 'object' && commonjsGlobal) ||
-  // eslint-disable-next-line no-new-func
-  Function('return this')();
+  // eslint-disable-next-line no-new-func -- fallback
+  (function () { return this; })() || Function('return this')();
 
 var fails = function (exec) {
   try {
@@ -233,7 +233,7 @@ var fails = function (exec) {
   }
 };
 
-// Thank's IE8 for his funny defineProperty
+// Detect IE8's incomplete defineProperty implementation
 var descriptors = !fails(function () {
   return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] != 7;
 });
@@ -245,7 +245,7 @@ var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
 
 // `Object.prototype.propertyIsEnumerable` method implementation
-// https://tc39.github.io/ecma262/#sec-object.prototype.propertyisenumerable
+// https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
 var f = NASHORN_BUG ? function propertyIsEnumerable(V) {
   var descriptor = getOwnPropertyDescriptor(this, V);
   return !!descriptor && descriptor.enumerable;
@@ -275,14 +275,14 @@ var split = ''.split;
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
 var indexedObject = fails(function () {
   // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
-  // eslint-disable-next-line no-prototype-builtins
+  // eslint-disable-next-line no-prototype-builtins -- safe
   return !Object('z').propertyIsEnumerable(0);
 }) ? function (it) {
   return classofRaw(it) == 'String' ? split.call(it, '') : Object(it);
 } : Object;
 
 // `RequireObjectCoercible` abstract operation
-// https://tc39.github.io/ecma262/#sec-requireobjectcoercible
+// https://tc39.es/ecma262/#sec-requireobjectcoercible
 var requireObjectCoercible = function (it) {
   if (it == undefined) throw TypeError("Can't call method on " + it);
   return it;
@@ -301,7 +301,7 @@ var isObject = function (it) {
 };
 
 // `ToPrimitive` abstract operation
-// https://tc39.github.io/ecma262/#sec-toprimitive
+// https://tc39.es/ecma262/#sec-toprimitive
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
 // and the second argument - flag - preferred type is a string
 var toPrimitive = function (input, PREFERRED_STRING) {
@@ -337,7 +337,7 @@ var ie8DomDefine = !descriptors && !fails(function () {
 var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
 // `Object.getOwnPropertyDescriptor` method
-// https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
+// https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
 var f$1 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
   O = toIndexedObject(O);
   P = toPrimitive(P, true);
@@ -360,7 +360,7 @@ var anObject = function (it) {
 var nativeDefineProperty = Object.defineProperty;
 
 // `Object.defineProperty` method
-// https://tc39.github.io/ecma262/#sec-object.defineproperty
+// https://tc39.es/ecma262/#sec-object.defineproperty
 var f$2 = descriptors ? nativeDefineProperty : function defineProperty(O, P, Attributes) {
   anObject(O);
   P = toPrimitive(P, true);
@@ -416,9 +416,9 @@ var shared = createCommonjsModule(function (module) {
 (module.exports = function (key, value) {
   return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.6.5',
+  version: '3.9.1',
   mode:  'global',
-  copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2021 Denis Pushkarev (zloirock.ru)'
 });
 });
 
@@ -454,11 +454,12 @@ var getterFor = function (TYPE) {
 };
 
 if (nativeWeakMap) {
-  var store$1 = new WeakMap$1();
+  var store$1 = sharedStore.state || (sharedStore.state = new WeakMap$1());
   var wmget = store$1.get;
   var wmhas = store$1.has;
   var wmset = store$1.set;
   set = function (it, metadata) {
+    metadata.facade = it;
     wmset.call(store$1, it, metadata);
     return metadata;
   };
@@ -472,6 +473,7 @@ if (nativeWeakMap) {
   var STATE = sharedKey('state');
   hiddenKeys[STATE] = true;
   set = function (it, metadata) {
+    metadata.facade = it;
     createNonEnumerableProperty(it, STATE, metadata);
     return metadata;
   };
@@ -500,9 +502,15 @@ var TEMPLATE = String(String).split('String');
   var unsafe = options ? !!options.unsafe : false;
   var simple = options ? !!options.enumerable : false;
   var noTargetGet = options ? !!options.noTargetGet : false;
+  var state;
   if (typeof value == 'function') {
-    if (typeof key == 'string' && !has(value, 'name')) createNonEnumerableProperty(value, 'name', key);
-    enforceInternalState(value).source = TEMPLATE.join(typeof key == 'string' ? key : '');
+    if (typeof key == 'string' && !has(value, 'name')) {
+      createNonEnumerableProperty(value, 'name', key);
+    }
+    state = enforceInternalState(value);
+    if (!state.source) {
+      state.source = TEMPLATE.join(typeof key == 'string' ? key : '');
+    }
   }
   if (O === global_1) {
     if (simple) O[key] = value;
@@ -536,7 +544,7 @@ var ceil = Math.ceil;
 var floor = Math.floor;
 
 // `ToInteger` abstract operation
-// https://tc39.github.io/ecma262/#sec-tointeger
+// https://tc39.es/ecma262/#sec-tointeger
 var toInteger = function (argument) {
   return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
 };
@@ -544,7 +552,7 @@ var toInteger = function (argument) {
 var min = Math.min;
 
 // `ToLength` abstract operation
-// https://tc39.github.io/ecma262/#sec-tolength
+// https://tc39.es/ecma262/#sec-tolength
 var toLength = function (argument) {
   return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
 };
@@ -568,10 +576,10 @@ var createMethod = function (IS_INCLUDES) {
     var index = toAbsoluteIndex(fromIndex, length);
     var value;
     // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare
+    // eslint-disable-next-line no-self-compare -- NaN check
     if (IS_INCLUDES && el != el) while (length > index) {
       value = O[index++];
-      // eslint-disable-next-line no-self-compare
+      // eslint-disable-next-line no-self-compare -- NaN check
       if (value != value) return true;
     // Array#indexOf ignores holes, Array#includes - not
     } else for (;length > index; index++) {
@@ -582,10 +590,10 @@ var createMethod = function (IS_INCLUDES) {
 
 var arrayIncludes = {
   // `Array.prototype.includes` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.includes
+  // https://tc39.es/ecma262/#sec-array.prototype.includes
   includes: createMethod(true),
   // `Array.prototype.indexOf` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.indexof
+  // https://tc39.es/ecma262/#sec-array.prototype.indexof
   indexOf: createMethod(false)
 };
 
@@ -619,7 +627,7 @@ var enumBugKeys = [
 var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype');
 
 // `Object.getOwnPropertyNames` method
-// https://tc39.github.io/ecma262/#sec-object.getownpropertynames
+// https://tc39.es/ecma262/#sec-object.getownpropertynames
 var f$3 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
   return objectKeysInternal(O, hiddenKeys$1);
 };
@@ -726,62 +734,18 @@ var _export = function (options, source) {
 };
 
 // `ToObject` abstract operation
-// https://tc39.github.io/ecma262/#sec-toobject
+// https://tc39.es/ecma262/#sec-toobject
 var toObject = function (argument) {
   return Object(requireObjectCoercible(argument));
 };
 
 // `IsArray` abstract operation
-// https://tc39.github.io/ecma262/#sec-isarray
+// https://tc39.es/ecma262/#sec-isarray
 var isArray = Array.isArray || function isArray(arg) {
   return classofRaw(arg) == 'Array';
 };
 
-var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
-  // Chrome 38 Symbol has incorrect toString conversion
-  // eslint-disable-next-line no-undef
-  return !String(Symbol());
-});
-
-var useSymbolAsUid = nativeSymbol
-  // eslint-disable-next-line no-undef
-  && !Symbol.sham
-  // eslint-disable-next-line no-undef
-  && typeof Symbol.iterator == 'symbol';
-
-var WellKnownSymbolsStore = shared('wks');
-var Symbol$1 = global_1.Symbol;
-var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
-
-var wellKnownSymbol = function (name) {
-  if (!has(WellKnownSymbolsStore, name)) {
-    if (nativeSymbol && has(Symbol$1, name)) WellKnownSymbolsStore[name] = Symbol$1[name];
-    else WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
-  } return WellKnownSymbolsStore[name];
-};
-
-var SPECIES = wellKnownSymbol('species');
-
-// `ArraySpeciesCreate` abstract operation
-// https://tc39.github.io/ecma262/#sec-arrayspeciescreate
-var arraySpeciesCreate = function (originalArray, length) {
-  var C;
-  if (isArray(originalArray)) {
-    C = originalArray.constructor;
-    // cross-realm fallback
-    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
-    else if (isObject(C)) {
-      C = C[SPECIES];
-      if (C === null) C = undefined;
-    }
-  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
-};
-
-var createProperty = function (object, key, value) {
-  var propertyKey = toPrimitive(key);
-  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
-  else object[propertyKey] = value;
-};
+var engineIsNode = classofRaw(global_1.process) == 'process';
 
 var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
 
@@ -803,6 +767,56 @@ if (v8) {
 
 var engineV8Version = version && +version;
 
+var nativeSymbol = !!Object.getOwnPropertySymbols && !fails(function () {
+  /* global Symbol -- required for testing */
+  return !Symbol.sham &&
+    // Chrome 38 Symbol has incorrect toString conversion
+    // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
+    (engineIsNode ? engineV8Version === 38 : engineV8Version > 37 && engineV8Version < 41);
+});
+
+var useSymbolAsUid = nativeSymbol
+  /* global Symbol -- safe */
+  && !Symbol.sham
+  && typeof Symbol.iterator == 'symbol';
+
+var WellKnownSymbolsStore = shared('wks');
+var Symbol$1 = global_1.Symbol;
+var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
+
+var wellKnownSymbol = function (name) {
+  if (!has(WellKnownSymbolsStore, name) || !(nativeSymbol || typeof WellKnownSymbolsStore[name] == 'string')) {
+    if (nativeSymbol && has(Symbol$1, name)) {
+      WellKnownSymbolsStore[name] = Symbol$1[name];
+    } else {
+      WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
+    }
+  } return WellKnownSymbolsStore[name];
+};
+
+var SPECIES = wellKnownSymbol('species');
+
+// `ArraySpeciesCreate` abstract operation
+// https://tc39.es/ecma262/#sec-arrayspeciescreate
+var arraySpeciesCreate = function (originalArray, length) {
+  var C;
+  if (isArray(originalArray)) {
+    C = originalArray.constructor;
+    // cross-realm fallback
+    if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
+    else if (isObject(C)) {
+      C = C[SPECIES];
+      if (C === null) C = undefined;
+    }
+  } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+};
+
+var createProperty = function (object, key, value) {
+  var propertyKey = toPrimitive(key);
+  if (propertyKey in object) objectDefineProperty.f(object, propertyKey, createPropertyDescriptor(0, value));
+  else object[propertyKey] = value;
+};
+
 var SPECIES$1 = wellKnownSymbol('species');
 
 var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
@@ -819,32 +833,7 @@ var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
   });
 };
 
-var defineProperty = Object.defineProperty;
-var cache = {};
-
-var thrower = function (it) { throw it; };
-
-var arrayMethodUsesToLength = function (METHOD_NAME, options) {
-  if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
-  if (!options) options = {};
-  var method = [][METHOD_NAME];
-  var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
-  var argument0 = has(options, 0) ? options[0] : thrower;
-  var argument1 = has(options, 1) ? options[1] : undefined;
-
-  return cache[METHOD_NAME] = !!method && !fails(function () {
-    if (ACCESSORS && !descriptors) return true;
-    var O = { length: -1 };
-
-    if (ACCESSORS) defineProperty(O, 1, { enumerable: true, get: thrower });
-    else O[1] = 1;
-
-    method.call(O, argument0, argument1);
-  });
-};
-
 var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('splice');
-var USES_TO_LENGTH = arrayMethodUsesToLength('splice', { ACCESSORS: true, 0: 0, 1: 2 });
 
 var max$1 = Math.max;
 var min$2 = Math.min;
@@ -852,9 +841,9 @@ var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
 var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
 
 // `Array.prototype.splice` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.splice
+// https://tc39.es/ecma262/#sec-array.prototype.splice
 // with adding support of @@species
-_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO_LENGTH }, {
+_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
   splice: function splice(start, deleteCount /* , ...items */) {
     var O = toObject(this);
     var len = toLength(O.length);
@@ -903,14 +892,14 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT || !USES_TO
   }
 });
 
-var EventTarget = /*#__PURE__*/function () {
-  function EventTarget() {
-    _classCallCheck(this, EventTarget);
+var Evented = /*#__PURE__*/function () {
+  function Evented() {
+    _classCallCheck(this, Evented);
 
     this.listeners = {};
   }
 
-  _createClass(EventTarget, [{
+  _createClass(Evented, [{
     key: "addEventListener",
     value: function addEventListener(type, callback) {
       if (!(type in this.listeners)) {
@@ -968,11 +957,13 @@ var EventTarget = /*#__PURE__*/function () {
     }
   }]);
 
-  return EventTarget;
+  return Evented;
 }();
 
-var Component = /*#__PURE__*/function (_EventTarget) {
-  _inherits(Component, _EventTarget);
+var dist = Evented;
+
+var Component = /*#__PURE__*/function (_Evented) {
+  _inherits(Component, _Evented);
 
   var _super = _createSuper(Component);
 
@@ -1008,36 +999,20 @@ var Component = /*#__PURE__*/function (_EventTarget) {
       this.dispatchEvent(event);
     }
   }, {
+    key: "element",
+    get: function get() {
+      return this._element;
+    }
+  }, {
     key: "_render",
     value: function _render(element, options) {}
   }]);
 
   return Component;
-}(EventTarget);
-
-var arrayMethodIsStrict = function (METHOD_NAME, argument) {
-  var method = [][METHOD_NAME];
-  return !!method && fails(function () {
-    // eslint-disable-next-line no-useless-call,no-throw-literal
-    method.call(null, argument || function () { throw 1; }, 1);
-  });
-};
-
-var nativeJoin = [].join;
-
-var ES3_STRINGS = indexedObject != Object;
-var STRICT_METHOD = arrayMethodIsStrict('join', ',');
-
-// `Array.prototype.join` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.join
-_export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD }, {
-  join: function join(separator) {
-    return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
-  }
-});
+}(dist);
 
 // `RegExp.prototype.flags` getter implementation
-// https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
+// https://tc39.es/ecma262/#sec-get-regexp.prototype.flags
 var regexpFlags = function () {
   var that = anObject(this);
   var result = '';
@@ -1094,6 +1069,7 @@ var UPDATES_LAST_INDEX_WRONG = (function () {
 var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
 
 // nonparticipating capturing group, copied from es5-shim's String#split patch.
+// eslint-disable-next-line regexp/no-assertion-capturing-group, regexp/no-empty-group -- required for testing
 var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
 
 var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
@@ -1159,6 +1135,8 @@ if (PATCH) {
 
 var regexpExec = patchedExec;
 
+// `RegExp.prototype.exec` method
+// https://tc39.es/ecma262/#sec-regexp.prototype.exec
 _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
   exec: regexpExec
 });
@@ -1204,6 +1182,7 @@ var REGEXP_REPLACE_SUBSTITUTES_UNDEFINED_CAPTURE = (function () {
 // Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
 // Weex JS has frozen built-in prototypes, so use try / catch wrapper
 var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+  // eslint-disable-next-line regexp/no-empty-group -- required for testing
   var re = /(?:)/;
   var originalExec = re.exec;
   re.exec = function () { return originalExec.apply(this, arguments); };
@@ -1291,7 +1270,7 @@ var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
 var MATCH = wellKnownSymbol('match');
 
 // `IsRegExp` abstract operation
-// https://tc39.github.io/ecma262/#sec-isregexp
+// https://tc39.es/ecma262/#sec-isregexp
 var isRegexp = function (it) {
   var isRegExp;
   return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
@@ -1306,7 +1285,7 @@ var aFunction$1 = function (it) {
 var SPECIES$3 = wellKnownSymbol('species');
 
 // `SpeciesConstructor` abstract operation
-// https://tc39.github.io/ecma262/#sec-speciesconstructor
+// https://tc39.es/ecma262/#sec-speciesconstructor
 var speciesConstructor = function (O, defaultConstructor) {
   var C = anObject(O).constructor;
   var S;
@@ -1331,7 +1310,7 @@ var createMethod$1 = function (CONVERT_TO_STRING) {
 
 var stringMultibyte = {
   // `String.prototype.codePointAt` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
+  // https://tc39.es/ecma262/#sec-string.prototype.codepointat
   codeAt: createMethod$1(false),
   // `String.prototype.at` method
   // https://github.com/mathiasbynens/String.prototype.at
@@ -1341,13 +1320,13 @@ var stringMultibyte = {
 var charAt = stringMultibyte.charAt;
 
 // `AdvanceStringIndex` abstract operation
-// https://tc39.github.io/ecma262/#sec-advancestringindex
+// https://tc39.es/ecma262/#sec-advancestringindex
 var advanceStringIndex = function (S, index, unicode) {
   return index + (unicode ? charAt(S, index).length : 1);
 };
 
 // `RegExpExec` abstract operation
-// https://tc39.github.io/ecma262/#sec-regexpexec
+// https://tc39.es/ecma262/#sec-regexpexec
 var regexpExecAbstract = function (R, S) {
   var exec = R.exec;
   if (typeof exec === 'function') {
@@ -1377,9 +1356,11 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
   var internalSplit;
   if (
     'abbc'.split(/(b)*/)[1] == 'c' ||
+    // eslint-disable-next-line regexp/no-empty-group -- required for testing
     'test'.split(/(?:)/, -1).length != 4 ||
     'ab'.split(/(?:ab)*/).length != 2 ||
     '.'.split(/(.?)(.?)/).length != 4 ||
+    // eslint-disable-next-line regexp/no-assertion-capturing-group, regexp/no-empty-group -- required for testing
     '.'.split(/()()/).length > 1 ||
     ''.split(/.?/).length
   ) {
@@ -1427,7 +1408,7 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
 
   return [
     // `String.prototype.split` method
-    // https://tc39.github.io/ecma262/#sec-string.prototype.split
+    // https://tc39.es/ecma262/#sec-string.prototype.split
     function split(separator, limit) {
       var O = requireObjectCoercible(this);
       var splitter = separator == undefined ? undefined : separator[SPLIT];
@@ -1436,7 +1417,7 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
         : internalSplit.call(String(O), separator, limit);
     },
     // `RegExp.prototype[@@split]` method
-    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@split
+    // https://tc39.es/ecma262/#sec-regexp.prototype-@@split
     //
     // NOTE: This cannot be properly polyfilled in engines that don't support
     // the 'y' flag.
@@ -1488,54 +1469,24 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
   ];
 }, !SUPPORTS_Y);
 
-// `Array.prototype.{ reduce, reduceRight }` methods implementation
-var createMethod$2 = function (IS_RIGHT) {
-  return function (that, callbackfn, argumentsLength, memo) {
-    aFunction$1(callbackfn);
-    var O = toObject(that);
-    var self = indexedObject(O);
-    var length = toLength(O.length);
-    var index = IS_RIGHT ? length - 1 : 0;
-    var i = IS_RIGHT ? -1 : 1;
-    if (argumentsLength < 2) while (true) {
-      if (index in self) {
-        memo = self[index];
-        index += i;
-        break;
-      }
-      index += i;
-      if (IS_RIGHT ? index < 0 : length <= index) {
-        throw TypeError('Reduce of empty array with no initial value');
-      }
-    }
-    for (;IS_RIGHT ? index >= 0 : length > index; index += i) if (index in self) {
-      memo = callbackfn(memo, self[index], index, O);
-    }
-    return memo;
-  };
+var arrayMethodIsStrict = function (METHOD_NAME, argument) {
+  var method = [][METHOD_NAME];
+  return !!method && fails(function () {
+    // eslint-disable-next-line no-useless-call,no-throw-literal -- required for testing
+    method.call(null, argument || function () { throw 1; }, 1);
+  });
 };
 
-var arrayReduce = {
-  // `Array.prototype.reduce` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-  left: createMethod$2(false),
-  // `Array.prototype.reduceRight` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.reduceright
-  right: createMethod$2(true)
-};
+var nativeJoin = [].join;
 
-var $reduce = arrayReduce.left;
+var ES3_STRINGS = indexedObject != Object;
+var STRICT_METHOD = arrayMethodIsStrict('join', ',');
 
-
-
-var STRICT_METHOD$1 = arrayMethodIsStrict('reduce');
-var USES_TO_LENGTH$1 = arrayMethodUsesToLength('reduce', { 1: 0 });
-
-// `Array.prototype.reduce` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.reduce
-_export({ target: 'Array', proto: true, forced: !STRICT_METHOD$1 || !USES_TO_LENGTH$1 }, {
-  reduce: function reduce(callbackfn /* , initialValue */) {
-    return $reduce(this, callbackfn, arguments.length, arguments.length > 1 ? arguments[1] : undefined);
+// `Array.prototype.join` method
+// https://tc39.es/ecma262/#sec-array.prototype.join
+_export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD }, {
+  join: function join(separator) {
+    return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
   }
 });
 
@@ -1564,13 +1515,14 @@ var functionBindContext = function (fn, that, length) {
 
 var push = [].push;
 
-// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
-var createMethod$3 = function (TYPE) {
+// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex, filterOut }` methods implementation
+var createMethod$2 = function (TYPE) {
   var IS_MAP = TYPE == 1;
   var IS_FILTER = TYPE == 2;
   var IS_SOME = TYPE == 3;
   var IS_EVERY = TYPE == 4;
   var IS_FIND_INDEX = TYPE == 6;
+  var IS_FILTER_OUT = TYPE == 7;
   var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
   return function ($this, callbackfn, that, specificCreate) {
     var O = toObject($this);
@@ -1579,7 +1531,7 @@ var createMethod$3 = function (TYPE) {
     var length = toLength(self.length);
     var index = 0;
     var create = specificCreate || arraySpeciesCreate;
-    var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+    var target = IS_MAP ? create($this, length) : IS_FILTER || IS_FILTER_OUT ? create($this, 0) : undefined;
     var value, result;
     for (;length > index; index++) if (NO_HOLES || index in self) {
       value = self[index];
@@ -1591,7 +1543,10 @@ var createMethod$3 = function (TYPE) {
           case 5: return value;             // find
           case 6: return index;             // findIndex
           case 2: push.call(target, value); // filter
-        } else if (IS_EVERY) return false;  // every
+        } else switch (TYPE) {
+          case 4: return false;             // every
+          case 7: push.call(target, value); // filterOut
+        }
       }
     }
     return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
@@ -1600,47 +1555,47 @@ var createMethod$3 = function (TYPE) {
 
 var arrayIteration = {
   // `Array.prototype.forEach` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-  forEach: createMethod$3(0),
+  // https://tc39.es/ecma262/#sec-array.prototype.foreach
+  forEach: createMethod$2(0),
   // `Array.prototype.map` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.map
-  map: createMethod$3(1),
+  // https://tc39.es/ecma262/#sec-array.prototype.map
+  map: createMethod$2(1),
   // `Array.prototype.filter` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.filter
-  filter: createMethod$3(2),
+  // https://tc39.es/ecma262/#sec-array.prototype.filter
+  filter: createMethod$2(2),
   // `Array.prototype.some` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.some
-  some: createMethod$3(3),
+  // https://tc39.es/ecma262/#sec-array.prototype.some
+  some: createMethod$2(3),
   // `Array.prototype.every` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.every
-  every: createMethod$3(4),
+  // https://tc39.es/ecma262/#sec-array.prototype.every
+  every: createMethod$2(4),
   // `Array.prototype.find` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.find
-  find: createMethod$3(5),
+  // https://tc39.es/ecma262/#sec-array.prototype.find
+  find: createMethod$2(5),
   // `Array.prototype.findIndex` method
-  // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
-  findIndex: createMethod$3(6)
+  // https://tc39.es/ecma262/#sec-array.prototype.findIndex
+  findIndex: createMethod$2(6),
+  // `Array.prototype.filterOut` method
+  // https://github.com/tc39/proposal-array-filtering
+  filterOut: createMethod$2(7)
 };
 
 var $map = arrayIteration.map;
 
 
-
 var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('map');
-// FF49- issue
-var USES_TO_LENGTH$2 = arrayMethodUsesToLength('map');
 
 // `Array.prototype.map` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.map
+// https://tc39.es/ecma262/#sec-array.prototype.map
 // with adding support of @@species
-_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 || !USES_TO_LENGTH$2 }, {
+_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 }, {
   map: function map(callbackfn /* , thisArg */) {
     return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
 
 // `Object.keys` method
-// https://tc39.github.io/ecma262/#sec-object.keys
+// https://tc39.es/ecma262/#sec-object.keys
 var objectKeys = Object.keys || function keys(O) {
   return objectKeysInternal(O, enumBugKeys);
 };
@@ -1648,7 +1603,7 @@ var objectKeys = Object.keys || function keys(O) {
 var FAILS_ON_PRIMITIVES = fails(function () { objectKeys(1); });
 
 // `Object.keys` method
-// https://tc39.github.io/ecma262/#sec-object.keys
+// https://tc39.es/ecma262/#sec-object.keys
 _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES }, {
   keys: function keys(it) {
     return objectKeys(toObject(it));
@@ -1822,6 +1777,21 @@ var Dialog = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(Dialog, [{
+    key: "header",
+    get: function get() {
+      return this._header;
+    }
+  }, {
+    key: "content",
+    get: function get() {
+      return this._content;
+    }
+  }, {
+    key: "footer",
+    get: function get() {
+      return this._footer;
+    }
+  }, {
     key: "_start",
     value: function _start(e) {
       e.stopPropagation();
@@ -2012,21 +1982,6 @@ var Dialog = /*#__PURE__*/function (_Component) {
         window.localStorage.setItem("".concat(this._id, ".position"), [left, top].join(','));
       }
     }
-  }, {
-    key: "header",
-    get: function get() {
-      return this._header;
-    }
-  }, {
-    key: "content",
-    get: function get() {
-      return this._content;
-    }
-  }, {
-    key: "footer",
-    get: function get() {
-      return this._footer;
-    }
   }]);
 
   return Dialog;
@@ -2056,10 +2011,11 @@ var isConcatSpreadable = function (O) {
 var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
 
 // `Array.prototype.concat` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.concat
+// https://tc39.es/ecma262/#sec-array.prototype.concat
 // with adding support of @@isConcatSpreadable and @@species
 _export({ target: 'Array', proto: true, forced: FORCED }, {
-  concat: function concat(arg) { // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars -- required for `.length`
+  concat: function concat(arg) {
     var O = toObject(this);
     var A = arraySpeciesCreate(O, 0);
     var n = 0;
@@ -2198,25 +2154,6 @@ var Form = /*#__PURE__*/function (_Component) {
   return Form;
 }(Component);
 
-var $forEach = arrayIteration.forEach;
-
-
-
-var STRICT_METHOD$2 = arrayMethodIsStrict('forEach');
-var USES_TO_LENGTH$3 = arrayMethodUsesToLength('forEach');
-
-// `Array.prototype.forEach` method implementation
-// https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-var arrayForEach = (!STRICT_METHOD$2 || !USES_TO_LENGTH$3) ? function forEach(callbackfn /* , thisArg */) {
-  return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
-} : [].forEach;
-
-// `Array.prototype.forEach` method
-// https://tc39.github.io/ecma262/#sec-array.prototype.foreach
-_export({ target: 'Array', proto: true, forced: [].forEach != arrayForEach }, {
-  forEach: arrayForEach
-});
-
 // iterable DOM collections
 // flag - `iterable` interface - 'entries', 'keys', 'values', 'forEach' methods
 var domIterables = {
@@ -2252,6 +2189,17 @@ var domIterables = {
   TextTrackList: 0,
   TouchList: 0
 };
+
+var $forEach = arrayIteration.forEach;
+
+
+var STRICT_METHOD$1 = arrayMethodIsStrict('forEach');
+
+// `Array.prototype.forEach` method implementation
+// https://tc39.es/ecma262/#sec-array.prototype.foreach
+var arrayForEach = !STRICT_METHOD$1 ? function forEach(callbackfn /* , thisArg */) {
+  return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+} : [].forEach;
 
 for (var COLLECTION_NAME in domIterables) {
   var Collection = global_1[COLLECTION_NAME];
@@ -2296,21 +2244,6 @@ var Item = /*#__PURE__*/function (_Component) {
       this.dispatchEvent(event);
     }
   }, {
-    key: "clear",
-    value: function clear() {
-      this._element.removeEventListener('click', this._onClick);
-    }
-  }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-menu-item');
-      this._title = document.createElement('label');
-
-      this._title.classList.add('scanex-menu-item-title');
-
-      element.appendChild(this._title);
-    }
-  }, {
     key: "id",
     get: function get() {
       return this._id;
@@ -2327,6 +2260,21 @@ var Item = /*#__PURE__*/function (_Component) {
     },
     set: function set(parent) {
       this._parent = parent;
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      this._element.removeEventListener('click', this._onClick);
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-menu-item');
+      this._title = document.createElement('label');
+
+      this._title.classList.add('scanex-menu-item-title');
+
+      element.appendChild(this._title);
     }
   }]);
 
@@ -2362,46 +2310,6 @@ var Group = /*#__PURE__*/function (_Component) {
     value: function _onClick(e) {
       e.stopPropagation();
       this.expanded = !this.expanded;
-    }
-  }, {
-    key: "clear",
-    value: function clear() {
-      this._element.removeEventListener('click', this._onClick);
-
-      this._items.forEach(function (item) {
-        return item.clear();
-      });
-    }
-  }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-menu-group');
-      this._header = document.createElement('div');
-
-      this._header.classList.add('scanex-menu-group-header');
-
-      element.appendChild(this._header);
-      this._title = document.createElement('label');
-
-      this._title.classList.add('scanex-menu-group-title');
-
-      this._header.appendChild(this._title);
-
-      this._expander = document.createElement('i');
-
-      this._expander.classList.add('icon');
-
-      this._expander.classList.add('scanex-menu-group-expander');
-
-      this._header.appendChild(this._expander);
-
-      this._children = document.createElement('div');
-
-      this._children.classList.add('scanex-menu-group-children');
-
-      this._children.classList.add('hidden');
-
-      element.appendChild(this._children);
     }
   }, {
     key: "id",
@@ -2444,6 +2352,15 @@ var Group = /*#__PURE__*/function (_Component) {
       }
     }
   }, {
+    key: "clear",
+    value: function clear() {
+      this._element.removeEventListener('click', this._onClick);
+
+      this._items.forEach(function (item) {
+        return item.clear();
+      });
+    }
+  }, {
     key: "items",
     get: function get() {
       return this._items;
@@ -2475,6 +2392,37 @@ var Group = /*#__PURE__*/function (_Component) {
         item.addEventListener('item:click', _this2.forwardEvent.bind(_this2));
         return item;
       });
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-menu-group');
+      this._header = document.createElement('div');
+
+      this._header.classList.add('scanex-menu-group-header');
+
+      element.appendChild(this._header);
+      this._title = document.createElement('label');
+
+      this._title.classList.add('scanex-menu-group-title');
+
+      this._header.appendChild(this._title);
+
+      this._expander = document.createElement('i');
+
+      this._expander.classList.add('icon');
+
+      this._expander.classList.add('scanex-menu-group-expander');
+
+      this._header.appendChild(this._expander);
+
+      this._children = document.createElement('div');
+
+      this._children.classList.add('scanex-menu-group-children');
+
+      this._children.classList.add('hidden');
+
+      element.appendChild(this._children);
     }
   }]);
 
@@ -2516,6 +2464,14 @@ var Menu = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(Menu, [{
+    key: "items",
+    get: function get() {
+      return this._group.items;
+    },
+    set: function set(items) {
+      this._group.items = items;
+    }
+  }, {
     key: "_render",
     value: function _render(element) {
       element.classList.add('scanex-component-menu');
@@ -2526,18 +2482,24 @@ var Menu = /*#__PURE__*/function (_Component) {
 
       element.appendChild(this._root);
     }
-  }, {
-    key: "items",
-    get: function get() {
-      return this._group.items;
-    },
-    set: function set(items) {
-      this._group.items = items;
-    }
   }]);
 
   return Menu;
 }(Component);
+
+var floor$1 = Math.floor;
+
+// `Number.isInteger` method implementation
+// https://tc39.es/ecma262/#sec-number.isinteger
+var isInteger = function isInteger(it) {
+  return !isObject(it) && isFinite(it) && floor$1(it) === it;
+};
+
+// `Number.isInteger` method
+// https://tc39.es/ecma262/#sec-number.isinteger
+_export({ target: 'Number', stat: true }, {
+  isInteger: isInteger
+});
 
 var aPossiblePrototype = function (it) {
   if (!isObject(it) && it !== null) {
@@ -2545,10 +2507,13 @@ var aPossiblePrototype = function (it) {
   } return it;
 };
 
+/* eslint-disable no-proto -- safe */
+
+
+
 // `Object.setPrototypeOf` method
-// https://tc39.github.io/ecma262/#sec-object.setprototypeof
+// https://tc39.es/ecma262/#sec-object.setprototypeof
 // Works with __proto__ only. Old v8 can't work with null proto objects.
-/* eslint-disable no-proto */
 var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
   var CORRECT_SETTER = false;
   var test = {};
@@ -2583,7 +2548,7 @@ var inheritIfRequired = function ($this, dummy, Wrapper) {
 };
 
 // `Object.defineProperties` method
-// https://tc39.github.io/ecma262/#sec-object.defineproperties
+// https://tc39.es/ecma262/#sec-object.defineproperties
 var objectDefineProperties = descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = objectKeys(Properties);
@@ -2642,7 +2607,7 @@ var NullProtoObjectViaIFrame = function () {
 var activeXDocument;
 var NullProtoObject = function () {
   try {
-    /* global ActiveXObject */
+    /* global ActiveXObject -- old IE */
     activeXDocument = document.domain && new ActiveXObject('htmlfile');
   } catch (error) { /* ignore */ }
   NullProtoObject = activeXDocument ? NullProtoObjectViaActiveX(activeXDocument) : NullProtoObjectViaIFrame();
@@ -2654,7 +2619,7 @@ var NullProtoObject = function () {
 hiddenKeys[IE_PROTO] = true;
 
 // `Object.create` method
-// https://tc39.github.io/ecma262/#sec-object.create
+// https://tc39.es/ecma262/#sec-object.create
 var objectCreate = Object.create || function create(O, Properties) {
   var result;
   if (O !== null) {
@@ -2668,15 +2633,15 @@ var objectCreate = Object.create || function create(O, Properties) {
 };
 
 // a string of all valid unicode whitespaces
-// eslint-disable-next-line max-len
-var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
+var whitespaces = '\u0009\u000A\u000B\u000C\u000D\u0020\u00A0\u1680\u2000\u2001\u2002' +
+  '\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028\u2029\uFEFF';
 
 var whitespace = '[' + whitespaces + ']';
 var ltrim = RegExp('^' + whitespace + whitespace + '*');
 var rtrim = RegExp(whitespace + whitespace + '*$');
 
 // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
-var createMethod$4 = function (TYPE) {
+var createMethod$3 = function (TYPE) {
   return function ($this) {
     var string = String(requireObjectCoercible($this));
     if (TYPE & 1) string = string.replace(ltrim, '');
@@ -2687,19 +2652,19 @@ var createMethod$4 = function (TYPE) {
 
 var stringTrim = {
   // `String.prototype.{ trimLeft, trimStart }` methods
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trimstart
-  start: createMethod$4(1),
+  // https://tc39.es/ecma262/#sec-string.prototype.trimstart
+  start: createMethod$3(1),
   // `String.prototype.{ trimRight, trimEnd }` methods
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trimend
-  end: createMethod$4(2),
+  // https://tc39.es/ecma262/#sec-string.prototype.trimend
+  end: createMethod$3(2),
   // `String.prototype.trim` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.trim
-  trim: createMethod$4(3)
+  // https://tc39.es/ecma262/#sec-string.prototype.trim
+  trim: createMethod$3(3)
 };
 
 var getOwnPropertyNames = objectGetOwnPropertyNames.f;
 var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
-var defineProperty$1 = objectDefineProperty.f;
+var defineProperty = objectDefineProperty.f;
 var trim = stringTrim.trim;
 
 var NUMBER = 'Number';
@@ -2710,7 +2675,7 @@ var NumberPrototype = NativeNumber.prototype;
 var BROKEN_CLASSOF = classofRaw(objectCreate(NumberPrototype)) == NUMBER;
 
 // `ToNumber` abstract operation
-// https://tc39.github.io/ecma262/#sec-tonumber
+// https://tc39.es/ecma262/#sec-tonumber
 var toNumber = function (argument) {
   var it = toPrimitive(argument, false);
   var first, third, radix, maxCode, digits, length, index, code;
@@ -2739,7 +2704,7 @@ var toNumber = function (argument) {
 };
 
 // `Number` constructor
-// https://tc39.github.io/ecma262/#sec-number-constructor
+// https://tc39.es/ecma262/#sec-number-constructor
 if (isForced_1(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNumber('+0x1'))) {
   var NumberWrapper = function Number(value) {
     var it = arguments.length < 1 ? 0 : value;
@@ -2754,30 +2719,18 @@ if (isForced_1(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNu
     'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
     // ES2015 (in case, if modules with ES2015 Number statics required before):
     'EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,' +
-    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger'
+    'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger,' +
+    // ESNext
+    'fromString,range'
   ).split(','), j = 0, key; keys$1.length > j; j++) {
     if (has(NativeNumber, key = keys$1[j]) && !has(NumberWrapper, key)) {
-      defineProperty$1(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
+      defineProperty(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
     }
   }
   NumberWrapper.prototype = NumberPrototype;
   NumberPrototype.constructor = NumberWrapper;
   redefine(global_1, NUMBER, NumberWrapper);
 }
-
-var floor$1 = Math.floor;
-
-// `Number.isInteger` method implementation
-// https://tc39.github.io/ecma262/#sec-number.isinteger
-var isInteger = function isInteger(it) {
-  return !isObject(it) && isFinite(it) && floor$1(it) === it;
-};
-
-// `Number.isInteger` method
-// https://tc39.github.io/ecma262/#sec-number.isinteger
-_export({ target: 'Number', stat: true }, {
-  isInteger: isInteger
-});
 
 var translate$1 = T.getText.bind(T);
 T.addText('rus', {
@@ -2895,13 +2848,13 @@ var classof = toStringTagSupport ? classofRaw : function (it) {
 };
 
 // `Object.prototype.toString` method implementation
-// https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+// https://tc39.es/ecma262/#sec-object.prototype.tostring
 var objectToString = toStringTagSupport ? {}.toString : function toString() {
   return '[object ' + classof(this) + ']';
 };
 
 // `Object.prototype.toString` method
-// https://tc39.github.io/ecma262/#sec-object.prototype.tostring
+// https://tc39.es/ecma262/#sec-object.prototype.tostring
 if (!toStringTagSupport) {
   redefine(Object.prototype, 'toString', objectToString, { unsafe: true });
 }
@@ -2915,7 +2868,7 @@ var NOT_GENERIC = fails(function () { return nativeToString.call({ source: 'a', 
 var INCORRECT_NAME = nativeToString.name != TO_STRING;
 
 // `RegExp.prototype.toString` method
-// https://tc39.github.io/ecma262/#sec-regexp.prototype.tostring
+// https://tc39.es/ecma262/#sec-regexp.prototype.tostring
 if (NOT_GENERIC || INCORRECT_NAME) {
   redefine(RegExp.prototype, TO_STRING, function toString() {
     var R = anObject(this);
@@ -2957,32 +2910,6 @@ var Spinner = /*#__PURE__*/function (_Component) {
       this.value = parseInt(this._input.value, 10);
     }
   }, {
-    key: "_validate",
-    value: function _validate(value) {
-      return !isNaN(value) && this._min <= value && value <= this._max;
-    }
-  }, {
-    key: "increment",
-    value: function increment(e) {
-      e.stopPropagation();
-      this.value = this._value + 1;
-    }
-  }, {
-    key: "decrement",
-    value: function decrement(e) {
-      e.stopPropagation();
-      this.value = this._value - 1;
-    }
-  }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-spinner');
-      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"scanex-component-icon spinner-up\"></i>            \n            <i class=\"scanex-component-icon spinner-down\"></i>\n        </div>";
-      this._input = element.querySelector('input');
-      this._up = element.querySelector('.spinner-up');
-      this._down = element.querySelector('.spinner-down');
-    }
-  }, {
     key: "value",
     get: function get() {
       return this._value;
@@ -3017,6 +2944,32 @@ var Spinner = /*#__PURE__*/function (_Component) {
       if (!isNaN(max) && this._min <= max) {
         this._max = max;
       }
+    }
+  }, {
+    key: "_validate",
+    value: function _validate(value) {
+      return !isNaN(value) && this._min <= value && value <= this._max;
+    }
+  }, {
+    key: "increment",
+    value: function increment(e) {
+      e.stopPropagation();
+      this.value = this._value + 1;
+    }
+  }, {
+    key: "decrement",
+    value: function decrement(e) {
+      e.stopPropagation();
+      this.value = this._value - 1;
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-spinner');
+      element.innerHTML = "<input type=\"text\" value=\"0\"/>\n        <div class=\"buttons\">\n            <i class=\"scanex-component-icon spinner-up\"></i>            \n            <i class=\"scanex-component-icon spinner-down\"></i>\n        </div>";
+      this._input = element.querySelector('input');
+      this._up = element.querySelector('.spinner-up');
+      this._down = element.querySelector('.spinner-down');
     }
   }]);
 
@@ -3059,6 +3012,51 @@ var Slider1 = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(Slider1, [{
+    key: "mode",
+    get: function get() {
+      return this._mode;
+    },
+    set: function set(mode) {
+      this._mode = mode;
+    }
+  }, {
+    key: "min",
+    get: function get() {
+      return this._min;
+    }
+  }, {
+    key: "max",
+    get: function get() {
+      return this._max;
+    }
+  }, {
+    key: "lo",
+    get: function get() {
+      return this._min;
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._hi;
+    },
+    set: function set(hi) {
+      if (this.validate(hi) && isNaN(this.lo) || this.lo <= hi) {
+        this._hi = hi;
+      }
+
+      if (!isNaN(this.lo) && !isNaN(this.hi)) {
+        var b = this._bar.getBoundingClientRect();
+
+        var t = this._rightTick.getBoundingClientRect();
+
+        var k = (b.width - t.width) / (this.max - this.min);
+        this._range.style.width = "".concat(Math.round((this.hi - this.lo) * k) + t.width, "px");
+        var event = document.createEvent('Event');
+        event.initEvent('change', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
     key: "validate",
     value: function validate(value) {
       return !isNaN(value) && this.min <= value && value <= this.max;
@@ -3168,51 +3166,6 @@ var Slider1 = /*#__PURE__*/function (_Component) {
       this._rightTick = element.querySelector('.slider-tick-right');
       this._range = element.querySelector('.slider-range');
     }
-  }, {
-    key: "mode",
-    get: function get() {
-      return this._mode;
-    },
-    set: function set(mode) {
-      this._mode = mode;
-    }
-  }, {
-    key: "min",
-    get: function get() {
-      return this._min;
-    }
-  }, {
-    key: "max",
-    get: function get() {
-      return this._max;
-    }
-  }, {
-    key: "lo",
-    get: function get() {
-      return this._min;
-    }
-  }, {
-    key: "hi",
-    get: function get() {
-      return this._hi;
-    },
-    set: function set(hi) {
-      if (this.validate(hi) && isNaN(this.lo) || this.lo <= hi) {
-        this._hi = hi;
-      }
-
-      if (!isNaN(this.lo) && !isNaN(this.hi)) {
-        var b = this._bar.getBoundingClientRect();
-
-        var t = this._rightTick.getBoundingClientRect();
-
-        var k = (b.width - t.width) / (this.max - this.min);
-        this._range.style.width = "".concat(Math.round((this.hi - this.lo) * k) + t.width, "px");
-        var event = document.createEvent('Event');
-        event.initEvent('change', false, false);
-        this.dispatchEvent(event);
-      }
-    }
   }]);
 
   return Slider1;
@@ -3242,6 +3195,30 @@ var Slider2 = /*#__PURE__*/function (_Slider) {
   }
 
   _createClass(Slider2, [{
+    key: "lo",
+    get: function get() {
+      return this._lo;
+    },
+    set: function set(lo) {
+      if (this.validate(lo) && (isNaN(this.hi) || lo <= this.hi)) {
+        this._lo = lo;
+      }
+
+      this._updateUI();
+    }
+  }, {
+    key: "hi",
+    get: function get() {
+      return this._hi;
+    },
+    set: function set(hi) {
+      if (this.validate(hi) && (isNaN(this.lo) || this.lo <= hi)) {
+        this._hi = hi;
+      }
+
+      this._updateUI();
+    }
+  }, {
     key: "_slide",
     value: function _slide(e) {
       var _this2 = this;
@@ -3370,37 +3347,13 @@ var Slider2 = /*#__PURE__*/function (_Slider) {
 
       this._range.insertBefore(this._leftTick, this._rightTick);
     }
-  }, {
-    key: "lo",
-    get: function get() {
-      return this._lo;
-    },
-    set: function set(lo) {
-      if (this.validate(lo) && (isNaN(this.hi) || lo <= this.hi)) {
-        this._lo = lo;
-      }
-
-      this._updateUI();
-    }
-  }, {
-    key: "hi",
-    get: function get() {
-      return this._hi;
-    },
-    set: function set(hi) {
-      if (this.validate(hi) && (isNaN(this.lo) || this.lo <= hi)) {
-        this._hi = hi;
-      }
-
-      this._updateUI();
-    }
   }]);
 
   return Slider2;
 }(Slider1);
 
 // `thisNumberValue` abstract operation
-// https://tc39.github.io/ecma262/#sec-thisnumbervalue
+// https://tc39.es/ecma262/#sec-thisnumbervalue
 var thisNumberValue = function (value) {
   if (typeof value != 'number' && classofRaw(value) != 'Number') {
     throw TypeError('Incorrect invocation');
@@ -3409,7 +3362,7 @@ var thisNumberValue = function (value) {
 };
 
 // `String.prototype.repeat` method implementation
-// https://tc39.github.io/ecma262/#sec-string.prototype.repeat
+// https://tc39.es/ecma262/#sec-string.prototype.repeat
 var stringRepeat = ''.repeat || function repeat(count) {
   var str = String(requireObjectCoercible(this));
   var result = '';
@@ -3439,6 +3392,37 @@ var log = function (x) {
   } return n;
 };
 
+var multiply = function (data, n, c) {
+  var index = -1;
+  var c2 = c;
+  while (++index < 6) {
+    c2 += n * data[index];
+    data[index] = c2 % 1e7;
+    c2 = floor$2(c2 / 1e7);
+  }
+};
+
+var divide = function (data, n) {
+  var index = 6;
+  var c = 0;
+  while (--index >= 0) {
+    c += data[index];
+    data[index] = floor$2(c / n);
+    c = (c % n) * 1e7;
+  }
+};
+
+var dataToString = function (data) {
+  var index = 6;
+  var s = '';
+  while (--index >= 0) {
+    if (s !== '' || index === 0 || data[index] !== 0) {
+      var t = String(data[index]);
+      s = s === '' ? t : s + stringRepeat.call('0', 7 - t.length) + t;
+    }
+  } return s;
+};
+
 var FORCED$1 = nativeToFixed && (
   0.00008.toFixed(3) !== '0.000' ||
   0.9.toFixed(0) !== '1' ||
@@ -3450,9 +3434,8 @@ var FORCED$1 = nativeToFixed && (
 });
 
 // `Number.prototype.toFixed` method
-// https://tc39.github.io/ecma262/#sec-number.prototype.tofixed
+// https://tc39.es/ecma262/#sec-number.prototype.tofixed
 _export({ target: 'Number', proto: true, forced: FORCED$1 }, {
-  // eslint-disable-next-line max-statements
   toFixed: function toFixed(fractionDigits) {
     var number = thisNumberValue(this);
     var fractDigits = toInteger(fractionDigits);
@@ -3461,39 +3444,8 @@ _export({ target: 'Number', proto: true, forced: FORCED$1 }, {
     var result = '0';
     var e, z, j, k;
 
-    var multiply = function (n, c) {
-      var index = -1;
-      var c2 = c;
-      while (++index < 6) {
-        c2 += n * data[index];
-        data[index] = c2 % 1e7;
-        c2 = floor$2(c2 / 1e7);
-      }
-    };
-
-    var divide = function (n) {
-      var index = 6;
-      var c = 0;
-      while (--index >= 0) {
-        c += data[index];
-        data[index] = floor$2(c / n);
-        c = (c % n) * 1e7;
-      }
-    };
-
-    var dataToString = function () {
-      var index = 6;
-      var s = '';
-      while (--index >= 0) {
-        if (s !== '' || index === 0 || data[index] !== 0) {
-          var t = String(data[index]);
-          s = s === '' ? t : s + stringRepeat.call('0', 7 - t.length) + t;
-        }
-      } return s;
-    };
-
     if (fractDigits < 0 || fractDigits > 20) throw RangeError('Incorrect fraction digits');
-    // eslint-disable-next-line no-self-compare
+    // eslint-disable-next-line no-self-compare -- NaN check
     if (number != number) return 'NaN';
     if (number <= -1e21 || number >= 1e21) return String(number);
     if (number < 0) {
@@ -3506,26 +3458,26 @@ _export({ target: 'Number', proto: true, forced: FORCED$1 }, {
       z *= 0x10000000000000;
       e = 52 - e;
       if (e > 0) {
-        multiply(0, z);
+        multiply(data, 0, z);
         j = fractDigits;
         while (j >= 7) {
-          multiply(1e7, 0);
+          multiply(data, 1e7, 0);
           j -= 7;
         }
-        multiply(pow(10, j, 1), 0);
+        multiply(data, pow(10, j, 1), 0);
         j = e - 1;
         while (j >= 23) {
-          divide(1 << 23);
+          divide(data, 1 << 23);
           j -= 23;
         }
-        divide(1 << j);
-        multiply(1, 1);
-        divide(2);
-        result = dataToString();
+        divide(data, 1 << j);
+        multiply(data, 1, 1);
+        divide(data, 2);
+        result = dataToString(data);
       } else {
-        multiply(0, z);
-        multiply(1 << -e, 0);
-        result = dataToString() + stringRepeat.call('0', fractDigits);
+        multiply(data, 0, z);
+        multiply(data, 1 << -e, 0);
+        result = dataToString(data) + stringRepeat.call('0', fractDigits);
       }
     }
     if (fractDigits > 0) {
@@ -3572,8 +3524,17 @@ var Slider3 = /*#__PURE__*/function (_Slider) {
 
 
   _createClass(Slider3, [{
-    key: "_updateUI",
-    // get hi() {
+    key: "mi",
+    get: function get() {
+      return this._mi;
+    },
+    set: function set(mi) {
+      if (this.validate(mi) && (isNaN(this.lo) || this.lo <= mi) && (isNaN(this.hi) || mi <= this.hi)) {
+        this._mi = mi;
+      }
+
+      this._updateUI();
+    } // get hi() {
     //     return this._hi;
     // }
     // set hi(hi) {
@@ -3582,6 +3543,9 @@ var Slider3 = /*#__PURE__*/function (_Slider) {
     //     }        
     //     this._updateUI();
     // }
+
+  }, {
+    key: "_updateUI",
     value: function _updateUI() {
       if (!isNaN(this.lo) && !isNaN(this.mi) && !isNaN(this.hi)) {
         var lt = this._leftTick.getBoundingClientRect();
@@ -3714,18 +3678,6 @@ var Slider3 = /*#__PURE__*/function (_Slider) {
 
       this._bar.appendChild(this._middleTick);
     }
-  }, {
-    key: "mi",
-    get: function get() {
-      return this._mi;
-    },
-    set: function set(mi) {
-      if (this.validate(mi) && (isNaN(this.lo) || this.lo <= mi) && (isNaN(this.hi) || mi <= this.hi)) {
-        this._mi = mi;
-      }
-
-      this._updateUI();
-    }
   }]);
 
   return Slider3;
@@ -3766,15 +3718,6 @@ var Interval = /*#__PURE__*/function (_Component) {
       this.dispatchEvent(event);
     }
   }, {
-    key: "_render",
-    value: function _render(element) {
-      element.classList.add('scanex-component-range');
-      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
-      this._lo = element.querySelector('.lo');
-      this._hi = element.querySelector('.hi');
-      this._sliderElement = element.querySelector('.slider');
-    }
-  }, {
     key: "min",
     get: function get() {
       return this._slider.min;
@@ -3805,6 +3748,15 @@ var Interval = /*#__PURE__*/function (_Component) {
     },
     set: function set(hi) {
       this._slider.hi = hi;
+    }
+  }, {
+    key: "_render",
+    value: function _render(element) {
+      element.classList.add('scanex-component-range');
+      element.innerHTML = "<table>\n            <tr>\n                <td>\n                    <input class=\"lo\" type=\"text\" />\n                </td>\n                <td>\n                    <div class=\"slider\"></div>\n                </td>\n                <td>\n                    <input class=\"hi\" type=\"text\" />\n                </td>\n            </tr>\n        </table>";
+      this._lo = element.querySelector('.lo');
+      this._hi = element.querySelector('.hi');
+      this._sliderElement = element.querySelector('.slider');
     }
   }]);
 
@@ -3891,6 +3843,32 @@ var Tabs = /*#__PURE__*/function (_Component) {
       this.selected = id;
     }
   }, {
+    key: "selected",
+    get: function get() {
+      return this._selected;
+    },
+    set: function set(selected) {
+      var _this2 = this;
+
+      if (this.selected !== selected) {
+        Object.keys(this._tabs).forEach(function (id) {
+          if (id === selected) {
+            _this2._tabs[id].classList.add('selected');
+
+            _this2._panels[id].classList.remove('hidden');
+          } else {
+            _this2._tabs[id].classList.remove('selected');
+
+            _this2._panels[id].classList.add('hidden');
+          }
+        });
+        this._selected = selected;
+        var event = document.createEvent('Event');
+        event.initEvent('change:selected', false, false);
+        this.dispatchEvent(event);
+      }
+    }
+  }, {
     key: "addTab",
     value: function addTab(id, label) {
       var tab = document.createElement('div');
@@ -3935,32 +3913,6 @@ var Tabs = /*#__PURE__*/function (_Component) {
         if (tabs.length) {
           this.selected = tabs[0];
         }
-      }
-    }
-  }, {
-    key: "selected",
-    get: function get() {
-      return this._selected;
-    },
-    set: function set(selected) {
-      var _this2 = this;
-
-      if (this.selected !== selected) {
-        Object.keys(this._tabs).forEach(function (id) {
-          if (id === selected) {
-            _this2._tabs[id].classList.add('selected');
-
-            _this2._panels[id].classList.remove('hidden');
-          } else {
-            _this2._tabs[id].classList.remove('selected');
-
-            _this2._panels[id].classList.add('hidden');
-          }
-        });
-        this._selected = selected;
-        var event = document.createEvent('Event');
-        event.initEvent('change:selected', false, false);
-        this.dispatchEvent(event);
       }
     }
   }]);

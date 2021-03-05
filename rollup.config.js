@@ -16,15 +16,15 @@ export default [
             name: 'Example'
         },
         plugins: [                        
-            json(),
-            resolve({
+            resolve({               
                 dedupe: [
-                    '@scanex/event-target',
+                    '@scanex/evented',
                     '@scanex/translations',
                     'core-js',
                 ]
             }),
             commonjs(),
+            json(),
             string({
                 include: "**/*.txt",
             }),

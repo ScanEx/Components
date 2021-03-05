@@ -1,7 +1,7 @@
 import './Component.css';
-import EventTarget from '@scanex/event-target/index.js';
+import Evented from '@scanex/evented';
 
-class Component extends EventTarget {
+class Component extends Evented {
     constructor(container, options) {
         super();        
         this._element = document.createElement('div');
@@ -18,6 +18,9 @@ class Component extends EventTarget {
         event.initEvent(e.type, false, false);
         event.detail = e.detail;
         this.dispatchEvent(event);
+    }
+    get element() {
+        return this._element;
     }
     _render(element, options) {
     }

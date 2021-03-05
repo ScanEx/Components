@@ -1,5 +1,5 @@
 import './Form.css';
-import Component from "../Component";
+import Component from '../Component.js';
 
 class Form extends Component {
     constructor(container, fields) {

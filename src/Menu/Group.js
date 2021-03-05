@@ -1,6 +1,6 @@
 import './Group.css';
 import Item from './Item.js';
-import Component from '../Component';
+import Component from '../Component.js';
 
 class Group extends Component {
     constructor(container, {id, title}) {
