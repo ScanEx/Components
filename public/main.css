@@ -141,27 +141,6 @@ html, body {
     opacity: 0.5;
     z-index: 9999;    
 }
-.scanex-component-form > table,
-.scanex-component-form > table > tbody > tr > td:last-child,
-.scanex-component-form > table > tbody > tr > td > input[type=text],
-.scanex-component-form > table > tbody > tr > td > textarea {
-    width: 100%;
-}
-.scanex-component-form > table > tbody > tr > td > input[type=text] {
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td > textarea {
-    resize: none;
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td {
-    vertical-align: top;
-}
-.scanex-component-form > table > tbody > tr > td:first-child > label {
-    margin-right: 10px;
-}
 .scanex-component-menu {
     position: relative;
 }
@@ -179,9 +158,6 @@ html, body {
     background-repeat: no-repeat;
     width: 15px;
     height: 15px;
-}
-.scanex-component.scanex-component-sidebar > * {
-    float: left;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -205,6 +181,30 @@ html, body {
 .scanex-component-spinner .buttons .scanex-component-icon.spinner-down {
     margin-top: 1px;
     border-top: 1px solid;
+}
+.scanex-component-form > table,
+.scanex-component-form > table > tbody > tr > td:last-child,
+.scanex-component-form > table > tbody > tr > td > input[type=text],
+.scanex-component-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-component-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-component-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}
+.scanex-component.scanex-component-sidebar > * {
+    float: left;
 }
 .scanex-component-tabs > .tabs > *,
 .scanex-component-tabs > .panels > * {
@@ -255,6 +255,15 @@ html, body {
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
     margin-left: 15px;
 }
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
+    float: left;
+    position: absolute;
+}
+.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
+    position: absolute;
+    top: -20px;
+    background-color: #ffffff;
+}
 .scanex-component-slider {
     height: 21px;    
     cursor: pointer;
@@ -289,17 +298,12 @@ html, body {
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
 }
+.scanex-component-sidebar-tab > div {
+    writing-mode: vertical-lr;    
+    cursor: pointer;
+}
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
-    float: left;
-    position: absolute;
-}
-.scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle > label {
-    position: absolute;
-    top: -20px;
-    background-color: #ffffff;
 }
 .scanex-component-range > table,
 .scanex-component-range > table > tbody > tr > td:nth-child(2) {
@@ -309,10 +313,6 @@ html, body {
     width: 35px;
     text-align: center;
     border: none;
-}
-.scanex-component-sidebar-tab > div {
-    writing-mode: vertical-lr;    
-    cursor: pointer;
 }
 .scanex-component-sidebar-panel.hidden {
     display: none;

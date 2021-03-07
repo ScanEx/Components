@@ -2,8 +2,8 @@ import './Pager.css';
 import T from '@scanex/translations';
 import Component from '../Component.js';
 
-const translate = T.getText.bind(T);
-T.addText('rus', {
+const translate = T.translate.bind(T);
+T.add('rus', {
     pager: {        
         previous: 'Предыдущая',
         next: 'Следующая',

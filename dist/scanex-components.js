@@ -1547,7 +1547,7 @@ var Translation = /*#__PURE__*/function () {
 
 var T = new Translation();
 
-T.addText('rus', {
+T.add('rus', {
   scanex: {
     components: {
       dialog: {
@@ -1558,7 +1558,7 @@ T.addText('rus', {
     }
   }
 });
-T.addText('eng', {
+T.add('eng', {
   scanex: {
     components: {
       dialog: {
@@ -1569,7 +1569,7 @@ T.addText('eng', {
     }
   }
 });
-var translate$1 = T.getText.bind(T);
+var translate$1 = T.translate.bind(T);
 
 var Dialog = /*#__PURE__*/function (_Component) {
   _inherits(Dialog, _Component);
@@ -2676,8 +2676,8 @@ if (isForced_1(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNu
   redefine(global$1, NUMBER, NumberWrapper);
 }
 
-var translate = T.getText.bind(T);
-T.addText('rus', {
+var translate = T.translate.bind(T);
+T.add('rus', {
   pager: {
     previous: 'Предыдущая',
     next: 'Следующая'

@@ -2,7 +2,7 @@ import './Dialog.css';
 import T from '@scanex/translations';
 import Component from '../Component.js';
 
-T.addText ('rus', { 
+T.add ('rus', { 
     scanex: {
         components: {
             dialog: {
@@ -15,7 +15,7 @@ T.addText ('rus', {
     
 });
 
-T.addText ('eng', {
+T.add ('eng', {
     scanex: {
         components: {
             dialog: {
@@ -27,7 +27,7 @@ T.addText ('eng', {
     }    
 });
 
-const translate = T.getText.bind(T);
+const translate = T.translate.bind(T);
 
 export default class Dialog extends Component {
     constructor({title, id, collapsible = false, modal = false, top, left}) {

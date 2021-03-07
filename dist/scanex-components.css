@@ -54,6 +54,24 @@
     opacity: 0.5;
     z-index: 9999;    
 }
+.scanex-component-menu {
+    position: relative;
+}
+.scanex-component-menu > .scanex-menu-root {
+    position: absolute;
+    white-space: nowrap;
+    background-color: #ffffff;
+}
+.scanex-component-menu .hidden {
+    display: none;
+}
+.scanex-component-menu > .scanex-menu-group > .scanex-menu-group-header > .icon {    
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 15px;
+    height: 15px;
+}
 .scanex-component-form > table,
 .scanex-component-form > table > tbody > tr > td:last-child,
 .scanex-component-form > table > tbody > tr > td > input[type=text],
@@ -74,24 +92,6 @@
 }
 .scanex-component-form > table > tbody > tr > td:first-child > label {
     margin-right: 10px;
-}
-.scanex-component-menu {
-    position: relative;
-}
-.scanex-component-menu > .scanex-menu-root {
-    position: absolute;
-    white-space: nowrap;
-    background-color: #ffffff;
-}
-.scanex-component-menu .hidden {
-    display: none;
-}
-.scanex-component-menu > .scanex-menu-group > .scanex-menu-group-header > .icon {    
-    display: inline-block;
-    background-position: center;
-    background-repeat: no-repeat;
-    width: 15px;
-    height: 15px;
 }
 .scanex-component-pager input[type=text],
 .scanex-component-pager button {    
@@ -125,9 +125,6 @@
 }
 .scanex-component-pager input[type=text] {
     border: 1px solid #6B707B;
-}
-.scanex-component.scanex-component-sidebar > * {
-    float: left;
 }
 .scanex-component-tabs > .tabs > *,
 .scanex-component-tabs > .panels > * {
@@ -166,6 +163,9 @@
     margin-top: 1px;
     border-top: 1px solid;
 }
+.scanex-component.scanex-component-sidebar > * {
+    float: left;
+}
 .scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
     vertical-align: middle;    
     display: inline-block;
@@ -187,6 +187,13 @@
 }
 .scanex-component-sidebar-panel.hidden {
     display: none;
+}
+.scanex-component-sidebar-tab > div {
+    writing-mode: vertical-lr;    
+    cursor: pointer;
+}
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -230,13 +237,6 @@
     position: absolute;
     top: -20px;
     background-color: #ffffff;
-}
-.scanex-component-sidebar-tab > div {
-    writing-mode: vertical-lr;    
-    cursor: pointer;
-}
-.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
-    float: left;
 }
 .scanex-component-range > table,
 .scanex-component-range > table > tbody > tr > td:nth-child(2) {
