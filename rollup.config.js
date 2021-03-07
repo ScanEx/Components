@@ -1,5 +1,5 @@
 import pkg from './package.json';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
@@ -13,16 +13,13 @@ export default [
             file: 'public/main.js',
             format: 'iife',
             sourcemap: true,
-            name: 'Example'
+            name: 'Example',
+            globals: {
+                 T: '@scanex/translations'	
+            },
         },
         plugins: [                        
-            resolve({               
-                dedupe: [
-                    '@scanex/evented',
-                    '@scanex/translations',
-                    'core-js',
-                ]
-            }),
+            resolve(),
             commonjs(),
             json(),
             string({

@@ -2,22 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -207,8 +191,9 @@ function _nonIterableRest() {
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-function createCommonjsModule(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
+function createCommonjsModule(fn) {
+  var module = { exports: {} };
+	return fn(module, module.exports), module.exports;
 }
 
 var check = function (it) {
@@ -216,7 +201,7 @@ var check = function (it) {
 };
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global_1 =
+var global$1 =
   /* global globalThis -- safe */
   check(typeof globalThis == 'object' && globalThis) ||
   check(typeof window == 'object' && window) ||
@@ -239,20 +224,20 @@ var descriptors = !fails(function () {
 });
 
 var nativePropertyIsEnumerable = {}.propertyIsEnumerable;
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+var getOwnPropertyDescriptor$2 = Object.getOwnPropertyDescriptor;
 
 // Nashorn ~ JDK8 bug
-var NASHORN_BUG = getOwnPropertyDescriptor && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
+var NASHORN_BUG = getOwnPropertyDescriptor$2 && !nativePropertyIsEnumerable.call({ 1: 2 }, 1);
 
 // `Object.prototype.propertyIsEnumerable` method implementation
 // https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
-var f = NASHORN_BUG ? function propertyIsEnumerable(V) {
-  var descriptor = getOwnPropertyDescriptor(this, V);
+var f$4 = NASHORN_BUG ? function propertyIsEnumerable(V) {
+  var descriptor = getOwnPropertyDescriptor$2(this, V);
   return !!descriptor && descriptor.enumerable;
 } : nativePropertyIsEnumerable;
 
 var objectPropertyIsEnumerable = {
-	f: f
+	f: f$4
 };
 
 var createPropertyDescriptor = function (bitmap, value) {
@@ -315,11 +300,11 @@ var toPrimitive = function (input, PREFERRED_STRING) {
 
 var hasOwnProperty = {}.hasOwnProperty;
 
-var has = function (it, key) {
+var has$1 = function (it, key) {
   return hasOwnProperty.call(it, key);
 };
 
-var document$1 = global_1.document;
+var document$1 = global$1.document;
 // typeof document.createElement is 'object' in old IE
 var EXISTS = isObject(document$1) && isObject(document$1.createElement);
 
@@ -338,17 +323,17 @@ var nativeGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
 
 // `Object.getOwnPropertyDescriptor` method
 // https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
-var f$1 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
+var f$3 = descriptors ? nativeGetOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
   O = toIndexedObject(O);
   P = toPrimitive(P, true);
   if (ie8DomDefine) try {
     return nativeGetOwnPropertyDescriptor(O, P);
   } catch (error) { /* empty */ }
-  if (has(O, P)) return createPropertyDescriptor(!objectPropertyIsEnumerable.f.call(O, P), O[P]);
+  if (has$1(O, P)) return createPropertyDescriptor(!objectPropertyIsEnumerable.f.call(O, P), O[P]);
 };
 
 var objectGetOwnPropertyDescriptor = {
-	f: f$1
+	f: f$3
 };
 
 var anObject = function (it) {
@@ -386,16 +371,16 @@ var createNonEnumerableProperty = descriptors ? function (object, key, value) {
 
 var setGlobal = function (key, value) {
   try {
-    createNonEnumerableProperty(global_1, key, value);
+    createNonEnumerableProperty(global$1, key, value);
   } catch (error) {
-    global_1[key] = value;
+    global$1[key] = value;
   } return value;
 };
 
 var SHARED = '__core-js_shared__';
-var store = global_1[SHARED] || setGlobal(SHARED, {});
+var store$1 = global$1[SHARED] || setGlobal(SHARED, {});
 
-var sharedStore = store;
+var sharedStore = store$1;
 
 var functionToString = Function.toString;
 
@@ -408,16 +393,16 @@ if (typeof sharedStore.inspectSource != 'function') {
 
 var inspectSource = sharedStore.inspectSource;
 
-var WeakMap = global_1.WeakMap;
+var WeakMap$1 = global$1.WeakMap;
 
-var nativeWeakMap = typeof WeakMap === 'function' && /native code/.test(inspectSource(WeakMap));
+var nativeWeakMap = typeof WeakMap$1 === 'function' && /native code/.test(inspectSource(WeakMap$1));
 
 var shared = createCommonjsModule(function (module) {
 (module.exports = function (key, value) {
   return sharedStore[key] || (sharedStore[key] = value !== undefined ? value : {});
 })('versions', []).push({
   version: '3.9.1',
-  mode:  'global',
+  mode: 'global',
   copyright: '© 2021 Denis Pushkarev (zloirock.ru)'
 });
 });
@@ -429,19 +414,19 @@ var uid = function (key) {
   return 'Symbol(' + String(key === undefined ? '' : key) + ')_' + (++id + postfix).toString(36);
 };
 
-var keys = shared('keys');
+var keys$1 = shared('keys');
 
 var sharedKey = function (key) {
-  return keys[key] || (keys[key] = uid(key));
+  return keys$1[key] || (keys$1[key] = uid(key));
 };
 
-var hiddenKeys = {};
+var hiddenKeys$1 = {};
 
-var WeakMap$1 = global_1.WeakMap;
-var set, get, has$1;
+var WeakMap = global$1.WeakMap;
+var set, get, has;
 
 var enforce = function (it) {
-  return has$1(it) ? get(it) : set(it, {});
+  return has(it) ? get(it) : set(it, {});
 };
 
 var getterFor = function (TYPE) {
@@ -454,41 +439,41 @@ var getterFor = function (TYPE) {
 };
 
 if (nativeWeakMap) {
-  var store$1 = sharedStore.state || (sharedStore.state = new WeakMap$1());
-  var wmget = store$1.get;
-  var wmhas = store$1.has;
-  var wmset = store$1.set;
+  var store = sharedStore.state || (sharedStore.state = new WeakMap());
+  var wmget = store.get;
+  var wmhas = store.has;
+  var wmset = store.set;
   set = function (it, metadata) {
     metadata.facade = it;
-    wmset.call(store$1, it, metadata);
+    wmset.call(store, it, metadata);
     return metadata;
   };
   get = function (it) {
-    return wmget.call(store$1, it) || {};
+    return wmget.call(store, it) || {};
   };
-  has$1 = function (it) {
-    return wmhas.call(store$1, it);
+  has = function (it) {
+    return wmhas.call(store, it);
   };
 } else {
   var STATE = sharedKey('state');
-  hiddenKeys[STATE] = true;
+  hiddenKeys$1[STATE] = true;
   set = function (it, metadata) {
     metadata.facade = it;
     createNonEnumerableProperty(it, STATE, metadata);
     return metadata;
   };
   get = function (it) {
-    return has(it, STATE) ? it[STATE] : {};
+    return has$1(it, STATE) ? it[STATE] : {};
   };
-  has$1 = function (it) {
-    return has(it, STATE);
+  has = function (it) {
+    return has$1(it, STATE);
   };
 }
 
 var internalState = {
   set: set,
   get: get,
-  has: has$1,
+  has: has,
   enforce: enforce,
   getterFor: getterFor
 };
@@ -504,7 +489,7 @@ var TEMPLATE = String(String).split('String');
   var noTargetGet = options ? !!options.noTargetGet : false;
   var state;
   if (typeof value == 'function') {
-    if (typeof key == 'string' && !has(value, 'name')) {
+    if (typeof key == 'string' && !has$1(value, 'name')) {
       createNonEnumerableProperty(value, 'name', key);
     }
     state = enforceInternalState(value);
@@ -512,7 +497,7 @@ var TEMPLATE = String(String).split('String');
       state.source = TEMPLATE.join(typeof key == 'string' ? key : '');
     }
   }
-  if (O === global_1) {
+  if (O === global$1) {
     if (simple) O[key] = value;
     else setGlobal(key, value);
     return;
@@ -529,47 +514,47 @@ var TEMPLATE = String(String).split('String');
 });
 });
 
-var path = global_1;
+var path = global$1;
 
-var aFunction = function (variable) {
+var aFunction$1 = function (variable) {
   return typeof variable == 'function' ? variable : undefined;
 };
 
 var getBuiltIn = function (namespace, method) {
-  return arguments.length < 2 ? aFunction(path[namespace]) || aFunction(global_1[namespace])
-    : path[namespace] && path[namespace][method] || global_1[namespace] && global_1[namespace][method];
+  return arguments.length < 2 ? aFunction$1(path[namespace]) || aFunction$1(global$1[namespace])
+    : path[namespace] && path[namespace][method] || global$1[namespace] && global$1[namespace][method];
 };
 
 var ceil = Math.ceil;
-var floor = Math.floor;
+var floor$2 = Math.floor;
 
 // `ToInteger` abstract operation
 // https://tc39.es/ecma262/#sec-tointeger
 var toInteger = function (argument) {
-  return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor : ceil)(argument);
+  return isNaN(argument = +argument) ? 0 : (argument > 0 ? floor$2 : ceil)(argument);
 };
 
-var min = Math.min;
+var min$3 = Math.min;
 
 // `ToLength` abstract operation
 // https://tc39.es/ecma262/#sec-tolength
 var toLength = function (argument) {
-  return argument > 0 ? min(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
+  return argument > 0 ? min$3(toInteger(argument), 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
 };
 
-var max = Math.max;
-var min$1 = Math.min;
+var max$1 = Math.max;
+var min$2 = Math.min;
 
 // Helper for a popular repeating case of the spec:
 // Let integer be ? ToInteger(index).
 // If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
 var toAbsoluteIndex = function (index, length) {
   var integer = toInteger(index);
-  return integer < 0 ? max(integer + length, 0) : min$1(integer, length);
+  return integer < 0 ? max$1(integer + length, 0) : min$2(integer, length);
 };
 
 // `Array.prototype.{ indexOf, includes }` methods implementation
-var createMethod = function (IS_INCLUDES) {
+var createMethod$3 = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIndexedObject($this);
     var length = toLength(O.length);
@@ -591,10 +576,10 @@ var createMethod = function (IS_INCLUDES) {
 var arrayIncludes = {
   // `Array.prototype.includes` method
   // https://tc39.es/ecma262/#sec-array.prototype.includes
-  includes: createMethod(true),
+  includes: createMethod$3(true),
   // `Array.prototype.indexOf` method
   // https://tc39.es/ecma262/#sec-array.prototype.indexof
-  indexOf: createMethod(false)
+  indexOf: createMethod$3(false)
 };
 
 var indexOf = arrayIncludes.indexOf;
@@ -605,9 +590,9 @@ var objectKeysInternal = function (object, names) {
   var i = 0;
   var result = [];
   var key;
-  for (key in O) !has(hiddenKeys, key) && has(O, key) && result.push(key);
+  for (key in O) !has$1(hiddenKeys$1, key) && has$1(O, key) && result.push(key);
   // Don't enum bug & hidden keys
-  while (names.length > i) if (has(O, key = names[i++])) {
+  while (names.length > i) if (has$1(O, key = names[i++])) {
     ~indexOf(result, key) || result.push(key);
   }
   return result;
@@ -624,22 +609,22 @@ var enumBugKeys = [
   'valueOf'
 ];
 
-var hiddenKeys$1 = enumBugKeys.concat('length', 'prototype');
+var hiddenKeys = enumBugKeys.concat('length', 'prototype');
 
 // `Object.getOwnPropertyNames` method
 // https://tc39.es/ecma262/#sec-object.getownpropertynames
-var f$3 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return objectKeysInternal(O, hiddenKeys$1);
+var f$1 = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
+  return objectKeysInternal(O, hiddenKeys);
 };
 
 var objectGetOwnPropertyNames = {
-	f: f$3
+	f: f$1
 };
 
-var f$4 = Object.getOwnPropertySymbols;
+var f = Object.getOwnPropertySymbols;
 
 var objectGetOwnPropertySymbols = {
-	f: f$4
+	f: f
 };
 
 // all object keys, includes non-enumerable and symbols
@@ -655,7 +640,7 @@ var copyConstructorProperties = function (target, source) {
   var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
-    if (!has(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
+    if (!has$1(target, key)) defineProperty(target, key, getOwnPropertyDescriptor(source, key));
   }
 };
 
@@ -706,11 +691,11 @@ var _export = function (options, source) {
   var STATIC = options.stat;
   var FORCED, target, key, targetProperty, sourceProperty, descriptor;
   if (GLOBAL) {
-    target = global_1;
+    target = global$1;
   } else if (STATIC) {
-    target = global_1[TARGET] || setGlobal(TARGET, {});
+    target = global$1[TARGET] || setGlobal(TARGET, {});
   } else {
-    target = (global_1[TARGET] || {}).prototype;
+    target = (global$1[TARGET] || {}).prototype;
   }
   if (target) for (key in source) {
     sourceProperty = source[key];
@@ -745,11 +730,11 @@ var isArray = Array.isArray || function isArray(arg) {
   return classofRaw(arg) == 'Array';
 };
 
-var engineIsNode = classofRaw(global_1.process) == 'process';
+var engineIsNode = classofRaw(global$1.process) == 'process';
 
 var engineUserAgent = getBuiltIn('navigator', 'userAgent') || '';
 
-var process = global_1.process;
+var process = global$1.process;
 var versions = process && process.versions;
 var v8 = versions && versions.v8;
 var match, version;
@@ -781,12 +766,12 @@ var useSymbolAsUid = nativeSymbol
   && typeof Symbol.iterator == 'symbol';
 
 var WellKnownSymbolsStore = shared('wks');
-var Symbol$1 = global_1.Symbol;
+var Symbol$1 = global$1.Symbol;
 var createWellKnownSymbol = useSymbolAsUid ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid;
 
 var wellKnownSymbol = function (name) {
-  if (!has(WellKnownSymbolsStore, name) || !(nativeSymbol || typeof WellKnownSymbolsStore[name] == 'string')) {
-    if (nativeSymbol && has(Symbol$1, name)) {
+  if (!has$1(WellKnownSymbolsStore, name) || !(nativeSymbol || typeof WellKnownSymbolsStore[name] == 'string')) {
+    if (nativeSymbol && has$1(Symbol$1, name)) {
       WellKnownSymbolsStore[name] = Symbol$1[name];
     } else {
       WellKnownSymbolsStore[name] = createWellKnownSymbol('Symbol.' + name);
@@ -794,7 +779,7 @@ var wellKnownSymbol = function (name) {
   } return WellKnownSymbolsStore[name];
 };
 
-var SPECIES = wellKnownSymbol('species');
+var SPECIES$3 = wellKnownSymbol('species');
 
 // `ArraySpeciesCreate` abstract operation
 // https://tc39.es/ecma262/#sec-arrayspeciescreate
@@ -805,7 +790,7 @@ var arraySpeciesCreate = function (originalArray, length) {
     // cross-realm fallback
     if (typeof C == 'function' && (C === Array || isArray(C.prototype))) C = undefined;
     else if (isObject(C)) {
-      C = C[SPECIES];
+      C = C[SPECIES$3];
       if (C === null) C = undefined;
     }
   } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
@@ -817,7 +802,7 @@ var createProperty = function (object, key, value) {
   else object[propertyKey] = value;
 };
 
-var SPECIES$1 = wellKnownSymbol('species');
+var SPECIES$2 = wellKnownSymbol('species');
 
 var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
   // We can't use this feature detection in V8 since it causes
@@ -826,24 +811,24 @@ var arrayMethodHasSpeciesSupport = function (METHOD_NAME) {
   return engineV8Version >= 51 || !fails(function () {
     var array = [];
     var constructor = array.constructor = {};
-    constructor[SPECIES$1] = function () {
+    constructor[SPECIES$2] = function () {
       return { foo: 1 };
     };
     return array[METHOD_NAME](Boolean).foo !== 1;
   });
 };
 
-var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('splice');
+var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('splice');
 
-var max$1 = Math.max;
-var min$2 = Math.min;
-var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
+var max = Math.max;
+var min$1 = Math.min;
+var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
 var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded';
 
 // `Array.prototype.splice` method
 // https://tc39.es/ecma262/#sec-array.prototype.splice
 // with adding support of @@species
-_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
+_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 }, {
   splice: function splice(start, deleteCount /* , ...items */) {
     var O = toObject(this);
     var len = toLength(O.length);
@@ -857,9 +842,9 @@ _export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
       actualDeleteCount = len - actualStart;
     } else {
       insertCount = argumentsLength - 2;
-      actualDeleteCount = min$2(max$1(toInteger(deleteCount), 0), len - actualStart);
+      actualDeleteCount = min$1(max(toInteger(deleteCount), 0), len - actualStart);
     }
-    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER) {
+    if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER$1) {
       throw TypeError(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
     }
     A = arraySpeciesCreate(O, actualDeleteCount);
@@ -960,8 +945,6 @@ var Evented = /*#__PURE__*/function () {
   return Evented;
 }();
 
-var dist = Evented;
-
 var Component = /*#__PURE__*/function (_Evented) {
   _inherits(Component, _Evented);
 
@@ -1009,7 +992,7 @@ var Component = /*#__PURE__*/function (_Evented) {
   }]);
 
   return Component;
-}(dist);
+}(Evented);
 
 // `RegExp.prototype.flags` getter implementation
 // https://tc39.es/ecma262/#sec-get-regexp.prototype.flags
@@ -1031,7 +1014,7 @@ function RE(s, f) {
   return RegExp(s, f);
 }
 
-var UNSUPPORTED_Y = fails(function () {
+var UNSUPPORTED_Y$1 = fails(function () {
   // babel-minify transpiles RegExp('a', 'y') -> /a/y and it causes SyntaxError
   var re = RE('a', 'y');
   re.lastIndex = 2;
@@ -1046,7 +1029,7 @@ var BROKEN_CARET = fails(function () {
 });
 
 var regexpStickyHelpers = {
-	UNSUPPORTED_Y: UNSUPPORTED_Y,
+	UNSUPPORTED_Y: UNSUPPORTED_Y$1,
 	BROKEN_CARET: BROKEN_CARET
 };
 
@@ -1066,19 +1049,19 @@ var UPDATES_LAST_INDEX_WRONG = (function () {
   return re1.lastIndex !== 0 || re2.lastIndex !== 0;
 })();
 
-var UNSUPPORTED_Y$1 = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
+var UNSUPPORTED_Y = regexpStickyHelpers.UNSUPPORTED_Y || regexpStickyHelpers.BROKEN_CARET;
 
 // nonparticipating capturing group, copied from es5-shim's String#split patch.
 // eslint-disable-next-line regexp/no-assertion-capturing-group, regexp/no-empty-group -- required for testing
 var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
 
-var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y$1;
+var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED || UNSUPPORTED_Y;
 
 if (PATCH) {
   patchedExec = function exec(str) {
     var re = this;
     var lastIndex, reCopy, match, i;
-    var sticky = UNSUPPORTED_Y$1 && re.sticky;
+    var sticky = UNSUPPORTED_Y && re.sticky;
     var flags = regexpFlags.call(re);
     var source = re.source;
     var charsAdded = 0;
@@ -1149,7 +1132,7 @@ _export({ target: 'RegExp', proto: true, forced: /./.exec !== regexpExec }, {
 
 
 
-var SPECIES$2 = wellKnownSymbol('species');
+var SPECIES$1 = wellKnownSymbol('species');
 
 var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
   // #replace needs built-in support for named groups.
@@ -1213,7 +1196,7 @@ var fixRegexpWellKnownSymbolLogic = function (KEY, length, exec, sham) {
       // RegExp[@@split] doesn't call the regex's exec method, but first creates
       // a new one. We need to return the patched regex when creating the new one.
       re.constructor = {};
-      re.constructor[SPECIES$2] = function () { return re; };
+      re.constructor[SPECIES$1] = function () { return re; };
       re.flags = '';
       re[SYMBOL] = /./[SYMBOL];
     }
@@ -1276,24 +1259,24 @@ var isRegexp = function (it) {
   return isObject(it) && ((isRegExp = it[MATCH]) !== undefined ? !!isRegExp : classofRaw(it) == 'RegExp');
 };
 
-var aFunction$1 = function (it) {
+var aFunction = function (it) {
   if (typeof it != 'function') {
     throw TypeError(String(it) + ' is not a function');
   } return it;
 };
 
-var SPECIES$3 = wellKnownSymbol('species');
+var SPECIES = wellKnownSymbol('species');
 
 // `SpeciesConstructor` abstract operation
 // https://tc39.es/ecma262/#sec-speciesconstructor
 var speciesConstructor = function (O, defaultConstructor) {
   var C = anObject(O).constructor;
   var S;
-  return C === undefined || (S = anObject(C)[SPECIES$3]) == undefined ? defaultConstructor : aFunction$1(S);
+  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? defaultConstructor : aFunction(S);
 };
 
 // `String.prototype.{ codePointAt, at }` methods implementation
-var createMethod$1 = function (CONVERT_TO_STRING) {
+var createMethod$2 = function (CONVERT_TO_STRING) {
   return function ($this, pos) {
     var S = String(requireObjectCoercible($this));
     var position = toInteger(pos);
@@ -1311,10 +1294,10 @@ var createMethod$1 = function (CONVERT_TO_STRING) {
 var stringMultibyte = {
   // `String.prototype.codePointAt` method
   // https://tc39.es/ecma262/#sec-string.prototype.codepointat
-  codeAt: createMethod$1(false),
+  codeAt: createMethod$2(false),
   // `String.prototype.at` method
   // https://github.com/mathiasbynens/String.prototype.at
-  charAt: createMethod$1(true)
+  charAt: createMethod$2(true)
 };
 
 var charAt = stringMultibyte.charAt;
@@ -1345,7 +1328,7 @@ var regexpExecAbstract = function (R, S) {
 };
 
 var arrayPush = [].push;
-var min$3 = Math.min;
+var min = Math.min;
 var MAX_UINT32 = 0xFFFFFFFF;
 
 // babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
@@ -1450,7 +1433,7 @@ fixRegexpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
         var e;
         if (
           z === null ||
-          (e = min$3(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+          (e = min(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
         ) {
           q = advanceStringIndex(S, q, unicodeMatching);
         } else {
@@ -1480,117 +1463,13 @@ var arrayMethodIsStrict = function (METHOD_NAME, argument) {
 var nativeJoin = [].join;
 
 var ES3_STRINGS = indexedObject != Object;
-var STRICT_METHOD = arrayMethodIsStrict('join', ',');
+var STRICT_METHOD$1 = arrayMethodIsStrict('join', ',');
 
 // `Array.prototype.join` method
 // https://tc39.es/ecma262/#sec-array.prototype.join
-_export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD }, {
+_export({ target: 'Array', proto: true, forced: ES3_STRINGS || !STRICT_METHOD$1 }, {
   join: function join(separator) {
     return nativeJoin.call(toIndexedObject(this), separator === undefined ? ',' : separator);
-  }
-});
-
-// optional / simple context binding
-var functionBindContext = function (fn, that, length) {
-  aFunction$1(fn);
-  if (that === undefined) return fn;
-  switch (length) {
-    case 0: return function () {
-      return fn.call(that);
-    };
-    case 1: return function (a) {
-      return fn.call(that, a);
-    };
-    case 2: return function (a, b) {
-      return fn.call(that, a, b);
-    };
-    case 3: return function (a, b, c) {
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-var push = [].push;
-
-// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex, filterOut }` methods implementation
-var createMethod$2 = function (TYPE) {
-  var IS_MAP = TYPE == 1;
-  var IS_FILTER = TYPE == 2;
-  var IS_SOME = TYPE == 3;
-  var IS_EVERY = TYPE == 4;
-  var IS_FIND_INDEX = TYPE == 6;
-  var IS_FILTER_OUT = TYPE == 7;
-  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
-  return function ($this, callbackfn, that, specificCreate) {
-    var O = toObject($this);
-    var self = indexedObject(O);
-    var boundFunction = functionBindContext(callbackfn, that, 3);
-    var length = toLength(self.length);
-    var index = 0;
-    var create = specificCreate || arraySpeciesCreate;
-    var target = IS_MAP ? create($this, length) : IS_FILTER || IS_FILTER_OUT ? create($this, 0) : undefined;
-    var value, result;
-    for (;length > index; index++) if (NO_HOLES || index in self) {
-      value = self[index];
-      result = boundFunction(value, index, O);
-      if (TYPE) {
-        if (IS_MAP) target[index] = result; // map
-        else if (result) switch (TYPE) {
-          case 3: return true;              // some
-          case 5: return value;             // find
-          case 6: return index;             // findIndex
-          case 2: push.call(target, value); // filter
-        } else switch (TYPE) {
-          case 4: return false;             // every
-          case 7: push.call(target, value); // filterOut
-        }
-      }
-    }
-    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
-  };
-};
-
-var arrayIteration = {
-  // `Array.prototype.forEach` method
-  // https://tc39.es/ecma262/#sec-array.prototype.foreach
-  forEach: createMethod$2(0),
-  // `Array.prototype.map` method
-  // https://tc39.es/ecma262/#sec-array.prototype.map
-  map: createMethod$2(1),
-  // `Array.prototype.filter` method
-  // https://tc39.es/ecma262/#sec-array.prototype.filter
-  filter: createMethod$2(2),
-  // `Array.prototype.some` method
-  // https://tc39.es/ecma262/#sec-array.prototype.some
-  some: createMethod$2(3),
-  // `Array.prototype.every` method
-  // https://tc39.es/ecma262/#sec-array.prototype.every
-  every: createMethod$2(4),
-  // `Array.prototype.find` method
-  // https://tc39.es/ecma262/#sec-array.prototype.find
-  find: createMethod$2(5),
-  // `Array.prototype.findIndex` method
-  // https://tc39.es/ecma262/#sec-array.prototype.findIndex
-  findIndex: createMethod$2(6),
-  // `Array.prototype.filterOut` method
-  // https://github.com/tc39/proposal-array-filtering
-  filterOut: createMethod$2(7)
-};
-
-var $map = arrayIteration.map;
-
-
-var HAS_SPECIES_SUPPORT$1 = arrayMethodHasSpeciesSupport('map');
-
-// `Array.prototype.map` method
-// https://tc39.es/ecma262/#sec-array.prototype.map
-// with adding support of @@species
-_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT$1 }, {
-  map: function map(callbackfn /* , thisArg */) {
-    return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
 
@@ -1610,100 +1489,63 @@ _export({ target: 'Object', stat: true, forced: FAILS_ON_PRIMITIVES }, {
   }
 });
 
-var copy = function copy(source) {
-  switch (_typeof(source)) {
-    case 'number':
-    case 'string':
-    case 'function':
-    default:
-      return source;
+var Translation = /*#__PURE__*/function () {
+  function Translation() {
+    _classCallCheck(this, Translation);
 
-    case 'object':
-      if (source === null) {
-        return null;
-      } else if (Array.isArray(source)) {
-        return source.map(function (item) {
-          return copy(item);
-        });
-      } else if (source instanceof Date) {
-        return source;
-      } else {
-        return Object.keys(source).reduce(function (a, k) {
-          a[k] = copy(source[k]);
-          return a;
-        }, {});
-      }
+    this._langs = {};
+    var current = localStorage.getItem('lang');
 
-  }
-};
+    if (!current) {
+      current = 'ru';
+      localStorage.setItem('lang', current);
+    }
 
-var extend = function extend(target, source) {
-  if (target === source) {
-    return target;
-  } else {
-    return Object.keys(source).reduce(function (a, k) {
-      var value = source[k];
-
-      if (_typeof(a[k]) === 'object' && k in a) {
-        a[k] = extend(a[k], value);
-      } else {
-        a[k] = copy(value);
-      }
-
-      return a;
-    }, copy(target));
-  }
-};
-
-var DEFAULT_LANGUAGE = 'rus';
-
-var Translations = /*#__PURE__*/function () {
-  function Translations() {
-    _classCallCheck(this, Translations);
-
-    this._hash = {};
+    this._current = current;
   }
 
-  _createClass(Translations, [{
-    key: "setLanguage",
-    value: function setLanguage(lang) {
-      this._language = lang;
-    }
-  }, {
-    key: "getLanguage",
-    value: function getLanguage() {
-      return window.language || this._language || DEFAULT_LANGUAGE;
-    }
-  }, {
-    key: "addText",
-    value: function addText(lang, tran) {
-      this._hash[lang] = extend(this._hash[lang] || {}, tran);
-      return this;
-    }
-  }, {
-    key: "getText",
-    value: function getText(key) {
-      if (key && typeof key === 'string') {
-        var locale = this._hash[this.getLanguage()];
+  _createClass(Translation, [{
+    key: "add",
+    value: function add(lang, obj) {
+      this._langs[lang] = this._langs[lang] || {};
 
-        if (locale) {
-          return key.split('.').reduce(function (a, k) {
-            return a[k];
-          }, locale);
+      this._merge(this._langs[lang], obj);
+    }
+  }, {
+    key: "_merge",
+    value: function _merge(target, obj) {
+      for (var _i = 0, _Object$keys = Object.keys(obj); _i < _Object$keys.length; _i++) {
+        var k = _Object$keys[_i];
+
+        if (target[k]) {
+          this._merge(target[k], obj[k]);
+        } else {
+          target[k] = obj[k];
         }
       }
+    }
+  }, {
+    key: "translate",
+    value: function translate(path) {
+      return this._translate(this._langs[this._current], path);
+    }
+  }, {
+    key: "_translate",
+    value: function _translate(root, path) {
+      var i = path.indexOf('.');
 
-      return null;
+      if (i >= 0) {
+        return this._translate(root[path.substring(0, i)], path.substring(i + 1));
+      } else {
+        return root[path];
+      }
     }
   }]);
 
-  return Translations;
+  return Translation;
 }();
 
-window.Scanex = window.Scanex || {};
-window.Scanex.Translations = window.Scanex.Translations || {};
-window.Scanex.translations = window.Scanex.translations || new Translations();
-var T = window.Scanex.translations;
+var T = new Translation();
 
 T.addText('rus', {
   scanex: {
@@ -1727,7 +1569,7 @@ T.addText('eng', {
     }
   }
 });
-var translate = T.getText.bind(T);
+var translate$1 = T.getText.bind(T);
 
 var Dialog = /*#__PURE__*/function (_Component) {
   _inherits(Dialog, _Component);
@@ -1832,7 +1674,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       e.stopPropagation();
 
       if (this._btnToggle.classList.contains('minimize')) {
-        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.maximize'));
+        this._btnToggle.setAttribute('title', translate$1('scanex.components.dialog.maximize'));
 
         this._btnToggle.classList.remove('minimize');
 
@@ -1846,7 +1688,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
         event.initEvent('minimize', false, false);
         this.dispatchEvent(event);
       } else {
-        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+        this._btnToggle.setAttribute('title', translate$1('scanex.components.dialog.minimize'));
 
         this._btnToggle.classList.remove('maximize');
 
@@ -1918,7 +1760,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       if (collapsible && !modal) {
         this._btnToggle = document.createElement('i');
 
-        this._btnToggle.setAttribute('title', translate('scanex.components.dialog.minimize'));
+        this._btnToggle.setAttribute('title', translate$1('scanex.components.dialog.minimize'));
 
         this._btnToggle.classList.add('scanex-component-icon');
 
@@ -1930,7 +1772,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
       }
 
       var btnClose = document.createElement('i');
-      btnClose.setAttribute('title', translate('scanex.components.dialog.close'));
+      btnClose.setAttribute('title', translate$1('scanex.components.dialog.close'));
       btnClose.classList.add('scanex-component-icon');
       btnClose.classList.add('close');
       btnClose.addEventListener('click', this._close.bind(this));
@@ -1988,7 +1830,7 @@ var Dialog = /*#__PURE__*/function (_Component) {
 }(Component);
 
 var IS_CONCAT_SPREADABLE = wellKnownSymbol('isConcatSpreadable');
-var MAX_SAFE_INTEGER$1 = 0x1FFFFFFFFFFFFF;
+var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
 var MAXIMUM_ALLOWED_INDEX_EXCEEDED = 'Maximum allowed index exceeded';
 
 // We can't use this feature detection in V8 since it causes
@@ -2008,12 +1850,12 @@ var isConcatSpreadable = function (O) {
   return spreadable !== undefined ? !!spreadable : isArray(O);
 };
 
-var FORCED = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
+var FORCED$1 = !IS_CONCAT_SPREADABLE_SUPPORT || !SPECIES_SUPPORT;
 
 // `Array.prototype.concat` method
 // https://tc39.es/ecma262/#sec-array.prototype.concat
 // with adding support of @@isConcatSpreadable and @@species
-_export({ target: 'Array', proto: true, forced: FORCED }, {
+_export({ target: 'Array', proto: true, forced: FORCED$1 }, {
   // eslint-disable-next-line no-unused-vars -- required for `.length`
   concat: function concat(arg) {
     var O = toObject(this);
@@ -2024,15 +1866,119 @@ _export({ target: 'Array', proto: true, forced: FORCED }, {
       E = i === -1 ? O : arguments[i];
       if (isConcatSpreadable(E)) {
         len = toLength(E.length);
-        if (n + len > MAX_SAFE_INTEGER$1) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        if (n + len > MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
         for (k = 0; k < len; k++, n++) if (k in E) createProperty(A, n, E[k]);
       } else {
-        if (n >= MAX_SAFE_INTEGER$1) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
+        if (n >= MAX_SAFE_INTEGER) throw TypeError(MAXIMUM_ALLOWED_INDEX_EXCEEDED);
         createProperty(A, n++, E);
       }
     }
     A.length = n;
     return A;
+  }
+});
+
+// optional / simple context binding
+var functionBindContext = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 0: return function () {
+      return fn.call(that);
+    };
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+var push = [].push;
+
+// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex, filterOut }` methods implementation
+var createMethod$1 = function (TYPE) {
+  var IS_MAP = TYPE == 1;
+  var IS_FILTER = TYPE == 2;
+  var IS_SOME = TYPE == 3;
+  var IS_EVERY = TYPE == 4;
+  var IS_FIND_INDEX = TYPE == 6;
+  var IS_FILTER_OUT = TYPE == 7;
+  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+  return function ($this, callbackfn, that, specificCreate) {
+    var O = toObject($this);
+    var self = indexedObject(O);
+    var boundFunction = functionBindContext(callbackfn, that, 3);
+    var length = toLength(self.length);
+    var index = 0;
+    var create = specificCreate || arraySpeciesCreate;
+    var target = IS_MAP ? create($this, length) : IS_FILTER || IS_FILTER_OUT ? create($this, 0) : undefined;
+    var value, result;
+    for (;length > index; index++) if (NO_HOLES || index in self) {
+      value = self[index];
+      result = boundFunction(value, index, O);
+      if (TYPE) {
+        if (IS_MAP) target[index] = result; // map
+        else if (result) switch (TYPE) {
+          case 3: return true;              // some
+          case 5: return value;             // find
+          case 6: return index;             // findIndex
+          case 2: push.call(target, value); // filter
+        } else switch (TYPE) {
+          case 4: return false;             // every
+          case 7: push.call(target, value); // filterOut
+        }
+      }
+    }
+    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
+  };
+};
+
+var arrayIteration = {
+  // `Array.prototype.forEach` method
+  // https://tc39.es/ecma262/#sec-array.prototype.foreach
+  forEach: createMethod$1(0),
+  // `Array.prototype.map` method
+  // https://tc39.es/ecma262/#sec-array.prototype.map
+  map: createMethod$1(1),
+  // `Array.prototype.filter` method
+  // https://tc39.es/ecma262/#sec-array.prototype.filter
+  filter: createMethod$1(2),
+  // `Array.prototype.some` method
+  // https://tc39.es/ecma262/#sec-array.prototype.some
+  some: createMethod$1(3),
+  // `Array.prototype.every` method
+  // https://tc39.es/ecma262/#sec-array.prototype.every
+  every: createMethod$1(4),
+  // `Array.prototype.find` method
+  // https://tc39.es/ecma262/#sec-array.prototype.find
+  find: createMethod$1(5),
+  // `Array.prototype.findIndex` method
+  // https://tc39.es/ecma262/#sec-array.prototype.findIndex
+  findIndex: createMethod$1(6),
+  // `Array.prototype.filterOut` method
+  // https://github.com/tc39/proposal-array-filtering
+  filterOut: createMethod$1(7)
+};
+
+var $map = arrayIteration.map;
+
+
+var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
+
+// `Array.prototype.map` method
+// https://tc39.es/ecma262/#sec-array.prototype.map
+// with adding support of @@species
+_export({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
+  map: function map(callbackfn /* , thisArg */) {
+    return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
 
@@ -2193,16 +2139,16 @@ var domIterables = {
 var $forEach = arrayIteration.forEach;
 
 
-var STRICT_METHOD$1 = arrayMethodIsStrict('forEach');
+var STRICT_METHOD = arrayMethodIsStrict('forEach');
 
 // `Array.prototype.forEach` method implementation
 // https://tc39.es/ecma262/#sec-array.prototype.foreach
-var arrayForEach = !STRICT_METHOD$1 ? function forEach(callbackfn /* , thisArg */) {
+var arrayForEach = !STRICT_METHOD ? function forEach(callbackfn /* , thisArg */) {
   return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
 } : [].forEach;
 
 for (var COLLECTION_NAME in domIterables) {
-  var Collection = global_1[COLLECTION_NAME];
+  var Collection = global$1[COLLECTION_NAME];
   var CollectionPrototype = Collection && Collection.prototype;
   // some Chrome versions have non-configurable methods on DOMTokenList
   if (CollectionPrototype && CollectionPrototype.forEach !== arrayForEach) try {
@@ -2509,8 +2455,6 @@ var aPossiblePrototype = function (it) {
 
 /* eslint-disable no-proto -- safe */
 
-
-
 // `Object.setPrototypeOf` method
 // https://tc39.es/ecma262/#sec-object.setprototypeof
 // Works with __proto__ only. Old v8 can't work with null proto objects.
@@ -2616,7 +2560,7 @@ var NullProtoObject = function () {
   return NullProtoObject();
 };
 
-hiddenKeys[IE_PROTO] = true;
+hiddenKeys$1[IE_PROTO] = true;
 
 // `Object.create` method
 // https://tc39.es/ecma262/#sec-object.create
@@ -2641,7 +2585,7 @@ var ltrim = RegExp('^' + whitespace + whitespace + '*');
 var rtrim = RegExp(whitespace + whitespace + '*$');
 
 // `String.prototype.{ trim, trimStart, trimEnd, trimLeft, trimRight }` methods implementation
-var createMethod$3 = function (TYPE) {
+var createMethod = function (TYPE) {
   return function ($this) {
     var string = String(requireObjectCoercible($this));
     if (TYPE & 1) string = string.replace(ltrim, '');
@@ -2653,22 +2597,22 @@ var createMethod$3 = function (TYPE) {
 var stringTrim = {
   // `String.prototype.{ trimLeft, trimStart }` methods
   // https://tc39.es/ecma262/#sec-string.prototype.trimstart
-  start: createMethod$3(1),
+  start: createMethod(1),
   // `String.prototype.{ trimRight, trimEnd }` methods
   // https://tc39.es/ecma262/#sec-string.prototype.trimend
-  end: createMethod$3(2),
+  end: createMethod(2),
   // `String.prototype.trim` method
   // https://tc39.es/ecma262/#sec-string.prototype.trim
-  trim: createMethod$3(3)
+  trim: createMethod(3)
 };
 
 var getOwnPropertyNames = objectGetOwnPropertyNames.f;
-var getOwnPropertyDescriptor$2 = objectGetOwnPropertyDescriptor.f;
+var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
 var defineProperty = objectDefineProperty.f;
 var trim = stringTrim.trim;
 
 var NUMBER = 'Number';
-var NativeNumber = global_1[NUMBER];
+var NativeNumber = global$1[NUMBER];
 var NumberPrototype = NativeNumber.prototype;
 
 // Opera ~12 has broken Object#toString
@@ -2714,7 +2658,7 @@ if (isForced_1(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNu
       && (BROKEN_CLASSOF ? fails(function () { NumberPrototype.valueOf.call(dummy); }) : classofRaw(dummy) != NUMBER)
         ? inheritIfRequired(new NativeNumber(toNumber(it)), dummy, NumberWrapper) : toNumber(it);
   };
-  for (var keys$1 = descriptors ? getOwnPropertyNames(NativeNumber) : (
+  for (var keys = descriptors ? getOwnPropertyNames(NativeNumber) : (
     // ES3:
     'MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,' +
     // ES2015 (in case, if modules with ES2015 Number statics required before):
@@ -2722,17 +2666,17 @@ if (isForced_1(NUMBER, !NativeNumber(' 0o1') || !NativeNumber('0b1') || NativeNu
     'MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger,' +
     // ESNext
     'fromString,range'
-  ).split(','), j = 0, key; keys$1.length > j; j++) {
-    if (has(NativeNumber, key = keys$1[j]) && !has(NumberWrapper, key)) {
-      defineProperty(NumberWrapper, key, getOwnPropertyDescriptor$2(NativeNumber, key));
+  ).split(','), j = 0, key; keys.length > j; j++) {
+    if (has$1(NativeNumber, key = keys[j]) && !has$1(NumberWrapper, key)) {
+      defineProperty(NumberWrapper, key, getOwnPropertyDescriptor(NativeNumber, key));
     }
   }
   NumberWrapper.prototype = NumberPrototype;
   NumberPrototype.constructor = NumberWrapper;
-  redefine(global_1, NUMBER, NumberWrapper);
+  redefine(global$1, NUMBER, NumberWrapper);
 }
 
-var translate$1 = T.getText.bind(T);
+var translate = T.getText.bind(T);
 T.addText('rus', {
   pager: {
     previous: 'Предыдущая',
@@ -2757,7 +2701,7 @@ var Pager = /*#__PURE__*/function (_Component) {
       var _this = this;
 
       element.classList.add('scanex-component-pager');
-      element.innerHTML = "<table cellpadding=\"0\" cellspacing=\"0\">\n            <tr>\n                <td>\n                    <button class=\"first\">1</button>\n                </td>                \n                <td>\n                    <button class=\"previous\">".concat(translate$1('pager.previous'), "</button>\n                </td>\n                <td>\n                    <input type=\"text\" value=\"\" />\n                </td>\n                <td>\n                    <button class=\"next\">").concat(translate$1('pager.next'), "</button>\n                </td>                \n                <td>\n                    <button class=\"last\"></button>\n                </td>\n            </tr>\n        </table>");
+      element.innerHTML = "<table cellpadding=\"0\" cellspacing=\"0\">\n            <tr>\n                <td>\n                    <button class=\"first\">1</button>\n                </td>                \n                <td>\n                    <button class=\"previous\">".concat(translate('pager.previous'), "</button>\n                </td>\n                <td>\n                    <input type=\"text\" value=\"\" />\n                </td>\n                <td>\n                    <button class=\"next\">").concat(translate('pager.next'), "</button>\n                </td>                \n                <td>\n                    <button class=\"last\"></button>\n                </td>\n            </tr>\n        </table>");
       element.querySelector('.first').addEventListener('click', function (e) {
         e.stopPropagation();
         _this.page = 1;
@@ -2886,9 +2830,9 @@ var Panel = /*#__PURE__*/function (_Component) {
   _createClass(Panel, [{
     key: "_render",
     value: function _render(element, options) {
-      var id = options.id,
-          title = options.title,
-          expanded = options.expanded;
+      options.id;
+          options.title;
+          var expanded = options.expanded;
       element.classList.add('scanex-component-sidebar-panel');
       this.expanded = expanded || false;
     }
@@ -2995,14 +2939,14 @@ var Sidebar = /*#__PURE__*/function (_Component) {
   return Sidebar;
 }(Component);
 
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
+var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
 var test = {};
 
-test[TO_STRING_TAG] = 'z';
+test[TO_STRING_TAG$1] = 'z';
 
 var toStringTagSupport = String(test) === '[object z]';
 
-var TO_STRING_TAG$1 = wellKnownSymbol('toStringTag');
+var TO_STRING_TAG = wellKnownSymbol('toStringTag');
 // ES3 wrong here
 var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) == 'Arguments';
 
@@ -3018,7 +2962,7 @@ var classof = toStringTagSupport ? classofRaw : function (it) {
   var O, tag, result;
   return it === undefined ? 'Undefined' : it === null ? 'Null'
     // @@toStringTag case
-    : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG$1)) == 'string' ? tag
+    : typeof (tag = tryGet(O = Object(it), TO_STRING_TAG)) == 'string' ? tag
     // builtinTag case
     : CORRECT_ARGUMENTS ? classofRaw(O)
     // ES3 arguments fallback
@@ -3551,7 +3495,7 @@ var stringRepeat = ''.repeat || function repeat(count) {
 };
 
 var nativeToFixed = 1.0.toFixed;
-var floor$2 = Math.floor;
+var floor = Math.floor;
 
 var pow = function (x, n, acc) {
   return n === 0 ? acc : n % 2 === 1 ? pow(x, n - 1, acc * x) : pow(x * x, n / 2, acc);
@@ -3576,7 +3520,7 @@ var multiply = function (data, n, c) {
   while (++index < 6) {
     c2 += n * data[index];
     data[index] = c2 % 1e7;
-    c2 = floor$2(c2 / 1e7);
+    c2 = floor(c2 / 1e7);
   }
 };
 
@@ -3585,7 +3529,7 @@ var divide = function (data, n) {
   var c = 0;
   while (--index >= 0) {
     c += data[index];
-    data[index] = floor$2(c / n);
+    data[index] = floor(c / n);
     c = (c % n) * 1e7;
   }
 };
@@ -3601,7 +3545,7 @@ var dataToString = function (data) {
   } return s;
 };
 
-var FORCED$1 = nativeToFixed && (
+var FORCED = nativeToFixed && (
   0.00008.toFixed(3) !== '0.000' ||
   0.9.toFixed(0) !== '1' ||
   1.255.toFixed(2) !== '1.25' ||
@@ -3613,7 +3557,7 @@ var FORCED$1 = nativeToFixed && (
 
 // `Number.prototype.toFixed` method
 // https://tc39.es/ecma262/#sec-number.prototype.tofixed
-_export({ target: 'Number', proto: true, forced: FORCED$1 }, {
+_export({ target: 'Number', proto: true, forced: FORCED }, {
   toFixed: function toFixed(fractionDigits) {
     var number = thisNumberValue(this);
     var fractDigits = toInteger(fractionDigits);
@@ -3803,7 +3747,7 @@ var Slider3 = /*#__PURE__*/function (_Slider) {
 
         var rt = this._rightTick.getBoundingClientRect();
 
-        var w = lt.width + mt.width + rt.width;
+        lt.width + mt.width + rt.width;
 
         var b = this._bar.getBoundingClientRect();
 
@@ -3971,8 +3915,6 @@ var Interval3 = /*#__PURE__*/function (_Interval) {
 
   return Interval3;
 }(Interval);
-
-
 
 var index = /*#__PURE__*/Object.freeze({
   __proto__: null,

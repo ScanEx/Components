@@ -180,19 +180,8 @@ html, body {
     width: 15px;
     height: 15px;
 }
-.scanex-component-tabs > .tabs > *,
-.scanex-component-tabs > .panels > * {
+.scanex-component.scanex-component-sidebar > * {
     float: left;
-}
-.scanex-component-tabs > .panels {
-    clear: both;
-    position: relative;
-}
-.scanex-component-tabs > .panels > .panel {
-    position: absolute;    
-}
-.scanex-component-tabs > .panels > .hidden {
-    visibility: hidden;
 }
 .scanex-component-spinner > * {
     display: inline-block;
@@ -217,8 +206,19 @@ html, body {
     margin-top: 1px;
     border-top: 1px solid;
 }
-.scanex-component.scanex-component-sidebar > * {
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
     float: left;
+}
+.scanex-component-tabs > .panels {
+    clear: both;
+    position: relative;
+}
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
+}
+.scanex-component-tabs > .panels > .hidden {
+    visibility: hidden;
 }
 .noselect {
     -webkit-touch-callout: none;
@@ -292,15 +292,6 @@ html, body {
 .scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
     float: left;
 }
-.scanex-component-range > table,
-.scanex-component-range > table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 35px;
-    text-align: center;
-    border: none;
-}
 .scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
     float: left;
     position: absolute;
@@ -309,6 +300,15 @@ html, body {
     position: absolute;
     top: -20px;
     background-color: #ffffff;
+}
+.scanex-component-range > table,
+.scanex-component-range > table > tbody > tr > td:nth-child(2) {
+    width: 100%;
+}
+.scanex-component-range input {
+    width: 35px;
+    text-align: center;
+    border: none;
 }
 .scanex-component-sidebar-tab > div {
     writing-mode: vertical-lr;    
