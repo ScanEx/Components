@@ -1325,6 +1325,11 @@
     }
 
     _createClass(Translation, [{
+      key: "getLanguage",
+      value: function getLanguage() {
+        return this._current;
+      }
+    }, {
       key: "addText",
       value: function addText(lang, obj) {
         this._langs[lang] = this._langs[lang] || {};
