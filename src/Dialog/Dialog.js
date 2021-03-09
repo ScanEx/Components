@@ -2,7 +2,7 @@ import './Dialog.css';
 import T from '@scanex/translations';
 import Component from '../Component.js';
 
-T.addText ('rus', { 
+T.addText ('ru', { 
     scanex: {
         components: {
             dialog: {
@@ -15,7 +15,7 @@ T.addText ('rus', {
     
 });
 
-T.addText ('eng', {
+T.addText ('en', {
     scanex: {
         components: {
             dialog: {

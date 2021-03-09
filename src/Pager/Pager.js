@@ -3,7 +3,7 @@ import T from '@scanex/translations';
 import Component from '../Component.js';
 
 const translate = T.getText.bind(T);
-T.addText('rus', {
+T.addText('ru', {
     pager: {        
         previous: 'Предыдущая',
         next: 'Следующая',
