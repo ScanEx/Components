@@ -27,7 +27,7 @@ T.addText ('en', {
     }    
 });
 
-const translate = T.getText.bind(T);
+const translate = T.translate.bind(T);
 
 export default class Dialog extends Component {
     constructor({title, id, collapsible = false, modal = false, top, left}) {
