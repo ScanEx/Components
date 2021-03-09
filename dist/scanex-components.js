@@ -1569,7 +1569,7 @@ T.addText('en', {
     }
   }
 });
-var translate$1 = T.translate.bind(T);
+var translate$1 = T.getText.bind(T);
 
 var Dialog = /*#__PURE__*/function (_Component) {
   _inherits(Dialog, _Component);

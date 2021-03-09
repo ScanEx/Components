@@ -1570,7 +1570,7 @@
       }
     }
   });
-  var translate = T.translate.bind(T);
+  var translate = T.getText.bind(T);
 
   var Dialog = /*#__PURE__*/function (_Component) {
     _inherits(Dialog, _Component);
