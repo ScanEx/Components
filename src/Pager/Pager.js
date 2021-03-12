@@ -56,9 +56,7 @@ class Pager extends Component {
             e.stopPropagation();
             this.page = parseInt (this._current.value, 10);
         });
-        this._last = element.querySelector('.last');
-        this._pages = 1;
-        this.page = 1;
+        this._last = element.querySelector('.last');        
     }
     get page() {
         return this._page;

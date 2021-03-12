@@ -113,75 +113,6 @@ html, body {
 .scanex-component-icon.spinner-up {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' class='' data-icon='up' width='1em' height='1em' fill='currentColor' aria-hidden='true'%3e %3cpath d='M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z'%3e%3c/path%3e %3c/svg%3e");}
 .scanex-component-icon.tabs {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' data-icon='menu' width='1em' height='1em' fill='currentColor' aria-hidden='true'%3e%3cpath d='M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z'%3e%3c/path%3e%3c/svg%3e");}
 .scanex-component-icon.up {background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='64 64 896 896' focusable='false' class='' data-icon='up' width='1em' height='1em' fill='currentColor' aria-hidden='true'%3e %3cpath d='M890.5 755.3L537.9 269.2c-12.8-17.6-39-17.6-51.7 0L133.5 755.3A8 8 0 00140 768h75c5.1 0 9.9-2.5 12.9-6.6L512 369.8l284.1 391.6c3 4.1 7.8 6.6 12.9 6.6h75c6.5 0 10.3-7.4 6.5-12.7z'%3e%3c/path%3e %3c/svg%3e");}
-.scanex-component-form > table,
-.scanex-component-form > table > tbody > tr > td:last-child,
-.scanex-component-form > table > tbody > tr > td > input[type=text],
-.scanex-component-form > table > tbody > tr > td > textarea {
-    width: 100%;
-}
-.scanex-component-form > table > tbody > tr > td > input[type=text] {
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td > textarea {
-    resize: none;
-    padding: 0px;
-    margin: 0px;    
-}
-.scanex-component-form > table > tbody > tr > td {
-    vertical-align: top;
-}
-.scanex-component-form > table > tbody > tr > td:first-child > label {
-    margin-right: 10px;
-}
-.scanex-component.scanex-component-sidebar > * {
-    float: left;
-}
-.scanex-component-dialog {
-    position: absolute;    
-    z-index: 10000;    
-}
-.scanex-component-dialog > .header,
-.scanex-component-dialog > .content,
-.scanex-component-dialog > .footer {
-    background-color: #FFFFFF;
-}
-.scanex-component-dialog > .header {    
-    cursor: pointer;    
-}
-.scanex-component-dialog > .header > .header-buttons {
-    float: right;
-}
-.scanex-component-dialog > .footer {
-    text-align: center;
-}
-.scanex-component-dialog .hidden {
-    display: none;
-}
-.scanex-dialog-overlay {
-    position: absolute;
-    width: 100%;
-    height: 100vh;
-    top: 0px;
-    left: 0px;
-    background-color: #000000;
-    opacity: 0.5;
-    z-index: 9999;    
-}
-.scanex-component-tabs > .tabs > *,
-.scanex-component-tabs > .panels > * {
-    float: left;
-}
-.scanex-component-tabs > .panels {
-    clear: both;
-    position: relative;
-}
-.scanex-component-tabs > .panels > .panel {
-    position: absolute;    
-}
-.scanex-component-tabs > .panels > .hidden {
-    visibility: hidden;
-}
 .scanex-component-spinner > * {
     display: inline-block;
     vertical-align: middle;
@@ -223,6 +154,75 @@ html, body {
     width: 15px;
     height: 15px;
 }
+.scanex-component-dialog {
+    position: absolute;    
+    z-index: 10000;    
+}
+.scanex-component-dialog > .header,
+.scanex-component-dialog > .content,
+.scanex-component-dialog > .footer {
+    background-color: #FFFFFF;
+}
+.scanex-component-dialog > .header {    
+    cursor: pointer;    
+}
+.scanex-component-dialog > .header > .header-buttons {
+    float: right;
+}
+.scanex-component-dialog > .footer {
+    text-align: center;
+}
+.scanex-component-dialog .hidden {
+    display: none;
+}
+.scanex-dialog-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0px;
+    left: 0px;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 9999;    
+}
+.scanex-component.scanex-component-sidebar > * {
+    float: left;
+}
+.scanex-component-tabs > .tabs > *,
+.scanex-component-tabs > .panels > * {
+    float: left;
+}
+.scanex-component-tabs > .panels {
+    clear: both;
+    position: relative;
+}
+.scanex-component-tabs > .panels > .panel {
+    position: absolute;    
+}
+.scanex-component-tabs > .panels > .hidden {
+    visibility: hidden;
+}
+.scanex-component-form > table,
+.scanex-component-form > table > tbody > tr > td:last-child,
+.scanex-component-form > table > tbody > tr > td > input[type=text],
+.scanex-component-form > table > tbody > tr > td > textarea {
+    width: 100%;
+}
+.scanex-component-form > table > tbody > tr > td > input[type=text] {
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td > textarea {
+    resize: none;
+    padding: 0px;
+    margin: 0px;    
+}
+.scanex-component-form > table > tbody > tr > td {
+    vertical-align: top;
+}
+.scanex-component-form > table > tbody > tr > td:first-child > label {
+    margin-right: 10px;
+}
 .noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -239,6 +239,44 @@ html, body {
     width: 18px;
     height: 18px;
 }
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
+    vertical-align: middle;    
+    display: inline-block;
+    cursor: pointer;
+}
+.scanex-component-menu .scanex-menu-item > * {
+    cursor: pointer;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-title,
+.scanex-component-menu .scanex-menu-item .scanex-menu-item-title {    
+    margin: 5px 10px 5px 10px;
+    display: inline-block;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-expander {
+    margin: 0px 5px 0px 5px;
+}
+.scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
+    margin-left: 15px;
+}
+.scanex-component-sidebar-tab > div {
+    writing-mode: vertical-lr;    
+    cursor: pointer;
+}
+.scanex-component-sidebar-panel.hidden {
+    display: none;
+}
+.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
+    float: left;
+}
+.scanex-component-range > table,
+.scanex-component-range > table > tbody > tr > td:nth-child(2) {
+    width: 100%;
+}
+.scanex-component-range input {
+    width: 35px;
+    text-align: center;
+    border: none;
+}
 .scanex-component-slider > .slider-bar > .slider-tick.slider-tick-middle {
     float: left;
     position: absolute;
@@ -247,9 +285,6 @@ html, body {
     position: absolute;
     top: -20px;
     background-color: #ffffff;
-}
-.scanex-component-sidebar-panel.hidden {
-    display: none;
 }
 .scanex-component-slider {
     height: 21px;    
@@ -284,39 +319,4 @@ html, body {
 }
 .scanex-component-slider > .slider-bar > .slider-range > .slider-tick-right {
     float: right;
-}
-.scanex-component-sidebar-tab > div {
-    writing-mode: vertical-lr;    
-    cursor: pointer;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-header > * {
-    vertical-align: middle;    
-    display: inline-block;
-    cursor: pointer;
-}
-.scanex-component-menu .scanex-menu-item > * {
-    cursor: pointer;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-title,
-.scanex-component-menu .scanex-menu-item .scanex-menu-item-title {    
-    margin: 5px 10px 5px 10px;
-    display: inline-block;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-expander {
-    margin: 0px 5px 0px 5px;
-}
-.scanex-component-menu .scanex-menu-group .scanex-menu-group-children {
-    margin-left: 15px;
-}
-.scanex-component-slider > .slider-bar >.slider-range > .slider-tick-left {
-    float: left;
-}
-.scanex-component-range > table,
-.scanex-component-range > table > tbody > tr > td:nth-child(2) {
-    width: 100%;
-}
-.scanex-component-range input {
-    width: 35px;
-    text-align: center;
-    border: none;
 }

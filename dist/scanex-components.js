@@ -2771,8 +2771,6 @@ var Pager = /*#__PURE__*/function (_Component) {
       });
 
       this._last = element.querySelector('.last');
-      this._pages = 1;
-      this.page = 1;
     }
   }, {
     key: "page",
