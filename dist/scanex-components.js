@@ -2780,7 +2780,7 @@ var Pager = /*#__PURE__*/function (_Component) {
       return this._page;
     },
     set: function set(page) {
-      if (Number.isInteger(page) && 1 <= page && page <= this.pages) {
+      if (Number.isInteger(page) && 1 <= page && page <= this.pages && this._page !== page) {
         this._page = page;
         this._current.value = this._page;
         var event = document.createEvent('Event');

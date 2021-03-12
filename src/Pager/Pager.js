@@ -64,7 +64,7 @@ class Pager extends Component {
         return this._page;
     }
     set page(page) {
-        if (Number.isInteger(page) && 1 <= page && page <= this.pages) {
+        if (Number.isInteger(page) && 1 <= page && page <= this.pages && this._page !== page) {
             this._page = page;
             this._current.value = this._page;
             let event = document.createEvent('Event');
