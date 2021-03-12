@@ -32,16 +32,21 @@ class Group extends Component {
     }
     set expanded (expanded) {
         this._expanded = expanded;
-        if (expanded) {
+        if (this._expanded) {
             this._expander.classList.remove('down');
             this._expander.classList.add('up');
             this._children.classList.remove('hidden');
+
+            let event = document.createEvent('Event');
+            event.initEvent('expanded', false, false);
+            event.detail = this.path;
+            this.dispatchEvent(event);
         }
         else {
             this._expander.classList.remove('up');
             this._expander.classList.add('down');
             this._children.classList.add('hidden');
-        }        
+        }          
     }    
     clear() {
         this._element.removeEventListener('click', this._onClick);
@@ -57,6 +62,7 @@ class Group extends Component {
             if (Array.isArray(children)) {
                 item = new Group(this._children, {id, title});                
                 item.items = children;
+                item.on('expanded', this.forwardEvent.bind(this));
             }
             else {
                 item = new Item(this._children, {id, title});

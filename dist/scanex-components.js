@@ -2335,12 +2335,17 @@ var Group = /*#__PURE__*/function (_Component) {
     set: function set(expanded) {
       this._expanded = expanded;
 
-      if (expanded) {
+      if (this._expanded) {
         this._expander.classList.remove('down');
 
         this._expander.classList.add('up');
 
         this._children.classList.remove('hidden');
+
+        var event = document.createEvent('Event');
+        event.initEvent('expanded', false, false);
+        event.detail = this.path;
+        this.dispatchEvent(event);
       } else {
         this._expander.classList.remove('up');
 
@@ -2379,6 +2384,7 @@ var Group = /*#__PURE__*/function (_Component) {
             title: title
           });
           item.items = children;
+          item.on('expanded', _this2.forwardEvent.bind(_this2));
         } else {
           item = new Item(_this2._children, {
             id: id,
@@ -2462,16 +2468,23 @@ var Menu = /*#__PURE__*/function (_Component) {
 
       this._group.on('item:click', function (e) {
         _this._group.expanded = false;
-        var event = document.createEvent('Event');
-        event.initEvent('item:click', false, false);
-        event.detail = e.detail;
 
-        _this.dispatchEvent(event);
+        _this.forwardEvent(e);
       });
+
+      this._group.on('expanded', this.forwardEvent.bind(this));
 
       window.addEventListener('click', function () {
         return _this._group.expanded = false;
       });
+    }
+  }, {
+    key: "expanded",
+    get: function get() {
+      return this._group.expanded;
+    },
+    set: function set(expanded) {
+      this._group.expanded = expanded;
     }
   }]);
 

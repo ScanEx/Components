@@ -2336,12 +2336,17 @@
       set: function set(expanded) {
         this._expanded = expanded;
 
-        if (expanded) {
+        if (this._expanded) {
           this._expander.classList.remove('down');
 
           this._expander.classList.add('up');
 
           this._children.classList.remove('hidden');
+
+          var event = document.createEvent('Event');
+          event.initEvent('expanded', false, false);
+          event.detail = this.path;
+          this.dispatchEvent(event);
         } else {
           this._expander.classList.remove('up');
 
@@ -2380,6 +2385,7 @@
               title: title
             });
             item.items = children;
+            item.on('expanded', _this2.forwardEvent.bind(_this2));
           } else {
             item = new Item(_this2._children, {
               id: id,
@@ -2463,16 +2469,23 @@
 
         this._group.on('item:click', function (e) {
           _this._group.expanded = false;
-          var event = document.createEvent('Event');
-          event.initEvent('item:click', false, false);
-          event.detail = e.detail;
 
-          _this.dispatchEvent(event);
+          _this.forwardEvent(e);
         });
+
+        this._group.on('expanded', this.forwardEvent.bind(this));
 
         window.addEventListener('click', function () {
           return _this._group.expanded = false;
         });
+      }
+    }, {
+      key: "expanded",
+      get: function get() {
+        return this._group.expanded;
+      },
+      set: function set(expanded) {
+        this._group.expanded = expanded;
       }
     }]);
 
@@ -3784,9 +3797,6 @@
         title: 'Logout'
       }]
     }];
-    userMenu.addEventListener('item:click', function (e) {
-      alert("Selected: ".concat(e.detail));
-    });
     var layersMenu = new Menu(header, {
       id: 'layers',
       title: 'Layers'
@@ -3818,8 +3828,15 @@
         title: 'Logout'
       }]
     }];
-    layersMenu.addEventListener('item:click', function (e) {
+    userMenu.on('item:click', function (e) {
       alert("Selected: ".concat(e.detail));
+    }).on('expanded', function () {
+      layersMenu.expanded = false;
+    });
+    layersMenu.on('item:click', function (e) {
+      alert("Selected: ".concat(e.detail));
+    }).on('expanded', function () {
+      userMenu.expanded = false;
     });
     var content = document.createElement('div');
     content.classList.add('app-content');

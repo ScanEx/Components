@@ -34,10 +34,7 @@ window.addEventListener('load', () => {
                 {id: 'logout', title: 'Logout'}
             ]
         },
-    ];
-    userMenu.addEventListener('item:click', e => {
-        alert(`Selected: ${e.detail}`);
-    });
+    ];    
 
     let layersMenu = new Menu(header, {id: 'layers', title: 'Layers'});
     layersMenu.items = [
@@ -60,8 +57,20 @@ window.addEventListener('load', () => {
             ]
         },
     ];
-    layersMenu.addEventListener('item:click', e => {
+
+    userMenu
+        .on('item:click', e => {
+            alert(`Selected: ${e.detail}`);
+        })
+        .on('expanded', () => {
+            layersMenu.expanded = false;
+        });
+
+    layersMenu.on('item:click', e => {
         alert(`Selected: ${e.detail}`);
+    })
+    .on('expanded', () => {
+        userMenu.expanded = false;
     });
     
 
