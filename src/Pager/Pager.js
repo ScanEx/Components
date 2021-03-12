@@ -79,7 +79,7 @@ class Pager extends Component {
         return this._pages;
     }
     set pages(pages) {
-        if (Number.isInteger(pages) && 1 <= this.page && this.page <= pages) {
+        if (pages && Number.isInteger(pages)) {
             this._pages = pages;
             this._last.innerText = pages;
         }

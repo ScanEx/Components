@@ -2432,33 +2432,10 @@ var Menu = /*#__PURE__*/function (_Component) {
 
   var _super = _createSuper(Menu);
 
-  function Menu(container, _ref) {
-    var _this;
-
-    var id = _ref.id,
-        title = _ref.title;
-
+  function Menu(container, options) {
     _classCallCheck(this, Menu);
 
-    _this = _super.call(this, container);
-    _this._group = new Group(_this._root, {
-      id: id,
-      title: title
-    });
-
-    _this._group.on('item:click', function (e) {
-      _this._group.expanded = false;
-      var event = document.createEvent('Event');
-      event.initEvent('item:click', false, false);
-      event.detail = e.detail;
-
-      _this.dispatchEvent(event);
-    });
-
-    window.addEventListener('click', function () {
-      return _this._group.expanded = false;
-    });
-    return _this;
+    return _super.call(this, container, options);
   }
 
   _createClass(Menu, [{
@@ -2471,14 +2448,30 @@ var Menu = /*#__PURE__*/function (_Component) {
     }
   }, {
     key: "_render",
-    value: function _render(element) {
+    value: function _render(element, _ref) {
+      var _this = this;
+
+      var id = _ref.id,
+          title = _ref.title;
       element.classList.add('scanex-component-menu');
       element.classList.add('noselect');
-      this._root = document.createElement('div');
+      this._group = new Group(element, {
+        id: id,
+        title: title
+      });
 
-      this._root.classList.add('scanex-menu-root');
+      this._group.on('item:click', function (e) {
+        _this._group.expanded = false;
+        var event = document.createEvent('Event');
+        event.initEvent('item:click', false, false);
+        event.detail = e.detail;
 
-      element.appendChild(this._root);
+        _this.dispatchEvent(event);
+      });
+
+      window.addEventListener('click', function () {
+        return _this._group.expanded = false;
+      });
     }
   }]);
 
@@ -2803,7 +2796,7 @@ var Pager = /*#__PURE__*/function (_Component) {
       return this._pages;
     },
     set: function set(pages) {
-      if (Number.isInteger(pages) && 1 <= this.page && this.page <= pages) {
+      if (pages && Number.isInteger(pages)) {
         this._pages = pages;
         this._last.innerText = pages;
       }

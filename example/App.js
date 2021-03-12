@@ -14,8 +14,8 @@ window.addEventListener('load', () => {
     header.classList.add('app-header');
     document.body.appendChild(header);
 
-    let menu = new Menu(header, {id: 'users', title: 'Users'});
-    menu.items = [
+    let userMenu = new Menu(header, {id: 'users', title: 'Users'});
+    userMenu.items = [
         {
             id: 'user1',
             title: 'User1',
@@ -35,7 +35,32 @@ window.addEventListener('load', () => {
             ]
         },
     ];
-    menu.addEventListener('item:click', e => {
+    userMenu.addEventListener('item:click', e => {
+        alert(`Selected: ${e.detail}`);
+    });
+
+    let layersMenu = new Menu(header, {id: 'layers', title: 'Layers'});
+    layersMenu.items = [
+        {
+            id: 'user1',
+            title: 'User1',
+            children: [
+                {id: 'account', title: 'Account'},
+                {id: 'map', title: 'Map'},
+                {id: 'logout', title: 'Logout'}
+            ]
+        },
+        {
+            id: 'user2',
+            title: 'User2',
+            children: [
+                {id: 'account', title: 'Account'},
+                {id: 'map', title: 'Map'},
+                {id: 'logout', title: 'Logout'}
+            ]
+        },
+    ];
+    layersMenu.addEventListener('item:click', e => {
         alert(`Selected: ${e.detail}`);
     });
     

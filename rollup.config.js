@@ -26,7 +26,8 @@ export default [
                 include: "**/*.txt",
             }),
             css({dest: 'public/main.css', minified: false}),            
-            babel({                
+            babel({
+                babelHelpers: 'bundled',
                 extensions: ['.js', '.mjs'],
                 exclude: ['node_modules/@babel/**', 'node_modules/core-js/**'],
                 include: ['example/App.js', 'src/**', 'node_modules/**']
@@ -51,7 +52,8 @@ export default [
             }),
             commonjs(),
             css({dest: 'dist/scanex-components.css', minified: false}),
-            babel({                
+            babel({
+                babelHelpers: 'bundled',
                 extensions: ['.js', '.mjs'],
                 exclude: ['node_modules/@babel/**', 'node_modules/core-js/**'],
                 include: ['src/**', 'node_modules/**']

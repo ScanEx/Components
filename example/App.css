@@ -9,6 +9,9 @@ html, body {
 .app-header {
     height: 40px;
 }
+.app-header > * {
+    float: left;
+}
 .scanex-component-tabs > .tabs > .tab {
     padding: 10px;
     text-align: center;    

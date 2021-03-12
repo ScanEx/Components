@@ -2,7 +2,7 @@
     position: relative;
 }
 .scanex-component-menu > .scanex-menu-root {
-    position: absolute;
+    position: relative;
     white-space: nowrap;
     background-color: #ffffff;
 }
