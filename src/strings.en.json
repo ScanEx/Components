@@ -1,0 +1,14 @@
+{
+    "notify": {
+        "error": {
+            "badrequest": "Bad request",
+            "unauthorized": "Unauthorized",
+            "forbidden": "Forbidden",
+            "notfound": "Not found",
+            "server": "Internal server error",
+            "gateway": "Bad gateway",
+            "unavailable": "Service unavailable",
+            "other": "Other errors"
+        }
+    }
+}

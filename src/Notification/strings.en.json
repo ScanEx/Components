@@ -1,0 +1,7 @@
+{
+    "notify": {
+        "error": "Error!",
+        "warn": "Warning",
+        "info": "Information"
+    }
+}

@@ -6,7 +6,7 @@ class Component extends Evented {
         super();        
         this._element = document.createElement('div');
         this._element.classList.add('scanex-component');
-        container.appendChild(this._element);
+        container.appendChild(this._element);        
         this._render(this._element, options);
     }
     destroy () {
